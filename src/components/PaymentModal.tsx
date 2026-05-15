@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, Lock, CheckCircle2, Loader2, Star, Phone } from "lucide-react";
 import { useCV } from "../context/CVContext";
 import { verifyPaymentToken } from "../services/payment";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { slideUp, scaleIn, fadeIn } from "../lib/motion";
 
 export const PaymentModal: React.FC = () => {
   const { showPaymentModal, setShowPaymentModal, setHasPaid } = useCV();
@@ -46,18 +49,21 @@ export const PaymentModal: React.FC = () => {
           onClick={() => setShowPaymentModal(false)}
         />
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          variants={scaleIn}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          className="relative bg-white dark:bg-slate-900 w-full max-w-md rounded-[40px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] border border-slate-100 dark:border-slate-800"
         >
-          <div className="bg-gray-900 px-6 py-8 text-white relative">
-            <button
+          <div className="bg-slate-950 px-8 py-10 text-white relative">
+            <Button
+              variant="ghost"
+              size="icon-sm"
               onClick={() => setShowPaymentModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+              className="absolute top-6 right-6 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
             >
-              <X size={24} />
-            </button>
+              <X size={20} />
+            </Button>
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 bg-accent/20 rounded-2xl flex items-center justify-center border border-accent/30 shadow-[0_0_20px_rgba(var(--accent),0.3)]">
                 <Star size={32} className="text-accent fill-accent" />
@@ -71,73 +77,83 @@ export const PaymentModal: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-6 overflow-y-auto">
+          <div className="p-8 overflow-y-auto">
             {status === "success" ? (
-              <div className="text-center py-8">
+              <motion.div 
+                variants={fadeIn}
+                initial="initial"
+                animate="animate"
+                className="text-center py-10"
+              >
                 <motion.div
                   initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
+                  animate={{ scale: 1, rotate: [0, 10, 0] }}
+                  transition={{ type: "spring", damping: 12 }}
+                  className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-8"
                 >
-                  <CheckCircle2 size={40} className="text-green-500" />
+                  <CheckCircle2 size={48} className="text-green-500" />
                 </motion.div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3 tracking-tighter">
                   Pagamento Confirmado!
                 </h3>
-                <p className="text-gray-500 font-medium">
+                <p className="text-slate-500 dark:text-slate-400 font-bold leading-relaxed">
                   Todos os recursos premium foram desbloqueados com sucesso no teu perfil.
                 </p>
-              </div>
+              </motion.div>
             ) : (
               <>
-                <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 mb-6 text-center">
-                  <p className="text-sm font-bold text-gray-900 mb-2">Faz o pagamento por Multicaixa Express</p>
-                  <div className="flex items-center justify-center gap-2 mb-4">
-                    <Phone size={18} className="text-accent" />
-                    <span className="font-mono text-lg tracking-wider text-accent font-bold">9XX XXX XXX</span>
+                <div className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 rounded-3xl p-6 mb-8 text-center">
+                  <p className="text-sm font-black text-slate-900 dark:text-white mb-3 uppercase tracking-widest">Paga por Multicaixa Express</p>
+                  <div className="flex items-center justify-center gap-3 mb-4">
+                    <Phone size={20} className="text-blue-600" />
+                    <span className="font-mono text-2xl tracking-tighter text-blue-600 font-black">9XX XXX XXX</span>
                   </div>
-                  <p className="text-xs text-gray-500 leading-relaxed font-medium">
-                    Envia o comprovativo para o nosso WhatsApp e recebe o teu <strong className="text-gray-900">Código Premium de 8 dígitos</strong> em instantes.
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-bold">
+                    Envia o comprovativo para o nosso WhatsApp e recebe o teu <strong className="text-slate-900 dark:text-white">Código Premium de 8 dígitos</strong> em instantes.
                   </p>
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-bold text-gray-900 mb-2 block">
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-4 block">
                       Código Premium
                     </label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Lock size={18} className="text-gray-400" />
+                      <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+                        <Lock size={18} className="text-slate-400" />
                       </div>
-                      <input
+                      <Input
                         type="text"
                         placeholder="Ex: A1B2C3D4"
                         maxLength={8}
-                        className="w-full bg-white border border-gray-200 focus:border-gray-900 focus:ring-4 focus:ring-gray-900/10 rounded-xl py-3.5 pl-11 pr-4 text-base font-mono uppercase font-bold outline-none transition-all placeholder:font-sans placeholder:font-medium placeholder:normal-case placeholder:text-gray-400"
+                        className="h-16 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl pl-14 pr-6 font-mono text-xl uppercase font-black focus:border-blue-600 transition-all shadow-sm"
                         value={token}
                         onChange={(e) => setToken(e.target.value.toUpperCase())}
                       />
                     </div>
                     {errorMsg && (
-                      <p className="text-red-500 text-xs font-bold mt-2 animate-pulse">{errorMsg}</p>
+                      <p className="text-red-500 text-xs font-black mt-2 ml-4 animate-pulse uppercase tracking-widest">{errorMsg}</p>
                     )}
                   </div>
-
-                  <button
+ 
+                  <Button
                     onClick={handleVerify}
                     disabled={status === "loading" || token.length < 8}
-                    className="w-full bg-gray-900 disabled:opacity-50 hover:bg-black text-white rounded-xl py-4 font-bold transition-all shadow-md flex items-center justify-center gap-2 active:scale-[0.98]"
+                    size="2xl"
+                    className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-2xl py-8 font-black text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] border-none shadow-[0_20px_40px_-10px_rgba(37,99,235,0.4)]"
                   >
                     {status === "loading" ? (
                       <>
-                        <Loader2 size={18} className="animate-spin text-white" />
-                        <span>A validar código...</span>
+                        <Loader2 size={24} className="animate-spin text-white" />
+                        <span>Validando...</span>
                       </>
                     ) : (
-                      "Confirmar e Desbloquear"
+                      <>
+                        Confirmar e Desbloquear
+                        <CheckCircle2 size={24} />
+                      </>
                     )}
-                  </button>
+                  </Button>
                 </div>
               </>
             )}

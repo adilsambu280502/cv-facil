@@ -7,21 +7,24 @@ import {
   Share2, 
   ChevronRight, 
   ExternalLink,
-  Lock
+  Lock,
+  Sparkles,
+  Loader2
 } from "lucide-react";
-import { Loader2 } from "lucide-react";
 import { useCV } from "../../context/CVContext";
 import { useExport } from "../../hooks/useExport";
 import { cn } from "../../lib/utils";
+import { Button } from "../ui/button";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "../ui/card";
+import { slideUp, scaleIn, fadeIn, staggerContainer } from "../../lib/motion";
 
 import { ChatAssistant } from "./ChatAssistant";
 
 // Lazy loading templates for performance
-const MinimalistTemplate = React.lazy(() => import("../cv/MinimalistTemplate").then(m => ({ default: m.MinimalistTemplate })));
-const ModernTemplate = React.lazy(() => import("../cv/ModernTemplate").then(m => ({ default: m.ModernTemplate })));
-const ExecutiveTemplate = React.lazy(() => import("../cv/ExecutiveTemplate").then(m => ({ default: m.ExecutiveTemplate })));
-const CreativeTemplate = React.lazy(() => import("../cv/CreativeTemplate").then(m => ({ default: m.CreativeTemplate })));
-const TechnicalTemplate = React.lazy(() => import("../cv/TechnicalTemplate").then(m => ({ default: m.TechnicalTemplate })));
+const ModernEliteWeb = React.lazy(() => import("../cv/ModernEliteWeb").then(m => ({ default: m.ModernEliteWeb })));
+const ExecutiveEliteWeb = React.lazy(() => import("../cv/ExecutiveEliteWeb").then(m => ({ default: m.ExecutiveEliteWeb })));
+const CreativeEliteWeb = React.lazy(() => import("../cv/CreativeEliteWeb").then(m => ({ default: m.CreativeEliteWeb })));
+const CleanATSWeb = React.lazy(() => import("../cv/CleanATSWeb").then(m => ({ default: m.CleanATSWeb })));
 
 export const CVDashboard: React.FC = () => {
   const { answers, result, hasPaid, setShowPaymentModal, setView } = useCV();
@@ -42,12 +45,13 @@ export const CVDashboard: React.FC = () => {
           </div>
           <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter">Pronto para o Próximo Nível?</h2>
           <p className="text-xl text-slate-500 font-bold mb-12 leading-relaxed">Ainda não tens nenhum currículo guardado. Vamos criar um agora mesmo?</p>
-          <button 
+          <Button 
             onClick={() => setView('wizard')}
-            className="w-full bg-blue-600 text-white py-6 rounded-[32px] font-black text-xl hover:scale-105 active:scale-95 transition-all shadow-[0_32px_64px_-12px_rgba(37,99,235,0.4)]"
+            size="2xl"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white py-8 rounded-[32px] font-black text-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] border-none shadow-[0_20px_40px_-10px_rgba(37,99,235,0.4)]"
           >
             Criar meu Primeiro CV
-          </button>
+          </Button>
         </motion.div>
       </div>
     );
@@ -64,12 +68,12 @@ export const CVDashboard: React.FC = () => {
       }>
         {(() => {
           switch (answers.template) {
-            case "minimalist": return <MinimalistTemplate {...props} />;
-            case "modern": return <ModernTemplate {...props} />;
-            case "executive": return <ExecutiveTemplate {...props} />;
-            case "creative": return <CreativeTemplate {...props} />;
-            case "technical": return <TechnicalTemplate {...props} />;
-            default: return <MinimalistTemplate {...props} />;
+            case "modern": return <ModernEliteWeb {...props} />;
+            case "executive": return <ExecutiveEliteWeb {...props} />;
+            case "creative": return <CreativeEliteWeb {...props} />;
+            case "technical": return <CleanATSWeb {...props} />;
+            case "minimalist": return <CleanATSWeb {...props} />;
+            default: return <ModernEliteWeb {...props} />;
           }
         })()}
       </React.Suspense>
@@ -81,28 +85,28 @@ export const CVDashboard: React.FC = () => {
       {/* Sidebar de Controle / Análise */}
       <div className="w-full xl:w-[420px] 2xl:w-[480px] flex flex-col gap-6">
         {/* Score Card Premium */}
-        <div className="bg-white dark:bg-slate-900 rounded-[48px] p-10 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] border-2 border-slate-100 dark:border-slate-800 relative overflow-hidden group">
+        <Card className="bg-white dark:bg-slate-900 rounded-[48px] p-10 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] border-2 border-slate-100 dark:border-slate-800 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-blue-600/10 transition-colors" />
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-8 relative z-10">
             <div>
-              <h3 className="font-black text-slate-900 dark:text-white text-xl tracking-tight">Força do Perfil</h3>
-              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">Análise em Tempo Real</p>
+              <CardTitle className="font-black text-slate-900 dark:text-white text-2xl tracking-tighter uppercase">Força do Perfil</CardTitle>
+              <CardDescription className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">Análise em Tempo Real</CardDescription>
             </div>
             <span className="text-4xl font-black text-blue-600 tracking-tighter">{result.score}%</span>
           </div>
-          <div className="w-full bg-slate-100 dark:bg-slate-800 h-4 rounded-full overflow-hidden p-1 shadow-inner">
+          <div className="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden relative shadow-inner">
             <motion.div 
               initial={{ width: 0 }}
               animate={{ width: `${result.score}%` }}
-              transition={{ duration: 1, ease: "easeOut" }}
+              transition={{ duration: 1.5, ease: [0.23, 1, 0.32, 1] }}
               className="bg-blue-600 h-full rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)]"
             />
           </div>
-          <p className="text-base text-slate-500 dark:text-slate-400 mt-8 font-bold leading-relaxed">
+          <p className="text-base text-slate-500 dark:text-slate-400 mt-8 font-bold leading-relaxed relative z-10">
             O teu perfil está {result.score > 70 ? "extremamente forte" : "equilibrado"}. <br />
-            <span className="text-blue-600 cursor-pointer hover:underline">Vê como chegar aos 100%</span>
+            <button className="text-blue-600 font-black uppercase tracking-widest text-[10px] mt-4 hover:underline">Vê como chegar aos 100%</button>
           </p>
-        </div>
+        </Card>
 
         {/* Tabs Selector App-Style */}
         <div className="flex bg-white dark:bg-slate-900 p-2 rounded-[32px] border-2 border-slate-100 dark:border-slate-800 shadow-xl">
@@ -129,41 +133,54 @@ export const CVDashboard: React.FC = () => {
 
         {/* Actions Group */}
         <div className="flex flex-col gap-4">
-          <button 
-            onClick={handleExportPDF}
+          <Button 
+            onClick={() => {
+              if (hasPaid) {
+                handleExportPDF();
+              } else {
+                setShowPaymentModal(true);
+              }
+            }}
             disabled={isExporting}
-            className="w-full bg-blue-600 text-white py-6 rounded-[32px] font-black text-xl flex items-center justify-center gap-4 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_24px_48px_-12px_rgba(37,99,235,0.4)] group"
+            size="2xl"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white py-8 rounded-[32px] font-black text-xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] border-none shadow-[0_24px_48px_-12px_rgba(37,99,235,0.4)] group"
           >
-            {isExporting ? <Loader2 className="animate-spin" size={28} /> : <Download size={28} className="group-hover:-translate-y-1 transition-transform" />}
-            {isExporting ? "A Gerar PDF..." : "Descarregar PDF"}
-          </button>
+            {isExporting ? <Loader2 className="animate-spin" size={28} /> : (hasPaid ? <Download size={28} className="group-hover:-translate-y-1 transition-transform" /> : <Lock size={28} className="group-hover:scale-110 transition-transform" />)}
+            {isExporting ? "A Gerar PDF..." : (hasPaid ? "Descarregar PDF" : "Desbloquear PDF Premium")}
+          </Button>
 
           <div className="grid grid-cols-2 gap-4">
             {hasPaid ? (
-               <button 
+               <Button 
                  onClick={handleExportDOCX}
                  disabled={isExporting}
-                 className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white py-5 rounded-[28px] font-black text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-md flex items-center justify-center gap-3 disabled:opacity-50"
+                 variant="outline"
+                 size="xl"
+                 className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white py-8 rounded-[28px] font-black text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-md flex items-center justify-center gap-3 disabled:opacity-50"
                >
-                 {isExporting ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
+                 {isExporting ? <Loader2 size={18} className="animate-spin" /> : <FileText size={18} />}
                  DOCX
-               </button>
+               </Button>
             ) : (
-               <button 
+               <Button 
+                 variant="outline"
+                 size="xl"
                  onClick={() => setShowPaymentModal(true)} 
-                 className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-slate-800 text-slate-400 py-5 rounded-[28px] font-black text-sm flex items-center justify-center gap-3 cursor-pointer hover:bg-slate-100 transition-all"
+                 className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-slate-800 text-slate-400 py-8 rounded-[28px] font-black text-sm flex items-center justify-center gap-3 cursor-pointer hover:bg-slate-100 transition-all"
                >
-                 <Lock size={16} /> DOCX
-               </button>
+                 <Lock size={18} /> DOCX
+               </Button>
             )}
-            <button 
+            <Button 
               onClick={handleExportImage}
               disabled={isExporting}
-              className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white py-5 rounded-[28px] font-black text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-md flex items-center justify-center gap-3 disabled:opacity-50"
+              variant="outline"
+              size="xl"
+              className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white py-8 rounded-[28px] font-black text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-md flex items-center justify-center gap-3 disabled:opacity-50"
             >
-              {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Share2 size={16} />}
+              {isExporting ? <Loader2 size={18} className="animate-spin" /> : <Share2 size={18} />}
               PNG
-            </button>
+            </Button>
           </div>
 
           <button 
@@ -186,38 +203,41 @@ export const CVDashboard: React.FC = () => {
         </div>
 
         {/* Dicas do Recrutador Premium */}
-        <div className="bg-blue-600/5 dark:bg-blue-600/10 rounded-[48px] p-10 border-2 border-blue-600/10 relative overflow-hidden">
-          <div className="absolute top-4 right-4 text-blue-600/20">
+        <Card className="bg-blue-600/5 dark:bg-blue-600/10 rounded-[48px] p-10 border-2 border-blue-600/10 relative overflow-hidden shadow-none">
+          <div className="absolute top-6 right-8 text-blue-600/20">
              <Target size={48} />
           </div>
-          <h4 className="font-black text-blue-900 dark:text-blue-400 mb-6 flex items-center gap-3 text-lg tracking-tight">
+          <h4 className="font-black text-blue-900 dark:text-blue-400 mb-8 flex items-center gap-3 text-lg tracking-tighter uppercase">
             Análise do Recrutador
           </h4>
           
-          <div className={cn("space-y-4 transition-all duration-700", !hasPaid && "blur-[8px] opacity-30 select-none scale-95")}>
-            <div className="mb-6 p-4 bg-white/40 dark:bg-slate-800/40 rounded-2xl border border-blue-600/10">
-              <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-2">Impressão em 6 Segundos</p>
-              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 italic">"{result.recruiterSimulation.sixSecondImpression}"</p>
+          <div className={cn("space-y-6 transition-all duration-700", !hasPaid && "blur-[12px] opacity-20 select-none scale-95")}>
+            <div className="p-6 bg-white dark:bg-slate-900/50 rounded-3xl border border-blue-600/10 shadow-sm">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 mb-3">Impressão em 6 Segundos</p>
+              <p className="text-base font-bold text-slate-700 dark:text-slate-300 italic leading-relaxed">"{result.recruiterSimulation.sixSecondImpression}"</p>
             </div>
             
-            {result.recruiterSimulation.highlights.map((tip, i) => (
-              <div key={i} className="flex gap-4">
-                <div className="w-2 h-2 rounded-full bg-blue-600 mt-2 shrink-0" />
-                <p className="text-sm text-blue-800 dark:text-blue-300 font-bold leading-relaxed tracking-tight">{tip}</p>
-              </div>
-            ))}
+            <div className="space-y-4">
+              {result.recruiterSimulation.highlights.map((tip, i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="w-2 h-2 rounded-full bg-blue-600 mt-2 shrink-0 shadow-[0_0_10px_rgba(37,99,235,0.5)]" />
+                  <p className="text-sm text-blue-800 dark:text-blue-300 font-bold leading-relaxed tracking-tight">{tip}</p>
+                </div>
+              ))}
+            </div>
           </div>
           
           {!hasPaid && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center backdrop-blur-[2px]">
-               <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-[20px] flex items-center justify-center shadow-xl mb-6 text-blue-600">
-                  <Lock size={32} />
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center backdrop-blur-[1px]">
+               <div className="w-20 h-20 bg-white dark:bg-slate-900 rounded-3xl flex items-center justify-center shadow-2xl mb-8 text-blue-600">
+                  <Lock size={36} />
                </div>
-               <p className="font-black text-slate-900 dark:text-white mb-6 text-lg tracking-tight leading-tight">Desbloqueia as dicas <br /> personalizadas</p>
-               <button onClick={() => setShowPaymentModal(true)} className="bg-blue-600 text-white px-10 py-4 rounded-[20px] text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-blue-600/30">Ver Planos</button>
+               <h4 className="font-black text-slate-900 dark:text-white mb-4 text-xl tracking-tighter uppercase leading-tight">Dicas de Elite <br /> Bloqueadas</h4>
+               <p className="text-xs font-bold text-slate-500 mb-8 max-w-[200px]">Desbloqueia a análise completa do Arquiteto para este currículo.</p>
+               <Button onClick={() => setShowPaymentModal(true)} size="lg" className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-blue-600/30">Ver Planos</Button>
             </div>
           )}
-        </div>
+        </Card>
       </div>
 
       {/* Main Content Area - O Canvas */}

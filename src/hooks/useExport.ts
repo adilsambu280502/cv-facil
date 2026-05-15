@@ -1,6 +1,6 @@
-import { RefObject, useState } from "react";
+import React, { RefObject, useState } from "react";
 import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
+import { pdf } from "@react-pdf/renderer";
 import { 
   Document, 
   Packer, 
@@ -11,6 +11,10 @@ import {
 } from "docx";
 import { saveAs } from "file-saver";
 import { Answers, TransformResult } from "../types";
+import { ModernElite } from "../components/templates/premium/ModernElite";
+import { ExecutiveElite } from "../components/templates/premium/ExecutiveElite";
+import { CreativeElite } from "../components/templates/premium/CreativeElite";
+import { CleanATS } from "../components/templates/premium/CleanATS";
 
 export const useExport = (
   cvRef: RefObject<HTMLDivElement | null>,
@@ -20,21 +24,29 @@ export const useExport = (
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExportPDF = async () => {
-    if (!cvRef.current) return;
+    if (!result) return false;
     setIsExporting(true);
     try {
-      await new Promise((r) => setTimeout(r, 300));
-      const canvas = await html2canvas(cvRef.current, { scale: 2 });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      // Usando o novo motor de renderização Pro Max dinâmico
+      const templateProps = { 
+        data: { ...answers, ...result },
+        color: answers.color || '#2563eb'
+      };
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(answers.name ? answers.name + "_CV.pdf" : "CV.pdf");
+      const doc = React.createElement(
+        answers.template === "executive" ? ExecutiveElite : 
+        answers.template === "creative" ? CreativeElite :
+        answers.template === "technical" || answers.template === "minimalist" ? CleanATS :
+        ModernElite, 
+        templateProps
+      );
+      
+      const blob = await pdf(doc).toBlob();
+      saveAs(blob, answers.name ? `${answers.name}_CV_Profissional.pdf` : "CV_Facil.pdf");
       return true;
     } catch (err) {
-      console.error("Error generating PDF:", err);
+      console.error("Error generating Premium PDF:", err);
+      // Fallback para o método antigo se necessário (opcional)
       return false;
     } finally {
       setIsExporting(false);

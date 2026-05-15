@@ -34,6 +34,7 @@ import { LoginView } from "./components/auth/LoginView";
 import { AboutView } from "./components/layout/AboutView";
 import { PaymentModal } from "./components/PaymentModal";
 import { motion, AnimatePresence } from "motion/react";
+import { pageTransition } from "./lib/motion";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 1024);
@@ -49,6 +50,25 @@ function useIsDesktop() {
 /* ──────────────────────────────────────
    Desktop Header — apenas lg+
    ────────────────────────────────────── */
+/* ──────────────────────────────────────
+   Mobile Header — apenas < lg
+   ────────────────────────────────────── */
+const MobileHeader: React.FC<{ setView: (v: any) => void }> = ({ setView }) => (
+  <header className="lg:hidden fixed top-0 left-0 right-0 z-[100] h-16 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 flex items-center justify-center px-6">
+    <button
+      onClick={() => setView("intro")}
+      className="flex items-center gap-2 group"
+    >
+      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30 transition-transform active:scale-90">
+        <Sparkles size={20} className="text-white" />
+      </div>
+      <span className="text-xl font-black text-slate-900 dark:text-white tracking-tighter">
+        CV<span className="text-blue-600">Fácil</span>
+      </span>
+    </button>
+  </header>
+);
+
 const DesktopHeader: React.FC<{
   view: string;
   setView: (v: any) => void;
@@ -368,6 +388,11 @@ const AppContent: React.FC = () => {
         />
       )}
 
+      {/* ── HEADER MOBILE (< lg) — App Style ── */}
+      {!isDesktop && view !== "wizard" && (
+        <MobileHeader setView={setView} />
+      )}
+
       {/* ── MENU "MAIS" ── */}
       <MoreMenuPanel
         show={showMoreMenu}
@@ -383,6 +408,8 @@ const AppContent: React.FC = () => {
           "flex-1 w-full flex flex-col relative overflow-x-hidden",
           // No desktop, empurrar conteúdo abaixo do header fixo
           isDesktop && view !== "wizard" ? "pt-20" : "",
+          // No mobile, header fixo h-16
+          !isDesktop && view !== "wizard" ? "pt-16" : "",
           // No mobile, espaço extra no fundo para a bottom nav
           !isDesktop && showNav ? "pb-32" : ""
         )}
@@ -390,10 +417,10 @@ const AppContent: React.FC = () => {
         <AnimatePresence mode="wait">
           <motion.div
             key={view}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
+            variants={pageTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             className="w-full flex-1 flex flex-col"
           >
             {view === "intro" && <Intro />}

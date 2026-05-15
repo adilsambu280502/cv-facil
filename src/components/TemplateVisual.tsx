@@ -21,12 +21,12 @@ export const TemplateVisual: React.FC<TemplateVisualProps> = ({ type, className,
         };
       case 'modern':
         return {
-          header: "bg-blue-600 p-3 -mx-4 -mt-4 mb-4",
-          name: "text-white font-black text-[10px]",
-          title: "text-blue-100 font-bold text-[6px] uppercase tracking-widest",
-          section: "text-blue-600 font-black text-[7px] mb-2 uppercase flex items-center gap-2 after:h-[1px] after:flex-1 after:bg-blue-100",
-          text: "text-slate-500 font-medium text-[5px] leading-relaxed",
-          bullet: "w-1 h-1 bg-blue-400 rounded-full shrink-0 mt-1",
+          header: "border-b-4 border-blue-600 pb-5 mb-5",
+          name: "text-slate-900 font-black text-[12px] tracking-tight uppercase",
+          title: "text-blue-600 font-black text-[7px] uppercase tracking-[0.2em] mt-1",
+          section: "text-slate-400 font-black text-[6px] mb-3 uppercase tracking-[0.3em] flex items-center gap-2 after:h-[1px] after:flex-1 after:bg-slate-100",
+          text: "text-slate-700 font-bold text-[6px] leading-relaxed",
+          bullet: "w-1 h-1 bg-blue-600 rounded-full shrink-0 mt-1.5",
         };
       case 'executive':
         return {
@@ -39,23 +39,23 @@ export const TemplateVisual: React.FC<TemplateVisualProps> = ({ type, className,
         };
       case 'creative':
         return {
-          header: "flex flex-col gap-1 mb-6",
-          name: "text-indigo-600 font-black text-[14px] leading-none tracking-tighter",
-          title: "text-indigo-400 font-black text-[6px] uppercase tracking-[0.3em]",
-          section: "text-indigo-600 font-black text-[8px] mb-3 flex items-center gap-2",
-          text: "text-slate-500 font-bold text-[5px] leading-relaxed",
-          bullet: "w-1 h-1 bg-indigo-500 rounded-full shrink-0 mt-1",
-          sidebar: "w-1/3 border-r border-slate-100 pr-3 mr-3",
+          header: "bg-slate-900 p-6 -mx-4 -mt-4 mb-6",
+          name: "text-white font-black text-[14px] leading-none tracking-tight uppercase",
+          title: "text-blue-400 font-black text-[7px] uppercase tracking-[0.3em] mt-2",
+          section: "text-slate-900 font-black text-[8px] mb-3 border-l-4 border-blue-600 pl-2 uppercase tracking-widest",
+          text: "text-slate-600 font-bold text-[6px] leading-relaxed",
+          bullet: "w-1 h-1 bg-blue-500 rounded-full shrink-0 mt-1.5",
+          sidebar: "w-1/3 bg-slate-50 p-4 -ml-4 -mb-4 mr-4",
         };
       case 'technical':
         return {
-          header: "flex justify-between items-center bg-slate-900 p-3 -mx-4 -mt-4 mb-4",
-          name: "text-white font-black text-[10px]",
-          title: "text-emerald-400 font-mono text-[6px]",
-          section: "text-slate-900 font-black text-[7px] mb-2 flex items-center gap-2 before:w-1.5 before:h-1.5 before:bg-emerald-500 before:rounded-full",
-          text: "text-slate-600 font-mono text-[5px] leading-relaxed",
-          bullet: "text-emerald-500 font-black mr-1",
-          skill: "bg-slate-100 px-1.5 py-0.5 rounded text-slate-700 font-mono",
+          header: "text-center mb-8 border-b-2 border-black pb-4",
+          name: "text-black font-black text-[12px] uppercase",
+          title: "text-slate-500 font-bold text-[6px] uppercase tracking-widest mt-1",
+          section: "text-black font-black text-[8px] mb-3 uppercase border-b border-slate-200 pb-1 tracking-widest",
+          text: "text-slate-800 font-medium text-[6px] leading-relaxed",
+          bullet: "text-black font-black mr-1",
+          skill: "bg-slate-100 px-1.5 py-0.5 rounded text-black font-bold",
         };
       default:
         return getStyles();
@@ -120,10 +120,17 @@ export const TemplateVisual: React.FC<TemplateVisualProps> = ({ type, className,
       {/* Overlay de Qualidade */}
       <div className="absolute inset-0 bg-gradient-to-t from-white/10 dark:from-black/10 to-transparent pointer-events-none" />
       
-      {/* Badge de Seleção */}
-      {active && (
-        <div className="absolute top-3 right-3 w-7 h-7 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white animate-in zoom-in duration-300">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+      {/* Badge de Seleção ou Premium */}
+      {(active || type === 'modern') && (
+        <div className={cn(
+          "absolute top-3 right-3 py-1 px-3 rounded-full flex items-center justify-center shadow-lg border-2 border-white animate-in zoom-in duration-300 z-30",
+          active ? "bg-blue-600 text-white" : "bg-amber-500 text-white"
+        )}>
+          {active ? (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+          ) : (
+            <span className="text-[8px] font-black uppercase tracking-widest">Premium</span>
+          )}
         </div>
       )}
     </div>

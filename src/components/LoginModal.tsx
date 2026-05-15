@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Phone, X, AlertCircle } from 'lucide-react';
+import { Mail, Phone, X, AlertCircle, Loader2 } from 'lucide-react';
 import { signInWithPopup, auth, provider, appleProvider } from '../lib/firebase';
 import { handleFirestoreError, OperationType } from '../lib/firestore-errors';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { slideUp, fadeIn, scaleIn } from '../lib/motion';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -96,51 +99,55 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
         />
         
         <motion.div 
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden z-10"
+          variants={scaleIn}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl overflow-hidden z-10 border border-slate-100 dark:border-slate-800"
         >
-          <div className="p-6">
-            <button 
+          <div className="p-8">
+            <Button 
+              variant="ghost"
+              size="icon-sm"
               onClick={onClose}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 p-2 rounded-full transition-colors active:scale-95"
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-all active:scale-95"
             >
               <X size={18} />
-            </button>
-
-            <div className="text-center mb-8 mt-2">
-              <div className="w-12 h-12 bg-accent/10 rounded-2xl mx-auto flex items-center justify-center mb-4">
-                <div className="w-3 h-3 bg-accent rounded-full animate-pulse" />
+            </Button>            <div className="text-center mb-10 mt-2">
+              <div className="w-14 h-14 bg-blue-600/10 rounded-2xl mx-auto flex items-center justify-center mb-6">
+                <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.5)]" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Criar ou Aceder</h2>
-              <p className="text-gray-500 text-sm mt-1">Guarda os teus currículos na nuvem</p>
+              <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">Criar ou Aceder</h2>
+              <p className="text-slate-500 dark:text-slate-400 font-bold mt-2">Guarda os teus currículos na nuvem</p>
             </div>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-xl text-sm font-medium flex gap-2 items-start">
-                <AlertCircle size={16} className="shrink-0 mt-0.5" />
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 text-red-600 dark:text-red-400 rounded-2xl text-sm font-bold flex gap-3 items-start">
+                <AlertCircle size={18} className="shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
             )}
 
             {method === 'select' ? (
-              <div className="space-y-3">
-                <button 
+              <div className="space-y-4">
+                <Button 
                   onClick={handleAppleLogin}
                   disabled={loading}
-                  className="w-full bg-black hover:bg-black/90 border border-black text-white rounded-xl py-3.5 px-4 font-semibold text-sm flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                  size="lg"
+                  className="w-full bg-black hover:bg-black/90 text-white rounded-2xl py-7 font-black text-base flex items-center justify-center gap-3 transition-all active:scale-[0.98] border-none shadow-xl"
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                     <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.126 3.805 3.067 1.52-.058 2.095-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.62-1.554 3.6-3.014.896-1.309 1.265-2.583 1.306-2.648-.028-.016-2.478-.948-2.504-3.791-.025-2.378 1.942-3.535 2.032-3.593-1.12-1.638-2.859-1.859-3.486-1.884-2.046-.172-3.978 1.258-5.021 1.258-1.047 0-2.617-1.166-4.225-1.183zM15.42 4.41c.85-.987 1.424-2.36 1.268-3.725-1.168.047-2.61.765-3.489 1.775-.705.787-1.336 2.183-1.157 3.522 1.3-.095 2.65-.806 3.378-1.572z"/>
                   </svg>
-                  Continuar com a Apple
-                </button>
+                  Continuar com Apple
+                </Button>
                 
-                <button 
+                <Button 
                   onClick={handleGoogleLogin}
                   disabled={loading}
-                  className="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl py-3.5 px-4 font-semibold text-sm flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                  variant="outline"
+                  size="lg"
+                  className="w-full bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-2xl py-7 font-black text-base flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-sm"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -148,67 +155,72 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                   </svg>
-                  Continuar com o Google
-                </button>
+                  Continuar com Google
+                </Button>
 
-                <button 
+                <Button 
                   onClick={() => setMethod('email')}
                   disabled={loading}
-                  className="w-full bg-gray-900 border border-gray-900 hover:bg-black text-white rounded-xl py-3.5 px-4 font-semibold text-sm flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                  size="lg"
+                  className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl py-7 font-black text-base flex items-center justify-center gap-3 transition-all active:scale-[0.98] border-none shadow-xl"
                 >
-                  <Mail size={18} />
+                  <Mail size={20} />
                   Continuar com E-mail
-                </button>
+                </Button>
 
-                <button 
+                <Button 
                   onClick={handleWhatsAppClick}
                   disabled={loading}
-                  className="w-full bg-[#25D366]/10 border border-[#25D366]/20 hover:bg-[#25D366]/20 text-[#075E54] rounded-xl py-3.5 px-4 font-semibold text-sm flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                  variant="outline"
+                  size="lg"
+                  className="w-full bg-green-500/10 dark:bg-green-500/5 border-2 border-green-500/20 hover:bg-green-500/20 text-green-700 dark:text-green-400 rounded-2xl py-7 font-black text-base flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
                 >
-                  <Phone size={18} />
-                  Continuar com WhatsApp
-                </button>
+                  <Phone size={20} />
+                  Entrar com WhatsApp
+                </Button>
               </div>
             ) : (
-              <form onSubmit={handleEmailLogin} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 ml-1">E-mail</label>
-                  <input 
+              <form onSubmit={handleEmailLogin} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4">E-mail</label>
+                  <Input 
                     type="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="teu@email.com"
-                    className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                    className="h-16 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl px-6 font-bold focus:border-blue-600 transition-all shadow-sm"
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 ml-1">Palavra-passe</label>
-                  <input 
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4">Palavra-passe</label>
+                  <Input 
                     type="password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="Mínimo 6 caracteres"
-                    className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                    className="h-16 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl px-6 font-bold focus:border-blue-600 transition-all shadow-sm"
                   />
                 </div>
                 
-                <div className="pt-2 flex flex-col gap-2">
-                  <button 
+                <div className="pt-4 flex flex-col gap-3">
+                  <Button 
                     type="submit"
                     disabled={loading || !email || !password}
-                    className="w-full bg-gray-900 hover:bg-black disabled:opacity-50 text-white rounded-xl py-3.5 px-4 font-semibold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+                    size="2xl"
+                    className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] border-none shadow-[0_20px_40px_-10px_rgba(37,99,235,0.4)]"
                   >
-                    {loading ? 'A processar...' : 'Entrar / Registar'}
-                  </button>
-                  <button 
+                    {loading ? <Loader2 className="animate-spin" /> : 'Entrar / Registar'}
+                  </Button>
+                  <Button 
                     type="button"
+                    variant="ghost"
                     onClick={() => setMethod('select')}
-                    className="w-full text-gray-500 hover:text-gray-900 text-sm font-medium py-2 transition-colors"
+                    className="w-full text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-black uppercase tracking-[0.2em] py-4 transition-colors"
                   >
                     Voltar às opções
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}

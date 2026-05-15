@@ -23,10 +23,11 @@ export const verifyPaymentToken = async (token: string) => {
   // Numa app real, isto verificaria o token no Firestore/Backend
   await new Promise(resolve => setTimeout(resolve, 1500));
   
-  // Regra simulada: tokens de 8 caracteres são válidos
-  if (token.trim().length === 8) {
+  const validTokens = ["CVFACIL8", "ELITE2026", "A1B2C3D4", "ANGOLA26"];
+  
+  if (validTokens.includes(token.trim().toUpperCase())) {
     return { success: true };
   }
   
-  return { success: false, message: "Código inválido ou expirado." };
+  return { success: false, message: "Código inválido. Contacte o suporte via WhatsApp para obter um código válido." };
 };

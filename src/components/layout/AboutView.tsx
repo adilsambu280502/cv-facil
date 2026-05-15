@@ -4,6 +4,10 @@ import { ArrowLeft, Layout, CheckCircle2, ArrowRight, Zap, Shield } from "lucide
 import { useCV } from "../../context/CVContext";
 import { TemplateVisual } from "../TemplateVisual";
 import { cn } from "../../lib/utils";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "../ui/card";
+import { Badge } from "../ui/badge";
+import { slideUp, staggerContainer, pageTransition } from "../../lib/motion";
 
 const templates = [
   {
@@ -75,17 +79,19 @@ export const AboutView: React.FC = () => {
       {/* ── PAGE HEADER ── */}
       <div className="max-w-[1440px] mx-auto px-6 lg:px-16 xl:px-24 pt-10 lg:pt-16 pb-12 lg:pb-20">
         {/* Back button — mobile only (desktop usa o header nav) */}
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => setView("intro")}
-          className="lg:hidden flex items-center gap-2 text-slate-400 hover:text-blue-600 transition-colors font-black uppercase tracking-widest text-[10px] mb-8"
+          className="lg:hidden flex items-center gap-2 text-slate-400 hover:text-blue-600 transition-colors font-black uppercase tracking-widest text-[10px] mb-8 p-0 h-auto hover:bg-transparent"
         >
           <ArrowLeft size={16} />
           Início
-        </button>
+        </Button>
 
         {/* Title Row */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 lg:gap-12">
-          <div>
+          <motion.div variants={slideUp} initial="initial" animate="animate">
             <p className="text-xs font-black uppercase tracking-[0.4em] text-blue-600 mb-3">
               Galeria de Modelos
             </p>
@@ -97,22 +103,28 @@ export const AboutView: React.FC = () => {
               Desenhados por especialistas para garantir que o teu CV chegue ao
               recrutador e cause impacto imediato.
             </p>
-          </div>
+          </motion.div>
 
           {/* CTA — desktop only */}
-          <button
+          <Button
+            size="xl"
             onClick={() => setView("wizard")}
-            className="hidden lg:flex items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-600/30 shrink-0 group"
+            className="hidden lg:flex items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-600/30 shrink-0 group border-none"
           >
             Criar o Meu CV
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* ── TEMPLATE GRID ── */}
       <div className="max-w-[1440px] mx-auto px-6 lg:px-16 xl:px-24">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <motion.div 
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+        >
           {templates.map((t, i) => (
             <motion.div
               key={t.id}
@@ -157,7 +169,7 @@ export const AboutView: React.FC = () => {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       {/* ── GUARANTEES STRIP ── */}

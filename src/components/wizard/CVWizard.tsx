@@ -16,6 +16,10 @@ import {
 import { useCV } from "../../context/CVContext";
 import { cn } from "../../lib/utils";
 import { TemplateVisual } from "../TemplateVisual";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { slideUp, slideInRight, fadeIn, staggerContainer, transitionSm } from "../../lib/motion";
 
 export const CVWizard: React.FC = () => {
   const { 
@@ -52,44 +56,34 @@ export const CVWizard: React.FC = () => {
   const handleClose = () => setView('intro');
 
   const renderStep = () => {
-    const progress = (step / 15) * 100;
-
     switch (step) {
       case 1:
         return (
           <motion.div
             key="q1"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
+            variants={slideUp}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             className="flex-1 flex flex-col h-full w-full pt-8 sm:pt-16 pb-32"
           >
-            <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-3 mb-16 overflow-hidden p-0.5 shadow-inner">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: "7%" }}
-                className="bg-blue-600 h-full rounded-full shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-              />
-            </div>
-            
             <div className="mb-16">
                <div className="w-20 h-20 bg-blue-600/10 text-blue-600 rounded-[32px] flex items-center justify-center mb-10 shadow-xl shadow-blue-600/5">
                  <Sparkles size={36} />
                </div>
                <h2 className="text-[32px] sm:text-[60px] font-black leading-[1.1] sm:leading-[0.9] tracking-[-0.05em] text-slate-900 dark:text-white mb-6">
-                 Como é que as empresas <br /> te podem encontrar?
+                 Como é que as empresas <br /> podem entrar em contacto?
                </h2>
-               <p className="text-lg sm:text-xl text-slate-500 font-bold tracking-tight">Começamos pelos teus dados básicos de contacto.</p>
+               <p className="text-lg sm:text-xl text-slate-500 font-bold tracking-tight">Vamos começar pelos teus dados básicos para garantir que o teu perfil seja facilmente encontrado.</p>
             </div>
 
             <div className="flex flex-col gap-6 sm:gap-8 mb-16 w-full">
               <div className="space-y-3">
                 <label className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 px-6">Teu Nome Completo</label>
-                <input
-                  type="text"
+                <Input
                   autoFocus
                   placeholder="Ex: João Manuel dos Santos"
-                  className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-[32px] p-6 sm:p-8 text-lg sm:text-xl font-black text-slate-900 dark:text-white outline-none transition-all shadow-sm focus:shadow-2xl focus:scale-[1.01]"
+                  className="h-20 sm:h-24 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-[32px] px-8 text-lg sm:text-xl font-black text-slate-900 dark:text-white outline-none transition-all shadow-sm focus:shadow-2xl focus:scale-[1.01]"
                   value={answers.name}
                   onChange={(e) => setAnswers({ ...answers, name: e.target.value })}
                 />
@@ -97,10 +91,10 @@ export const CVWizard: React.FC = () => {
 
               <div className="space-y-3">
                 <label className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 px-6">E-mail Profissional</label>
-                <input
+                <Input
                   type="email"
                   placeholder="Ex: joao.santos@email.com"
-                  className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-[32px] p-8 text-xl font-black text-slate-900 dark:text-white outline-none transition-all shadow-sm focus:shadow-2xl focus:scale-[1.01]"
+                  className="h-20 sm:h-24 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-[32px] px-8 text-xl font-black text-slate-900 dark:text-white outline-none transition-all shadow-sm focus:shadow-2xl focus:scale-[1.01]"
                   value={answers.email || ''}
                   onChange={(e) => setAnswers({ ...answers, email: e.target.value })}
                 />
@@ -109,11 +103,11 @@ export const CVWizard: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div className="space-y-3 relative">
                   <label className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 px-6">Teu Telefone</label>
-                  <input
+                  <Input
                     type="tel"
                     placeholder="+244 9..."
                     className={cn(
-                      "w-full bg-white dark:bg-slate-900 border-2 focus:border-blue-600 rounded-[32px] p-8 text-xl font-black text-slate-900 dark:text-white outline-none transition-all shadow-sm",
+                      "h-20 sm:h-24 bg-white dark:bg-slate-900 border-2 focus:border-blue-600 rounded-[32px] px-8 text-xl font-black text-slate-900 dark:text-white outline-none transition-all shadow-sm",
                       answers.phone && !/^\+244\s9\d{8}$/.test(answers.phone) ? "border-red-300 dark:border-red-900" : "border-slate-100 dark:border-slate-800"
                     )}
                     value={answers.phone || ''}
@@ -130,10 +124,10 @@ export const CVWizard: React.FC = () => {
 
                 <div className="space-y-3">
                   <label className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 px-6">Onde Moras?</label>
-                  <input
+                  <Input
                     type="text"
                     placeholder="Ex: Luanda, Talatona"
-                    className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-[32px] p-8 text-xl font-black text-slate-900 dark:text-white outline-none transition-all shadow-sm focus:shadow-2xl focus:scale-[1.01]"
+                    className="h-20 sm:h-24 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-[32px] px-8 text-xl font-black text-slate-900 dark:text-white outline-none transition-all shadow-sm focus:shadow-2xl focus:scale-[1.01]"
                     value={answers.location || ''}
                     onChange={(e) => setAnswers({ ...answers, location: e.target.value })}
                   />
@@ -142,14 +136,15 @@ export const CVWizard: React.FC = () => {
             </div>
 
             <div className="mt-auto flex gap-6">
-               <button
+               <Button
+                size="2xl"
                 onClick={handleNext}
                 disabled={!answers.name.trim() || !answers.email.trim() || !/^\+244\s9\d{8}$/.test(answers.phone || '')}
-                className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-[32px] py-8 font-black text-2xl flex items-center justify-center gap-4 transition-all hover:scale-[1.05] active:scale-[0.95] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] disabled:opacity-30 disabled:hover:scale-100 group"
+                className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-[32px] py-8 font-black text-2xl flex items-center justify-center gap-4 transition-all hover:scale-[1.05] active:scale-[0.95] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] disabled:opacity-30 disabled:hover:scale-100 group border-none"
               >
                 Próximo Passo
                 <ArrowRight size={32} className="group-hover:translate-x-2 transition-transform" />
-              </button>
+              </Button>
             </div>
           </motion.div>
         );
@@ -158,15 +153,12 @@ export const CVWizard: React.FC = () => {
         return (
           <motion.div
             key="q2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            variants={slideUp}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             className="flex-1 flex flex-col h-full max-w-2xl mx-auto w-full pt-8 sm:pt-20 pb-32"
           >
-            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 mb-12 overflow-hidden">
-              <div className="bg-blue-600 h-full rounded-full w-[14%] transition-all duration-1000 ease-out"></div>
-            </div>
-            
             <div className="mb-12">
                <h2 className="text-[32px] sm:text-[44px] font-black leading-[1.1] tracking-tighter text-slate-900 dark:text-white">
                  Tens perfis profissionais <br /> nas redes sociais?
@@ -177,11 +169,11 @@ export const CVWizard: React.FC = () => {
             <div className="flex flex-col gap-5 mb-12 w-full">
               <div className="space-y-2">
                 <label className="text-xs font-black uppercase tracking-widest text-slate-400 px-2">LinkedIn</label>
-                <input
+                <Input
                   type="url"
                   placeholder="https://linkedin.com/in/perfil"
                   className={cn(
-                    "w-full bg-white dark:bg-slate-900 border-2 focus:border-blue-600 rounded-3xl p-6 text-lg font-bold text-slate-900 dark:text-white outline-none transition-all shadow-sm",
+                    "h-16 bg-white dark:bg-slate-900 border-2 focus:border-blue-600 rounded-3xl px-6 text-lg font-bold text-slate-900 dark:text-white outline-none transition-all shadow-sm",
                     answers.linkedin && !/^https?:\/\/(www\.)?linkedin\.com\/.*$/.test(answers.linkedin) ? "border-red-300 dark:border-red-900" : "border-slate-100 dark:border-slate-800"
                   )}
                   value={answers.linkedin || ''}
@@ -191,11 +183,11 @@ export const CVWizard: React.FC = () => {
 
               <div className="space-y-2">
                 <label className="text-xs font-black uppercase tracking-widest text-slate-400 px-2">GitHub (Opcional)</label>
-                <input
+                <Input
                   type="url"
                   placeholder="https://github.com/usuario"
                   className={cn(
-                    "w-full bg-white dark:bg-slate-900 border-2 focus:border-blue-600 rounded-3xl p-6 text-lg font-bold text-slate-900 dark:text-white outline-none transition-all shadow-sm",
+                    "h-16 bg-white dark:bg-slate-900 border-2 focus:border-blue-600 rounded-3xl px-6 text-lg font-bold text-slate-900 dark:text-white outline-none transition-all shadow-sm",
                     answers.github && !/^https?:\/\/(www\.)?github\.com\/.*$/.test(answers.github) ? "border-red-300 dark:border-red-900" : "border-slate-100 dark:border-slate-800"
                   )}
                   value={answers.github || ''}
@@ -206,20 +198,20 @@ export const CVWizard: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="space-y-2">
                   <label className="text-xs font-black uppercase tracking-widest text-slate-400 px-2">Facebook</label>
-                  <input
+                  <Input
                     type="url"
                     placeholder="Link (Opcional)"
-                    className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-3xl p-6 text-lg font-bold text-slate-900 dark:text-white outline-none transition-all shadow-sm"
+                    className="h-16 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-3xl px-6 text-lg font-bold text-slate-900 dark:text-white outline-none transition-all shadow-sm"
                     value={answers.facebook || ''}
                     onChange={(e) => setAnswers({ ...answers, facebook: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-black uppercase tracking-widest text-slate-400 px-2">Instagram</label>
-                  <input
+                  <Input
                     type="url"
                     placeholder="Link (Opcional)"
-                    className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-3xl p-6 text-lg font-bold text-slate-900 dark:text-white outline-none transition-all shadow-sm"
+                    className="h-16 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-3xl px-6 text-lg font-bold text-slate-900 dark:text-white outline-none transition-all shadow-sm"
                     value={answers.instagram || ''}
                     onChange={(e) => setAnswers({ ...answers, instagram: e.target.value })}
                   />
@@ -228,12 +220,21 @@ export const CVWizard: React.FC = () => {
             </div>
 
             <div className="mt-auto flex gap-4">
-               <button onClick={handleBack} className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 px-8 py-6 rounded-3xl font-black text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all">
+               <Button 
+                variant="outline"
+                size="xl"
+                onClick={handleBack} 
+                className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 px-8 py-6 rounded-3xl font-black text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all"
+               >
                  <ChevronLeft size={24} />
-               </button>
-               <button onClick={handleNext} className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-3xl py-6 font-black text-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-2xl">
+               </Button>
+               <Button 
+                size="xl"
+                onClick={handleNext} 
+                className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-3xl py-6 font-black text-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-2xl border-none"
+               >
                  Continuar
-               </button>
+               </Button>
             </div>
           </motion.div>
         );
@@ -242,15 +243,12 @@ export const CVWizard: React.FC = () => {
         return (
           <motion.div
             key="q12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            variants={slideUp}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             className="flex-1 flex flex-col h-full max-w-2xl mx-auto w-full pt-8 sm:pt-20 pb-32"
           >
-            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 mb-12 overflow-hidden">
-              <div className="bg-blue-600 h-full rounded-full w-[80%] transition-all duration-1000 ease-out"></div>
-            </div>
-            
             <div className="text-center mb-12">
                <h2 className="text-[32px] sm:text-[44px] font-black tracking-tighter text-slate-900 dark:text-white leading-tight">
                  Queres incluir uma <br /> fotografia profissional?
@@ -292,12 +290,21 @@ export const CVWizard: React.FC = () => {
             </div>
 
             <div className="mt-auto flex gap-4">
-               <button onClick={handleBack} className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 px-8 py-6 rounded-3xl font-black text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all">
+               <Button 
+                variant="outline"
+                size="xl"
+                onClick={handleBack} 
+                className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 px-8 py-6 rounded-3xl font-black text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all shadow-lg active:scale-90"
+               >
                  <ChevronLeft size={24} />
-               </button>
-               <button onClick={handleNext} className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-3xl py-6 font-black text-xl shadow-2xl">
+               </Button>
+               <Button 
+                size="xl"
+                onClick={handleNext} 
+                className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-3xl py-6 font-black text-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-2xl border-none"
+               >
                  {answers.photo ? "Continuar" : "Vou saltar este passo"}
-               </button>
+               </Button>
             </div>
           </motion.div>
         );
@@ -306,9 +313,10 @@ export const CVWizard: React.FC = () => {
         return (
           <motion.div
             key="q14"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            variants={slideUp}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             className="flex-1 flex flex-col h-full max-w-2xl mx-auto w-full pt-8 sm:pt-20 pb-32"
           >
             <h2 className="text-[32px] sm:text-[44px] font-black mb-12 tracking-tighter text-slate-900 dark:text-white">
@@ -391,17 +399,23 @@ export const CVWizard: React.FC = () => {
             )}
 
             <div className="mt-auto flex gap-4">
-              <button onClick={handleBack} className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 px-8 py-6 rounded-3xl font-black text-slate-600 dark:text-slate-400">
+              <Button 
+                variant="outline"
+                size="xl"
+                onClick={handleBack} 
+                className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 px-8 py-6 rounded-3xl font-black text-slate-600 dark:text-slate-400"
+              >
                 <ChevronLeft size={24} />
-              </button>
-              <button
+              </Button>
+              <Button
+                size="xl"
                 onClick={generateCV}
                 disabled={isGenerating}
-                className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-3xl py-6 font-black text-xl flex items-center justify-center gap-3 shadow-2xl disabled:opacity-50"
+                className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-3xl py-6 font-black text-xl flex items-center justify-center gap-3 shadow-2xl disabled:opacity-50 border-none"
               >
                 {isGenerating ? <Loader2 className="animate-spin" /> : <ArrowRight />}
                 Finalizar e Analisar
-              </button>
+              </Button>
             </div>
           </motion.div>
         );
@@ -421,8 +435,8 @@ export const CVWizard: React.FC = () => {
                 <FileText size={48} className="animate-bounce" />
               </div>
             </div>
-            <h2 className="text-[44px] sm:text-[64px] font-black mb-8 text-slate-900 dark:text-white tracking-[-0.05em] leading-[0.9]">Estamos a preparar <br /> <span className="text-blue-600">o teu futuro.</span></h2>
-            <p className="text-2xl text-slate-500 dark:text-slate-400 font-bold tracking-tight max-w-lg leading-relaxed">O nosso sistema inteligente está a organizar as tuas experiências para criar um impacto imediato.</p>
+            <h2 className="text-[44px] sm:text-[64px] font-black mb-8 text-slate-900 dark:text-white tracking-[-0.05em] leading-[0.9]">Estamos a preparar <br /> <span className="text-blue-600">o teu novo futuro.</span></h2>
+            <p className="text-2xl text-slate-500 dark:text-slate-400 font-bold tracking-tight max-w-lg leading-relaxed">A nossa inteligência está a organizar as tuas experiências para criar um impacto imediato perante qualquer recrutador.</p>
           </motion.div>
         );
 
@@ -446,18 +460,18 @@ export const CVWizard: React.FC = () => {
             <div className="mb-12">
                <h2 className="text-[36px] sm:text-[48px] font-black leading-[1] tracking-[-0.05em] text-slate-900 dark:text-white">
                 {step === 2 && "Tens perfis profissionais nas redes sociais?"}
-                {step === 3 && "O que tens andado a fazer ultimamente? (Conta-nos a tua história)"}
-                {step === 4 && "Costumas trabalhar bem em equipa? Como é a tua experiência?"}
-                {step === 5 && "Lembras-te de algum desafio ou problema grande que resolveste?"}
-                {step === 6 && "Como é que te organizas para dar conta de todo o teu trabalho?"}
-                {step === 7 && "Já tiveste de tomar a frente ou liderar algum projeto ou grupo?"}
-                {step === 8 && "Qual é a tua formação académica e o que estudaste?"}
-                {step === 9 && "Que línguas falas para além do Português?"}
-                {step === 10 && "Quais são as ferramentas ou programas que dominas? (Ex: Excel, Word...)"}
-                {step === 11 && "Que linguagens de programação conheces? (Opcional - Ex: Java, JS...)"}
-                {step === 12 && "Queres incluir uma fotografia profissional no teu currículo?"}
+                {step === 3 && "O que tens andado a fazer ultimamente? Partilha a tua história connosco."}
+                {step === 4 && "Como costumas colaborar em equipa? Conta-nos a tua experiência."}
+                {step === 5 && "Lembras-te de algum desafio importante que tenhas resolvido?"}
+                {step === 6 && "Como organizas as tuas tarefas para manter a produtividade?"}
+                {step === 7 && "Já tiveste a oportunidade de liderar algum projeto ou grupo?"}
+                {step === 8 && "Qual é o teu percurso académico e o que decidiste estudar?"}
+                {step === 9 && "Dominas outras línguas além do Português?"}
+                {step === 10 && "Quais são as ferramentas ou programas que dominas com confiança? (Ex: Excel, Word...)"}
+                {step === 11 && "Conheces alguma linguagem de programação? (Passo opcional)"}
+                {step === 12 && "Gostarias de incluir uma fotografia profissional no teu perfil?"}
                 {step === 13 && "Tens alguma vaga específica em mente para este currículo?"}
-                {step === 14 && "Personaliza agora o design final do teu currículo"}
+                {step === 14 && "Personaliza agora o aspeto final do teu currículo profissional"}
               </h2>
             </div>
 
@@ -594,10 +608,10 @@ export const CVWizard: React.FC = () => {
               )}
 
               {step < 12 && step !== 1 && step !== 2 && (
-                <textarea
+                <Textarea
                   autoFocus
                   placeholder="Escreve aqui de forma natural, como se estivesses numa conversa com um amigo..."
-                  className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-[40px] p-10 text-xl font-black text-slate-900 dark:text-white outline-none transition-all resize-none shadow-sm flex-1 focus:shadow-2xl focus:scale-[1.01]"
+                  className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-blue-600 rounded-[40px] p-10 text-xl font-black text-slate-900 dark:text-white outline-none transition-all resize-none shadow-sm flex-1 focus:shadow-2xl focus:scale-[1.01] min-h-[300px]"
                   value={
                     step === 3 ? answers.activity :
                     step === 4 ? answers.teamwork :
@@ -635,13 +649,22 @@ export const CVWizard: React.FC = () => {
             </div>
 
             <div className="mt-12 flex gap-6">
-              <button onClick={handleBack} className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 px-10 py-8 rounded-[32px] font-black text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all shadow-lg active:scale-90">
+              <Button 
+                variant="outline"
+                size="2xl"
+                onClick={handleBack} 
+                className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 px-10 py-8 rounded-[32px] font-black text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all shadow-lg active:scale-90"
+              >
                 <ChevronLeft size={32} />
-              </button>
-              <button onClick={handleNext} className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-[32px] py-8 font-black text-2xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] hover:scale-[1.05] active:scale-[0.95] transition-all group flex items-center justify-center gap-4">
+              </Button>
+              <Button 
+                size="2xl"
+                onClick={handleNext} 
+                className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-[32px] py-8 font-black text-2xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] hover:scale-[1.05] active:scale-[0.95] transition-all group flex items-center justify-center gap-4 border-none"
+              >
                 Continuar
                 <ArrowRight size={32} className="group-hover:translate-x-2 transition-transform" />
-              </button>
+              </Button>
             </div>
           </motion.div>
         );
@@ -662,6 +685,18 @@ export const CVWizard: React.FC = () => {
       {/* Conteúdo do Wizard — desktop wide, mobile compact */}
       <div className="flex-1 flex flex-col px-6 sm:px-8 lg:px-12 py-10 sm:py-16 lg:py-20">
         <div className="max-w-2xl lg:max-w-3xl mx-auto w-full flex-1 flex flex-col">
+          {/* Unified Progress Bar */}
+          <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2.5 mb-16 overflow-hidden relative shadow-inner">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: `${(step / 15) * 100}%` }}
+              transition={{ type: "spring", stiffness: 50, damping: 20 }}
+              className="bg-blue-600 h-full rounded-full relative shadow-[0_0_20px_rgba(37,99,235,0.6)]"
+            >
+              <div className="absolute top-0 right-0 w-8 h-full bg-white/20 skew-x-[30deg] translate-x-1" />
+            </motion.div>
+          </div>
+
           <AnimatePresence mode="wait">
             {renderStep()}
           </AnimatePresence>

@@ -61,7 +61,14 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const [view, setView] = useState<'intro' | 'wizard' | 'about' | 'login' | 'dashboard'>('intro');
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [hasPaid, setHasPaid] = useState(false);
+  const [hasPaid, setHasPaid] = useState(() => {
+    return localStorage.getItem("cv_has_paid") === "true";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cv_has_paid", hasPaid.toString());
+  }, [hasPaid]);
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [result, setResult] = useState<TransformResult | null>(null);
   
