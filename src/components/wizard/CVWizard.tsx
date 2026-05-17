@@ -65,9 +65,9 @@ export const CVWizard: React.FC = () => {
                 <Logo size={48} />
               </div>
               <h2 className="text-[32px] sm:text-[56px] font-black leading-[1.1] sm:leading-[0.9] tracking-[-0.05em] text-slate-900 dark:text-white">
-                Como é que as empresas <br /> podem entrar em contacto?
+                Onde te podem <br /> encontrar?
               </h2>
-              <p className="text-lg sm:text-xl text-slate-500 font-bold tracking-tight">Vamos começar pelos teus dados básicos para garantir que o teu perfil seja facilmente encontrado.</p>
+              <p className="text-lg sm:text-xl text-slate-500 font-bold tracking-tight">Preenche apenas o essencial para as empresas falarem contigo.</p>
             </div>
 
             <div className="flex flex-col gap-8">
@@ -135,9 +135,9 @@ export const CVWizard: React.FC = () => {
           <div className="space-y-12">
             <div className="space-y-6">
               <h2 className="text-[32px] sm:text-[48px] font-black leading-[1.1] tracking-tighter text-slate-900 dark:text-white">
-                Tens perfis profissionais <br /> nas redes sociais?
+                Tens alguma rede social <br /> que queiras mostrar aos recrutadores?
               </h2>
-              <p className="text-xl text-slate-500 font-bold tracking-tight leading-relaxed">Isto ajuda as empresas a conhecerem melhor o teu trabalho e o teu impacto.</p>
+              <p className="text-xl text-slate-500 font-bold tracking-tight leading-relaxed">Isto ajuda a mostrar o teu valor logo de cara.</p>
             </div>
 
             <div className="flex flex-col gap-6">
@@ -285,24 +285,24 @@ export const CVWizard: React.FC = () => {
                 <FileText size={48} className="animate-bounce" />
               </div>
             </div>
-            <h2 className="text-[44px] sm:text-[64px] font-black mb-8 text-slate-900 dark:text-white tracking-[-0.05em] leading-[0.9]">Estamos a preparar <br /> <span className="text-blue-600">o teu novo futuro.</span></h2>
-            <p className="text-2xl text-slate-500 dark:text-slate-400 font-bold tracking-tight max-w-lg leading-relaxed">A nossa plataforma está a organizar as tuas experiências para criar um impacto imediato.</p>
+            <h2 className="text-[44px] sm:text-[64px] font-black mb-8 text-slate-900 dark:text-white tracking-[-0.05em] leading-[0.9]">Estamos a preparar <br /> <span className="text-blue-600">o teu novo currículo.</span></h2>
+            <p className="text-2xl text-slate-500 dark:text-slate-400 font-bold tracking-tight max-w-lg leading-relaxed">O teu pedido é uma ordem! O Kamba está a organizar a tua informação e a montar o currículo perfeito.</p>
           </div>
         );
 
       default:
         // Passos de Texto Livre (3-11, 13)
         const stepTitles: Record<number, string> = {
-          3: "O que tens andado a fazer ultimamente? Partilha a tua história.",
-          4: "Como costumas colaborar em equipa? Conta-nos a tua experiência.",
-          5: "Lembras-te de algum desafio importante que tenhas resolvido?",
-          6: "Como organizas as tuas tarefas para manter a produtividade?",
-          7: "Já tiveste a oportunidade de liderar algum projeto ou grupo?",
-          8: "Qual é o teu percurso académico e o que decidiste estudar?",
-          9: "Dominas outras línguas além do Português?",
-          10: "Quais são as ferramentas ou programas que dominas? (Ex: Excel, Word...)",
-          11: "Conheces alguma linguagem de programação? (Passo opcional)",
-          13: "Tens alguma vaga específica em mente para este currículo?",
+          3: "O que tens andado a fazer? Conta-nos a tua experiência.",
+          4: "Como é trabalhar contigo em equipa?",
+          5: "Qual foi o teu maior desafio resolvido até hoje?",
+          6: "Como organizas as tuas tarefas no dia a dia?",
+          7: "Já lideraste algum projeto ou equipa?",
+          8: "Qual é a tua formação académica?",
+          9: "Que línguas falas além do Português?",
+          10: "Quais ferramentas dominas? (Excel, Word, etc.)",
+          11: "Programas em alguma linguagem? (Opcional)",
+          13: "Qual é a vaga dos teus sonhos?",
         };
 
         const fieldMap: Record<number, keyof typeof answers> = {

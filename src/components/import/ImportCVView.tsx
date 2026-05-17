@@ -98,7 +98,7 @@ export const ImportCVView: React.FC = () => {
             <ClipboardPaste size={16} className="text-white" />
           </div>
           <div>
-            <h1 className="font-black text-slate-900 text-sm tracking-tight">Importar CV Existente</h1>
+            <h1 className="font-black text-slate-900 text-sm tracking-tight">Traz o teu CV antigo</h1>
             <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-widest">CV Fácil · Modo Import</p>
           </div>
         </div>
@@ -123,9 +123,9 @@ export const ImportCVView: React.FC = () => {
               </div>
             </div>
             <div className="text-center">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-3">A Processar o Teu CV</h2>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-3">O teu pedido é uma ordem!</h2>
               <p className="text-slate-500 font-medium max-w-sm">
-                O nosso Kamba de Carreira está a extrair, estruturar e melhorar o teu conteúdo...
+                O Kamba está a organizar tudo e a montar o teu novo currículo...
               </p>
             </div>
             <div className="flex flex-col gap-3 w-full max-w-xs">
@@ -177,10 +177,10 @@ export const ImportCVView: React.FC = () => {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <ClipboardPaste size={18} className="text-blue-600" />
-                  <h2 className="font-black text-slate-900 text-xl tracking-tight">Cola o teu CV aqui</h2>
+                  <h2 className="font-black text-slate-900 text-xl tracking-tight">Cola o texto aqui</h2>
                 </div>
                 <p className="text-sm text-slate-500 font-medium">
-                  Copia o conteúdo do teu CV existente (Word, PDF, Notion, Google Docs...) e cola aqui em texto simples.
+                  Copia o texto do teu CV antigo (Word, PDF, LinkedIn...) e cola aqui. Deixa o trabalho pesado connosco.
                 </p>
               </div>
 

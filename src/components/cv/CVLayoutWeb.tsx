@@ -115,7 +115,7 @@ export const CVLayoutWeb: React.FC<Props> = ({ answers, result, children, rightT
 
       {/* ── RODAPÉ ─────────────────────────────────────── */}
       <div className="mt-8 pt-3 border-t border-[#e0e0e0] text-center" style={{ fontFamily: "Arial, Helvetica, sans-serif", fontSize: "7pt", color: "#aaa", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-        Documento estruturado pelo Arquiteto de Carreira – CV Fácil
+        Estruturado com CV Fácil – O teu currículo premium
       </div>
     </div>
   );

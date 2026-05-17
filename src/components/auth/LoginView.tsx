@@ -75,14 +75,14 @@ export const LoginView: React.FC = () => {
   };
 
   const titles = {
-    login: 'Bem-vindo de Volta',
-    register: 'Criar Nova Conta',
-    magic: 'Acesso Rápido',
+    login: 'Bem-vindo de volta.',
+    register: 'Criar conta é chato, nós sabemos.',
+    magic: 'Entrar sem senha.',
   };
   const subtitles = {
-    login: 'Acede ao teu perfil para gerir os teus CVs.',
-    register: 'Começa hoje a construir o teu futuro em Angola.',
-    magic: 'Recebe um link mágico no teu email — sem palavra-passe.',
+    login: 'Pronto para atualizar o teu currículo?',
+    register: 'Mas prometemos que o teu currículo vai agradecer o esforço.',
+    magic: 'Enviamos-te um link mágico. Clicas e entras. Simples.',
   };
 
   return (
@@ -101,7 +101,7 @@ export const LoginView: React.FC = () => {
 
           {/* Header */}
           <div className="text-center mb-12 relative z-10">
-            <div className="flex items-center justify-center h-14 mb-8">
+            <div className="hidden lg:flex items-center justify-center h-14 mb-8">
               <Logo size={48} />
             </div>
             <h2 className="text-[32px] sm:text-[44px] font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] mb-4">
@@ -253,7 +253,7 @@ export const LoginView: React.FC = () => {
                   <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                 </svg>
-                Continuar com Google
+                Entrar com Google
               </Button>
 
               {/* Toggle Login/Register */}

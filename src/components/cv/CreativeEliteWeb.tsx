@@ -109,7 +109,7 @@ export const CreativeEliteWeb: React.FC<Props> = ({ answers, result }) => {
 
         <footer className="mt-auto pt-10 border-t border-slate-100 flex justify-between items-center">
           <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">© 2026 CV Fácil</span>
-          <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Arquiteto de Carreira</span>
+          <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">CV Fácil</span>
         </footer>
       </main>
     </div>

@@ -232,12 +232,12 @@ export const Intro: React.FC = () => {
     {
       question: "O CV Fácil é gratuito?",
       answer:
-        "Podes criar o teu perfil e visualizar o teu design gratuitamente. Para descarregar o teu currículo em PDF de Alta Fidelidade ou DOCX editável, e aceder à análise completa do Arquiteto de Carreira, oferecemos planos acessíveis desenhados para o mercado angolano.",
+        "Podes criar o teu perfil e visualizar o teu design gratuitamente. Para descarregar o teu currículo em PDF de Alta Fidelidade ou DOCX editável, e aceder à análise completa do Kamba de Carreira, oferecemos planos acessíveis desenhados para o mercado angolano.",
     },
     {
-      question: "Como funciona o Arquiteto de Carreira?",
+      question: "Como funciona o Kamba de Carreira?",
       answer:
-        "A nossa tecnologia exclusiva atua como um mentor digital. Ela analisa o teu histórico e o cargo pretendido, estruturando o teu currículo para que ele se destaque nos sistemas de recrutamento modernos (ATS) e aos olhos dos recrutadores.",
+        "O Kamba de Carreira é o teu assistente pessoal de IA. Ele analisa o teu histórico e o cargo pretendido, estruturando o teu currículo para que se destaque nos sistemas de recrutamento modernos (ATS) e aos olhos dos recrutadores. Podes também conversar com ele diretamente no Dashboard.",
     },
     {
       question: "Em que formatos posso descarregar o meu CV?",

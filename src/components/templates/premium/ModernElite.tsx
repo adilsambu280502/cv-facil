@@ -175,7 +175,7 @@ export const ModernElite: React.FC<ModernEliteProps> = ({ data, color = '#2563eb
         {/* Footer */}
         <View style={{ marginTop: 'auto', paddingTop: 10, borderTopWidth: 1, borderTopColor: '#f1f5f9' }}>
           <Text style={{ fontSize: 7, color: '#94a3b8', textAlign: 'center' }}>
-            Gerado pelo Arquiteto de Carreira - CV Fácil (cvfacil.ao)
+            Estruturado com CV Fácil – O teu currículo premium
           </Text>
         </View>
       </Page>

@@ -8,8 +8,8 @@ interface CVContextType {
   user: User | null;
   session: Session | null;
   authLoading: boolean;
-  view: 'intro' | 'wizard' | 'about' | 'login' | 'dashboard' | 'terms' | 'privacy' | 'import';
-  setView: (view: 'intro' | 'wizard' | 'about' | 'login' | 'dashboard' | 'terms' | 'privacy' | 'import') => void;
+  view: 'intro' | 'wizard' | 'about' | 'login' | 'dashboard' | 'terms' | 'privacy' | 'import' | 'admin';
+  setView: (view: 'intro' | 'wizard' | 'about' | 'login' | 'dashboard' | 'terms' | 'privacy' | 'import' | 'admin') => void;
   step: number;
   setStep: (step: number) => void;
   answers: Answers;
@@ -69,7 +69,7 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [view, setView] = useState<'intro' | 'wizard' | 'about' | 'login' | 'dashboard' | 'terms' | 'privacy' | 'import'>('intro');
+  const [view, setView] = useState<'intro' | 'wizard' | 'about' | 'login' | 'dashboard' | 'terms' | 'privacy' | 'import' | 'admin'>('intro');
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasPaid, setHasPaid] = useState(() => {

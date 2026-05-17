@@ -429,7 +429,7 @@ export const ProfessionalPDF: React.FC<Props> = ({ answers, result, hasPaid }) =
         {/* ── FOOTER ── */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Documento estruturado pelo Arquiteto de Carreira – CV Fácil
+            Estruturado com CV Fácil – O teu currículo premium
           </Text>
         </View>
       </Page>

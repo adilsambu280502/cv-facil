@@ -86,7 +86,7 @@ export const ExecutiveEliteWeb: React.FC<Props> = ({ answers, result }) => {
       {/* Footer Executivo */}
       <footer className="mt-auto pt-16 border-t border-slate-100 text-center">
         <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-300">
-          Documento Confidencial - Gerado por CV Fácil Arquiteto de Carreira
+          Documento Confidencial – Estruturado com CV Fácil
         </p>
       </footer>
     </div>

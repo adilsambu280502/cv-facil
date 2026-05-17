@@ -117,8 +117,8 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
               <div className="w-14 h-14 bg-blue-600/10 rounded-2xl mx-auto flex items-center justify-center mb-6">
                 <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.5)]" />
               </div>
-              <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">Criar ou Aceder</h2>
-              <p className="text-slate-500 dark:text-slate-400 font-bold mt-2">Guarda os teus currículos na nuvem</p>
+              <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight">Criar conta é chato, nós sabemos.</h2>
+              <p className="text-slate-500 dark:text-slate-400 font-bold mt-3">Mas prometemos que o teu currículo vai agradecer o esforço.</p>
             </div>
 
             {error && (
@@ -139,7 +139,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                     <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.126 3.805 3.067 1.52-.058 2.095-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.62-1.554 3.6-3.014.896-1.309 1.265-2.583 1.306-2.648-.028-.016-2.478-.948-2.504-3.791-.025-2.378 1.942-3.535 2.032-3.593-1.12-1.638-2.859-1.859-3.486-1.884-2.046-.172-3.978 1.258-5.021 1.258-1.047 0-2.617-1.166-4.225-1.183zM15.42 4.41c.85-.987 1.424-2.36 1.268-3.725-1.168.047-2.61.765-3.489 1.775-.705.787-1.336 2.183-1.157 3.522 1.3-.095 2.65-.806 3.378-1.572z"/>
                   </svg>
-                  Continuar com Apple
+                  Entrar com Apple
                 </Button>
                 
                 <Button 
@@ -155,7 +155,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                   </svg>
-                  Continuar com Google
+                  Entrar com Google
                 </Button>
 
                 <Button 
@@ -165,7 +165,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
                   className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl py-7 font-black text-base flex items-center justify-center gap-3 transition-all active:scale-[0.98] border-none shadow-xl"
                 >
                   <Mail size={20} />
-                  Continuar com E-mail
+                  Entrar com E-mail
                 </Button>
 
                 <Button 
@@ -211,7 +211,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
                     size="2xl"
                     className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] border-none shadow-[0_20px_40px_-10px_rgba(37,99,235,0.4)]"
                   >
-                    {loading ? <Loader2 className="animate-spin" /> : 'Entrar / Registar'}
+                    {loading ? <Loader2 className="animate-spin" /> : 'Entrar na minha conta'}
                   </Button>
                   <Button 
                     type="button"

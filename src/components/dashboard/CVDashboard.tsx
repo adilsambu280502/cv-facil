@@ -101,7 +101,7 @@ export const CVDashboard: React.FC = () => {
           <div className="flex items-center justify-between mb-8 relative z-10">
             <div>
               <CardTitle className="font-black text-slate-900 dark:text-white text-2xl tracking-tighter uppercase">Força do Perfil</CardTitle>
-              <CardDescription className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">Análise em Tempo Real</CardDescription>
+              <CardDescription className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">O que os recrutadores vão achar</CardDescription>
             </div>
             <span className="text-4xl font-black text-blue-600 tracking-tighter">{result.score}%</span>
           </div>
@@ -204,7 +204,7 @@ export const CVDashboard: React.FC = () => {
              <Target size={48} />
           </div>
           <h4 className="font-black text-blue-900 dark:text-blue-400 mb-8 flex items-center gap-3 text-lg tracking-tighter uppercase">
-            Análise do Recrutador
+            O que o recrutador vai ver
           </h4>
           
           <div className={cn("space-y-6 transition-all duration-700", !hasPaid && "blur-[12px] opacity-20 select-none scale-95")}>
@@ -228,9 +228,9 @@ export const CVDashboard: React.FC = () => {
                <div className="w-20 h-20 bg-white dark:bg-slate-900 rounded-3xl flex items-center justify-center shadow-2xl mb-8 text-blue-600">
                   <Lock size={36} />
                </div>
-                <h4 className="font-black text-slate-900 dark:text-white mb-4 text-xl tracking-tighter uppercase leading-tight">Análise Estratégica <br /> Bloqueada</h4>
-                <p className="text-xs font-bold text-slate-500 mb-8 max-w-[200px]">Desbloqueia a análise completa do Arquiteto de Carreira para este currículo.</p>
-               <Button onClick={() => setShowPaymentModal(true)} size="lg" className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-blue-600/30">Ver Planos</Button>
+                <h4 className="font-black text-slate-900 dark:text-white mb-4 text-xl tracking-tighter uppercase leading-tight">Dicas VIP <br /> Bloqueadas</h4>
+                <p className="text-xs font-bold text-slate-500 mb-8 max-w-[200px]">Descobre exatamente o que precisas de mudar para seres chamado para a entrevista.</p>
+               <Button onClick={() => setShowPaymentModal(true)} size="lg" className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-blue-600/30">Desbloquear Premium</Button>
             </div>
           )}
         </Card>
@@ -483,7 +483,7 @@ export const CVDashboard: React.FC = () => {
                       className="w-full bg-blue-600 hover:bg-blue-500 text-white py-6 rounded-[28px] font-black text-lg flex items-center justify-center gap-4 transition-all active:scale-[0.98] border-none shadow-[0_20px_40px_-10px_rgba(37,99,235,0.3)] group"
                     >
                       {isGenerating ? <Loader2 className="animate-spin" size={24} /> : null}
-                      {isGenerating ? "A Re-gerar Currículo..." : "Salvar e Re-gerar com o Kamba de Carreira 🚀"}
+                      {isGenerating ? "A Atualizar..." : "Atualizar Currículo 🚀"}
                     </Button>
                   </div>
                 </Card>

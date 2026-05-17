@@ -38,6 +38,7 @@ import { PaymentModal } from "./components/PaymentModal";
 import { ImportCVView } from "./components/import/ImportCVView";
 import { motion, AnimatePresence } from "motion/react";
 import { pageTransition } from "./lib/motion";
+import { AdminPanelGuard } from "./components/admin/AdminPanel";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 1024);
@@ -60,14 +61,9 @@ const MobileHeader: React.FC<{ setView: (v: any) => void }> = ({ setView }) => (
   <header className="lg:hidden fixed top-0 left-0 right-0 z-[100] h-16 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 flex items-center justify-center px-6">
     <button
       onClick={() => setView("intro")}
-      className="flex items-center gap-2 group"
+      className="flex items-center group h-10"
     >
-      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30 transition-transform active:scale-90">
-        <BriefcaseBusiness size={20} className="text-white" />
-      </div>
-      <span className="text-xl font-black text-slate-900 dark:text-white tracking-tighter">
-        CV<span className="text-blue-600">Fácil</span>
-      </span>
+      <Logo size={36} />
     </button>
   </header>
 );
@@ -220,8 +216,8 @@ const MoreMenuPanel: React.FC<{
       accent: "blue",
     },
     {
-      label: "Como Funciona",
-      sub: "Explorar os nossos modelos",
+      label: "Sobre a Plataforma",
+      sub: "A nossa missão para os angolanos",
       Icon: Globe,
       onClick: () => { setView("about"); onClose(); },
       accent: "blue",
@@ -361,6 +357,19 @@ const AppContent: React.FC = () => {
     }
   }, [darkMode]);
 
+  // Acesso secreto ao painel de admin via URL hash #admin
+  useEffect(() => {
+    const checkAdminHash = () => {
+      if (window.location.hash === "#admin") {
+        setView("admin");
+        window.history.replaceState(null, "", window.location.pathname);
+      }
+    };
+    checkAdminHash();
+    window.addEventListener("hashchange", checkAdminHash);
+    return () => window.removeEventListener("hashchange", checkAdminHash);
+  }, [setView]);
+
   // Esconder bottom nav no wizard e import independentemente do device
   const showNav = view !== "wizard" && view !== "import";
   const showHeader = view !== "wizard" && view !== "import";
@@ -431,6 +440,9 @@ const AppContent: React.FC = () => {
             {view === "dashboard" && <CVDashboard />}
             {view === "terms" && <TermsView />}
             {view === "privacy" && <PrivacyView />}
+            {view === "admin" && (
+              <AdminPanelGuard onBack={() => setView("intro")} />
+            )}
           </motion.div>
         </AnimatePresence>
       </main>

@@ -167,7 +167,7 @@ export const ExecutiveElite: React.FC<ExecutiveEliteProps> = ({ data }) => {
         {/* Footer */}
         <View style={{ marginTop: 'auto', textAlign: 'center', borderTopWidth: 0.5, borderTopColor: '#e2e8f0', paddingTop: 10 }}>
           <Text style={{ fontSize: 7, color: '#94a3b8', textAlign: 'center' }}>
-            Gerado pelo Arquiteto de Carreira - CV Fácil (cvfacil.ao)
+            Estruturado com CV Fácil – O teu currículo premium
           </Text>
         </View>
       </Page>

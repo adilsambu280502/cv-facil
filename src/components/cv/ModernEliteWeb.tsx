@@ -85,7 +85,7 @@ export const ModernEliteWeb: React.FC<Props> = ({ answers, result, hasPaid }) =>
       {/* Footer / Marca de Água Premium */}
       <footer className="mt-auto pt-10 border-t-2 border-slate-50 text-center">
         <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-300">
-          Documento Estruturado pelo Arquiteto de Carreira - CV Fácil
+          Estruturado com CV Fácil – O teu currículo premium
         </p>
       </footer>
     </div>
