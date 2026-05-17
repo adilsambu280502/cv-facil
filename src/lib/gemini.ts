@@ -9,8 +9,15 @@ export async function transformExperience(rawInput: string, jobDescription?: str
   });
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || 'Erro ao comunicar com o servidor.');
+    let errorMessage = 'Erro ao comunicar com o servidor.';
+    try {
+      const errorText = await response.text();
+      const errorData = JSON.parse(errorText);
+      errorMessage = errorData.error || errorMessage;
+    } catch {
+      errorMessage = 'Ocorreu um erro no servidor. Verifica a tua chave API ou tenta novamente.';
+    }
+    throw new Error(errorMessage);
   }
 
   return await response.json();

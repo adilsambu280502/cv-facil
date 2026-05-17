@@ -52,8 +52,15 @@ export const ImportCVView: React.FC = () => {
       });
 
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || "Erro ao processar o CV.");
+        let errorMessage = "Erro ao processar o CV.";
+        try {
+          const errorText = await response.text();
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          errorMessage = "Ocorreu um erro no servidor ao processar o CV. Por favor, verifica as variáveis de ambiente (GEMINI_API_KEY) no painel da Vercel.";
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
