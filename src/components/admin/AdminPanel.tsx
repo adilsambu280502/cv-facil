@@ -418,7 +418,7 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       </header>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-800 px-6">
+      <div className="flex border-b border-slate-800 px-4 sm:px-6 overflow-x-auto scrollbar-none shrink-0">
         {[
           { id: "dashboard", label: "Dashboard", icon: TrendingUp },
           { id: "vouchers", label: "Vouchers", icon: Key },
