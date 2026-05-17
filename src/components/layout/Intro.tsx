@@ -344,12 +344,12 @@ export const Intro: React.FC = () => {
                 className="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[420px] xl:max-w-[500px]"
                 style={{ perspective: "1200px" }}
               >
-                <div className="lg:rotate-y-[-8deg]">
-                  <TemplateVisual
-                  type="executive"
-                  active
-                  className="w-full shadow-[0_60px_120px_-30px_rgba(0,0,0,0.3)]"
-                />
+                <div className="lg:rotate-y-[-8deg] rounded-[24px] overflow-hidden border-2 border-slate-100 dark:border-slate-800 shadow-[0_60px_120px_-30px_rgba(0,0,0,0.35)] bg-white">
+                  <img 
+                    src="/rui-sardinha-cv.png" 
+                    alt="CV de Rui Sardinha" 
+                    className="w-full h-auto object-cover"
+                  />
                 </div>
                 {/* Floating accent cards - Hidden on small mobile */}
                 <motion.div
