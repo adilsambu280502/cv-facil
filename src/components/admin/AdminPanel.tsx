@@ -5,7 +5,7 @@ import {
   Users, FileText, DollarSign, RefreshCw, X,
   ShieldCheck, LogOut, ArrowLeft, CheckCircle2,
   Clock, AlertCircle, Loader2, MessageCircle,
-  Eye, EyeOff
+  Eye, EyeOff, User, Phone
 } from "lucide-react";
 import {
   createVoucher, listVouchers, listTransactions,
@@ -103,6 +103,7 @@ const StatCard: React.FC<{
 );
 
 // ─── Modal de Registo de Transação ────────────────────────────────────────────
+// ─── Modal de Registo de Transação ────────────────────────────────────────────
 const TransactionModal: React.FC<{
   voucherCode: string;
   plan: string;
@@ -134,83 +135,160 @@ const TransactionModal: React.FC<{
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-slate-900 border border-slate-800 rounded-3xl p-8 w-full max-w-md"
+        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 15 }}
+        transition={{ type: "spring", duration: 0.5 }}
+        className="bg-slate-900/90 border border-slate-800/80 rounded-[32px] p-8 w-full max-w-lg shadow-2xl relative overflow-hidden backdrop-blur-xl"
       >
+        {/* Glow de Background decorativo de luxo */}
+        <div className="absolute top-0 right-0 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl -z-10 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-600/10 rounded-full blur-3xl -z-10 pointer-events-none" />
+
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-white font-black text-xl">Registar Pagamento</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-white"><X size={20} /></button>
+          <div>
+            <span className="text-blue-500 text-[10px] font-black uppercase tracking-widest block mb-0.5">Registo Financeiro</span>
+            <h3 className="text-white font-black text-2xl tracking-tight">Registar Pagamento</h3>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="w-10 h-10 rounded-full bg-slate-800/60 hover:bg-slate-700/60 text-slate-400 hover:text-white flex items-center justify-center transition-all"
+          >
+            <X size={18} />
+          </button>
         </div>
 
-        <div className="bg-blue-600/10 border border-blue-600/20 rounded-xl p-3 mb-6 flex items-center gap-3">
-          <Key size={16} className="text-blue-400 shrink-0" />
-          <span className="text-blue-300 font-black tracking-wider text-sm">{voucherCode}</span>
+        {/* Bilhete do Voucher Visualmente Impressionante */}
+        <div className="relative bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-2xl p-4 mb-6 flex items-center justify-between overflow-hidden">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 shrink-0">
+              <Key size={20} />
+            </div>
+            <div>
+              <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Código do Voucher</p>
+              <p className="text-white font-black tracking-wider text-base">{voucherCode}</p>
+            </div>
+          </div>
+          <div className="bg-blue-500/20 text-blue-300 px-3.5 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider">
+            Plano {planInfo.value === "pro" ? "Pro" : "Elite"}
+          </div>
         </div>
 
-        <div className="space-y-3">
-          {[
-            { label: "Nome do Cliente", key: "customer_name", placeholder: "Ex: João Silva" },
-            { label: "Telemóvel", key: "customer_phone", placeholder: "+244 9xx xxx xxx" },
-            { label: "WhatsApp", key: "customer_whatsapp", placeholder: "+244 9xx xxx xxx" },
-          ].map(field => (
-            <div key={field.key}>
-              <label className="text-slate-400 text-xs font-black uppercase tracking-widest block mb-1">{field.label}</label>
+        <div className="space-y-4">
+          <div>
+            <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1.5 block">Nome do Cliente</label>
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+                <User size={16} />
+              </div>
               <input
                 type="text"
-                placeholder={field.placeholder}
-                value={(form as any)[field.key]}
-                onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm font-bold outline-none focus:border-blue-600 transition-all"
+                placeholder="Ex: João Silva"
+                value={form.customer_name}
+                onChange={e => setForm(f => ({ ...f, customer_name: e.target.value }))}
+                className="w-full bg-slate-950/40 border border-slate-800/80 rounded-2xl pl-11 pr-4 py-3.5 text-white text-sm font-bold outline-none focus:border-blue-600 focus:bg-slate-950/60 transition-all placeholder:text-slate-600"
               />
             </div>
-          ))}
-          <div className="grid grid-cols-2 gap-3">
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-slate-400 text-xs font-black uppercase tracking-widest block mb-1">Valor (AOA)</label>
-              <input
-                type="number"
-                value={form.amount}
-                onChange={e => setForm(f => ({ ...f, amount: Number(e.target.value) }))}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm font-bold outline-none focus:border-blue-600 transition-all"
-              />
+              <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1.5 block">Telemóvel</label>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+                  <Phone size={16} />
+                </div>
+                <input
+                  type="text"
+                  placeholder="+244 9xx xxx xxx"
+                  value={form.customer_phone}
+                  onChange={e => setForm(f => ({ ...f, customer_phone: e.target.value }))}
+                  className="w-full bg-slate-950/40 border border-slate-800/80 rounded-2xl pl-11 pr-4 py-3.5 text-white text-sm font-bold outline-none focus:border-blue-600 focus:bg-slate-950/60 transition-all placeholder:text-slate-600"
+                />
+              </div>
             </div>
+
             <div>
-              <label className="text-slate-400 text-xs font-black uppercase tracking-widest block mb-1">Método</label>
+              <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1.5 block">WhatsApp</label>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+                  <MessageCircle size={16} />
+                </div>
+                <input
+                  type="text"
+                  placeholder="+244 9xx xxx xxx"
+                  value={form.customer_whatsapp}
+                  onChange={e => setForm(f => ({ ...f, customer_whatsapp: e.target.value }))}
+                  className="w-full bg-slate-950/40 border border-slate-800/80 rounded-2xl pl-11 pr-4 py-3.5 text-white text-sm font-bold outline-none focus:border-blue-600 focus:bg-slate-950/60 transition-all placeholder:text-slate-600"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1.5 block">Valor (AOA)</label>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none font-bold text-sm">
+                  Kz
+                </div>
+                <input
+                  type="number"
+                  value={form.amount}
+                  onChange={e => setForm(f => ({ ...f, amount: Number(e.target.value) }))}
+                  className="w-full bg-slate-950/40 border border-slate-800/80 rounded-2xl pl-11 pr-4 py-3.5 text-white text-sm font-bold outline-none focus:border-blue-600 focus:bg-slate-950/60 transition-all"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1.5 block">Método</label>
               <select
                 value={form.payment_method}
                 onChange={e => setForm(f => ({ ...f, payment_method: e.target.value }))}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm font-bold outline-none focus:border-blue-600 transition-all"
+                className="w-full bg-slate-950/40 border border-slate-800/80 rounded-2xl px-4 py-3.5 text-white text-sm font-bold outline-none focus:border-blue-600 focus:bg-slate-950/60 transition-all appearance-none cursor-pointer"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 16px center',
+                  backgroundSize: '16px'
+                }}
               >
-                <option>Multicaixa</option>
-                <option>Transferência</option>
-                <option>BAI Directo</option>
-                <option>Atlantico</option>
-                <option>Ekwanza</option>
+                <option className="bg-slate-900 text-white">Multicaixa</option>
+                <option className="bg-slate-900 text-white">Transferência</option>
+                <option className="bg-slate-900 text-white">BAI Directo</option>
+                <option className="bg-slate-900 text-white">Atlantico</option>
+                <option className="bg-slate-900 text-white">Ekwanza</option>
               </select>
             </div>
           </div>
+
           <div>
-            <label className="text-slate-400 text-xs font-black uppercase tracking-widest block mb-1">Notas</label>
-            <textarea
-              placeholder="Observações opcionais..."
-              value={form.notes}
-              onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-              rows={2}
-              className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm font-bold outline-none focus:border-blue-600 transition-all resize-none"
-            />
+            <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1.5 block">Notas</label>
+            <div className="relative">
+              <div className="absolute left-4 top-[18px] text-slate-500 pointer-events-none">
+                <FileText size={16} />
+              </div>
+              <textarea
+                placeholder="Observações opcionais..."
+                value={form.notes}
+                onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                rows={2}
+                className="w-full bg-slate-950/40 border border-slate-800/80 rounded-2xl pl-11 pr-4 py-3.5 text-white text-sm font-bold outline-none focus:border-blue-600 focus:bg-slate-950/60 transition-all resize-none placeholder:text-slate-600"
+              />
+            </div>
           </div>
         </div>
 
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+          className="w-full mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-4 rounded-2xl font-black transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98] disabled:opacity-60"
         >
           {saving ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle2 size={18} />}
-          {saving ? "A guardar..." : "Confirmar Pagamento"}
+          {saving ? "A processar..." : "Confirmar Venda e Registar"}
         </button>
       </motion.div>
     </div>
