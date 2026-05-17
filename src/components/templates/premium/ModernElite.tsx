@@ -1,37 +1,40 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 
-// Registro de fontes para um aspeto premium (opcional: usar fontes locais ou URLs)
-// Font.register({ family: 'Inter', src: '...' });
+Font.register({
+  family: 'Inter',
+  fonts: [
+    { src: 'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2', fontWeight: 400 },
+    { src: 'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiA.woff2', fontWeight: 700 },
+  ],
+});
 
 const styles = StyleSheet.create({
   page: {
     padding: 40,
     backgroundColor: '#ffffff',
-    fontFamily: 'Helvetica', // Usando Helvetica como base segura
+    fontFamily: 'Inter',
   },
   header: {
     marginBottom: 30,
-    borderBottomWidth: 2,
-    borderBottomColor: '#2563eb',
+    borderBottomWidth: 3,
     paddingBottom: 20,
   },
   name: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 30,
+    fontWeight: 700,
     color: '#0f172a',
     letterSpacing: -1,
   },
   title: {
     fontSize: 14,
-    color: '#2563eb',
-    fontWeight: 'bold',
+    fontWeight: 700,
     marginTop: 4,
     textTransform: 'uppercase',
   },
   contactRow: {
     flexDirection: 'row',
-    marginTop: 10,
+    marginTop: 12,
     gap: 15,
   },
   contactItem: {
@@ -42,11 +45,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
+    fontSize: 11,
+    fontWeight: 700,
     color: '#1e293b',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 1.5,
     marginBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#f1f5f9',
@@ -55,39 +58,51 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 10,
     color: '#334155',
-    lineHeight: 1.5,
+    lineHeight: 1.6,
   },
   experienceItem: {
-    marginBottom: 12,
+    marginBottom: 15,
   },
-  jobHeader: {
+  bulletPoint: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     marginBottom: 4,
+    paddingLeft: 8,
   },
-  jobTitle: {
-    fontSize: 11,
-    fontWeight: 'bold',
-    color: '#0f172a',
+  bullet: {
+    width: 12,
+    fontSize: 10,
+    color: '#2563eb',
   },
-  date: {
-    fontSize: 9,
-    color: '#94a3b8',
+  bulletText: {
+    flex: 1,
+    fontSize: 10,
+    color: '#334155',
+    lineHeight: 1.5,
   },
   skillContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6,
+    gap: 8,
   },
   skillBadge: {
     backgroundColor: '#f8fafc',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    fontSize: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+    fontSize: 9,
     color: '#475569',
     borderWidth: 1,
     borderColor: '#e2e8f0',
+  },
+  watermark: {
+    position: 'absolute',
+    top: '45%',
+    left: '10%',
+    transform: 'rotate(-45deg)',
+    fontSize: 60,
+    color: 'rgba(200, 200, 200, 0.2)',
+    fontWeight: 700,
+    zIndex: -1,
   }
 });
 
@@ -97,15 +112,13 @@ interface ModernEliteProps {
 }
 
 export const ModernElite: React.FC<ModernEliteProps> = ({ data, color = '#2563eb' }) => {
-  // Lógica de Designer: Ajuste dinâmico de escala
-  const totalContentLength = (data.activity?.length || 0) + (data.education?.length || 0) + (data.hardSkills?.length || 0);
-  const isContentLong = totalContentLength > 1200;
-  const contentFontSize = isContentLong ? 8.5 : 10;
-  const contentLineHeight = isContentLong ? 1.3 : 1.5;
+  const hasPaid = data.hasPaid;
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {!hasPaid && <Text style={styles.watermark}>PREVIEW - CV FÁCIL</Text>}
+
         {/* Header */}
         <View style={[styles.header, { borderBottomColor: color }]}>
           <Text style={styles.name}>{data.name}</Text>
@@ -113,26 +126,41 @@ export const ModernElite: React.FC<ModernEliteProps> = ({ data, color = '#2563eb
           
           <View style={styles.contactRow}>
             <Text style={styles.contactItem}>{data.email}</Text>
-            <Text style={styles.contactItem}>{data.phone}</Text>
-            <Text style={styles.contactItem}>{data.location}</Text>
+            <Text style={styles.contactItem}>• {data.phone}</Text>
+            <Text style={styles.contactItem}>• {data.location}</Text>
           </View>
         </View>
 
-        {/* Perfil / Resumo */}
+        {/* Perfil */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Perfil Profissional</Text>
-          <Text style={[styles.content, { fontSize: contentFontSize, lineHeight: contentLineHeight }]}>
-            {data.activity || 'Profissional altamente qualificado focado em entregar resultados de alto impacto.'}
+          <Text style={styles.content}>
+            {data.professionalSummary || data.activity}
           </Text>
+        </View>
+
+        {/* Experiência / Impacto */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Realizações e Experiência</Text>
+          {data.descriptionBullets && data.descriptionBullets.length > 0 ? (
+            data.descriptionBullets.map((bullet: string, i: number) => (
+              <View key={i} style={styles.bulletPoint}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.bulletText}>{bullet}</Text>
+              </View>
+            ))
+          ) : (
+            <Text style={styles.content}>{data.teamwork}</Text>
+          )}
         </View>
 
         {/* Competências */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Competências Chave</Text>
+          <Text style={styles.sectionTitle}>Expertise Técnica</Text>
           <View style={styles.skillContainer}>
-            {(data.hardSkills?.split(',') || []).map((skill: string, i: number) => (
+            {(data.skills || []).map((skill: string, i: number) => (
               <View key={i} style={styles.skillBadge}>
-                <Text style={{ fontSize: isContentLong ? 7 : 8 }}>{skill.trim()}</Text>
+                <Text>{skill}</Text>
               </View>
             ))}
           </View>
@@ -141,23 +169,13 @@ export const ModernElite: React.FC<ModernEliteProps> = ({ data, color = '#2563eb
         {/* Formação */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Formação Académica</Text>
-          <View style={styles.experienceItem}>
-            <Text style={[styles.content, { fontSize: contentFontSize, lineHeight: contentLineHeight }]}>{data.education || 'Informação não fornecida.'}</Text>
-          </View>
+          <Text style={styles.content}>{data.education}</Text>
         </View>
 
-        {/* Diferenciais de Especialista — Seção Dinâmica */}
-        {data.problemSolving && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Resolução de Problemas</Text>
-            <Text style={[styles.content, { fontSize: contentFontSize, lineHeight: contentLineHeight }]}>{data.problemSolving}</Text>
-          </View>
-        )}
-
-        {/* Footer / Nota de Autenticidade */}
-        <View style={{ marginTop: 'auto', borderTopWidth: 1, borderTopColor: '#f1f5f9', pt: 10 }}>
+        {/* Footer */}
+        <View style={{ marginTop: 'auto', paddingTop: 10, borderTopWidth: 1, borderTopColor: '#f1f5f9' }}>
           <Text style={{ fontSize: 7, color: '#94a3b8', textAlign: 'center' }}>
-            Gerado pelo Arquiteto de Carreira — CV Fácil (cvfacil.ao)
+            Gerado pelo Arquiteto de Carreira - CV Fácil (cvfacil.ao)
           </Text>
         </View>
       </Page>

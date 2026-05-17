@@ -1,213 +1,163 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "node:path";
-import Stripe from "stripe";
 import * as dotenv from "dotenv";
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import cors from "cors";
+import { generateWithFallback } from "./src/services/ai_orchestrator";
 
 dotenv.config();
 
-let stripeClient: Stripe | null = null;
-function getStripe(): Stripe {
-  if (!stripeClient) {
-    const key = process.env.STRIPE_SECRET_KEY;
-    if (!key) {
-      throw new Error('STRIPE_SECRET_KEY environment variable is required');
-    }
-    stripeClient = new Stripe(key);
-  }
-  return stripeClient;
-}
-
-// Instanciar o cliente AI
-let aiClient: GoogleGenerativeAI | null = null;
-function getAI() {
-  if (!aiClient) {
-    const key = process.env.GEMINI_API_KEY;
-    if (!key) {
-        throw new Error('GEMINI_API_KEY is not defined');
-    }
-    aiClient = new GoogleGenerativeAI(key);
-  }
-  return aiClient;
-}
-
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
-  app.use(express.json());
+  app.use(cors());
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-  // API routes FIRST
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok" });
+  console.log("🚀 Registando rotas da API...");
+
+  // Middleware de Log para API
+  app.use("/api", (req, res, next) => {
+    console.log(`[REQ] ${req.method} ${req.url}`);
+    next();
   });
 
+  // ─── Health Check ───────────────────────────────────────────────
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", message: "Servidor ativo e pronto." });
+  });
+
+  // ─── Motor de Inteligência de Carreira ──────────────────────────
   app.post("/api/transform", async (req, res) => {
+    console.log("📥 Recebido POST /api/transform");
     try {
       const { rawInput, jobDescription } = req.body;
-      const ai = getAI();
-      const MODEL_NAME = "gemini-1.5-pro";
-
       const prompt = `
-      És um Headhunter Senior e Especialista em Empregabilidade Jovem (focado exclusivamente no mercado angolano).
+      És um Especialista em Empregabilidade e Seleção de Elite (focado exclusivamente no mercado angolano).
       O teu objetivo é pegar numa experiência de vida, trabalho prático, projeto escolar, voluntariado ou apoio familiar e "traduzir" isso para a linguagem corporativa que o mercado de trabalho angolano (e os sistemas ATS) valoriza. Escreve sempre em Português de Angola (formal/corporativo, sem gírias, mas com fluidez natural do mercado angolano).
+      Importante: Não deves fazer NENHUMA menção a termos como Inteligência Artificial, Consultor IA, ou robôs. Trata-se de uma análise humana de Elite do CV Fácil.
     
       Contexto do utilizador (Experiência descrita das palavras dele):
       "${rawInput}"
     
       A tua tarefa:
-      1. Identificar um Título Profissional realista (Júnior, Assistente, Apoio, Operador). Nunca cries cargos de liderança ou séniores para experiências informais ou prestação de serviços não qualificados.
-      2. Criar um Resumo Profissional (professionalSummary) de 2-3 frases focado de forma geral no perfil, destacando as suas principais mais-valias. ${jobDescription ? 'Deves adaptar fortemente este resumo para bater certo com a seguinte vaga: ' + jobDescription : ''}
-      3. Escrever 2 a 3 bullet points descrevendo a responsabilidade usando "Verbos de Ação" no passado (Ex: Organizou, Apoiou, Assegurou, Comunicou). Foca-te em responsabilidades e comportamentos transferíveis (atendimento, organização, gestão de tempo, controlo de caixa). NÃO inventes dados ou factos que o utilizador não referiu. Eleva o nível da escrita. ${jobDescription ? 'Garante que alinhas estas responsabilidades aos requisitos da vaga.' : ''}
-      4. Extrair 3 a 5 Competências Chave (Soft ou Hard skills). ${jobDescription ? 'Extrai competências que correspondam EXATAMENTE às procuradas na vaga e que este perfil demonstre possuir, mesmo de forma básica.' : ''}
-      5. Identificar uma lista de Palavras-Chave ATS (atsKeywords). Estas são palavras exatas que os filtros vão procurar. ${jobDescription ? 'Usa a descrição da vaga para extrair estas palavras-chave ATS se elas se adequarem.' : ''}
-      6. Atribuir um "Score" de 0 a 100 avaliando a robustez da experiência para o mercado de trabalho local ${jobDescription ? ' face a esta vaga específica' : ''}.
-      7. Fornecer feedback detalhado (pontos fortes e conselhos claros de melhoria para o mercado angolano).
-      8. Para a rubrica "Simulação de Recrutador", imagina o que o chefe dos Recursos Humanos pensaria ao olhar para o CV em apenas 6 segundos. Dá uma impressão geral e pontua destaques (positivos) e potenciais motivos de rejeição.
-      ${jobDescription ? '9. Cria uma Carta de Apresentação (coverLetter) pronta a enviar adaptada à vaga, usando o histórico do utilizador. Tem de soar profissional mas confiante e de leitura rápida, para ser enviada por email ou entregue em mãos. Máximo 2 parágrafos precisos.' : ''}
+      1. Identificar um Título Profissional realista (Júnior, Assistente, Apoio, Operador).
+      2. Criar um Resumo Profissional (professionalSummary) de 2-3 frases focado no perfil. ${jobDescription ? 'Deves adaptar fortemente este resumo para bater certo com a seguinte vaga: ' + jobDescription : ''}
+      3. Escrever 2 a 3 bullet points descrevendo a responsabilidade usando "Verbos de Ação" no passado.
+      4. Extrair 3 a 5 Competências Chave (Soft ou Hard skills).
+      5. Identificar uma lista de Palavras-Chave ATS (atsKeywords).
+      6. Atribuir um "Score" de 0 a 100.
+      7. Fornecer feedback detalhado em scoreFeedback (pontos fortes e conselhos claros de melhoria como objetos { point, actionableAdvice }).
+      8. Para a rubrica "Simulação de Recrutador", imagina o que o chefe dos Recursos Humanos pensaria ao olhar para o CV em apenas 6 segundos.
+      ${jobDescription ? '9. Cria uma Carta de Apresentação (coverLetter) pronta a enviar adaptada à vaga. Máximo 2 parágrafos precisos.' : ''}
     
-      Retorna EXCLUSIVAMENTE um objeto JSON estrito com esta estrutura. Nenhuma outra formatação de texto fora de objectos JSON é aceite.
+      Retorna EXCLUSIVAMENTE um objeto JSON estrito com esta estrutura:
+      {
+        "title": "Título Profissional",
+        "professionalSummary": "Resumo...",
+        "descriptionBullets": ["Bullet 1", "Bullet 2"],
+        "skills": ["Competência 1", "Competência 2"],
+        "atsKeywords": ["palavra-chave 1", "palavra-chave 2"],
+        "score": 85,
+        "scoreFeedback": {
+          "strengths": [
+            { "point": "Ponto Forte 1", "explanation": "Explicação..." }
+          ],
+          "improvements": [
+            { "point": "Melhoria 1", "actionableAdvice": "Conselho prático..." }
+          ]
+        },
+        "recruiterSimulation": {
+          "sixSecondImpression": "...",
+          "highlights": ["Destaque 1"],
+          "rejectionRisks": ["Risco 1"]
+        },
+        "coverLetter": "..."
+      }
       `;
 
-      const result = await ai.getGenerativeModel({ 
-        model: MODEL_NAME,
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: SchemaType.OBJECT,
-            properties: {
-              title: { type: SchemaType.STRING },
-              professionalSummary: { type: SchemaType.STRING },
-              descriptionBullets: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
-              skills: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
-              atsKeywords: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
-              score: { type: SchemaType.NUMBER },
-              scoreFeedback: {
-                type: SchemaType.OBJECT,
-                properties: {
-                  strengths: {
-                    type: SchemaType.ARRAY,
-                    items: { 
-                      type: SchemaType.OBJECT,
-                      properties: { point: { type: SchemaType.STRING }, explanation: { type: SchemaType.STRING } },
-                      required: ["point", "explanation"]
-                    },
-                  },
-                  improvements: {
-                    type: SchemaType.ARRAY,
-                    items: { 
-                      type: SchemaType.OBJECT,
-                      properties: { point: { type: SchemaType.STRING }, actionableAdvice: { type: SchemaType.STRING } },
-                      required: ["point", "actionableAdvice"]
-                    },
-                  }
-                },
-                required: ["strengths", "improvements"]
-              },
-              recruiterSimulation: {
-                type: SchemaType.OBJECT,
-                properties: {
-                  sixSecondImpression: { type: SchemaType.STRING },
-                  highlights: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
-                  rejectionRisks: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } }
-                },
-                required: ["sixSecondImpression", "highlights", "rejectionRisks"]
-              },
-              coverLetter: { type: SchemaType.STRING }
-            },
-            required: ["title", "professionalSummary", "descriptionBullets", "skills", "atsKeywords", "score", "scoreFeedback", "recruiterSimulation"],
-          },
-          temperature: 0.2,
-        },
-      }).generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      });
-
-      const response = result.response;
-      const text = response.text();
-      if (!text) {
-        throw new Error("No response generated.");
-      }
-      
-      res.json(JSON.parse(text));
-    } catch (err: unknown) {
-      console.error(err);
-      const message = err instanceof Error ? err.message : String(err);
-      res.status(500).json({ error: message });
+      const aiResult = await generateWithFallback(prompt, true);
+      console.log(`✅ Gerado via ${aiResult.provider}`);
+      res.json(JSON.parse(aiResult.content));
+    } catch (err: any) {
+      console.error("❌ Erro em /api/transform:", err.message);
+      res.status(500).json({ error: err.message });
     }
   });
 
-  // Unlock Token Verification Route
-  app.post("/api/verify-token", async (req, res) => {
+  app.post("/api/parse-cv", async (req, res) => {
+    console.log("📥 Recebido POST /api/parse-cv");
     try {
-      const { token } = req.body;
-      
-      if (!token || token.length !== 8) {
-        return res.status(400).json({ error: "O código deve ter exatamente 8 caracteres." });
-      }
+      const { cvText, jobDescription } = req.body;
+      if (!cvText) throw new Error("Conteúdo do CV vazio.");
 
-      // TODO: Connect this to a real Database (e.g., Firebase Firestore, Supabase, PostgreSQL)
-      // Here you would check if token exists and hasn't been used yet.
-      // For now, we mock success for ANY 8-character token.
-      console.log(`[Mock] Validating token: ${token} via DB...`);
-      await new Promise(resolve => setTimeout(resolve, 1500)); 
+      const prompt = `
+És um Consultor de Carreira Sénior e Parser de CVs para o mercado angolano.
+Extrai e estrutura o conteúdo do CV abaixo.
 
-      return res.json({ success: true, message: "Acesso Premium Desbloqueado." });
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      res.status(500).json({ error: message });
+CONTEÚDO:
+${cvText}
+
+Responde EXCLUSIVAMENTE com o seguinte formato JSON:
+{
+  "title": "", "professionalSummary": "", 
+  "layoutStrategy": { "profileType": "" },
+  "transformedExperience": [{ "role": "", "company": "", "period": "", "responsibilities": [""] }],
+  "transformedEducation": [{ "degree": "", "institution": "", "period": "" }],
+  "projects": [{ "name": "", "description": "" }],
+  "skills": [""], "languages": [""], "atsKeywords": [""],
+  "score": 0, 
+  "scoreFeedback": { "strengths": [], "improvements": [] },
+  "recruiterSimulation": { "sixSecondImpression": "", "highlights": [], "rejectionRisks": [] },
+  "coverLetter": "",
+  "extractedContact": { "name": "", "email": "", "phone": "", "location": "", "linkedin": "", "website": "" }
+}
+      `;
+
+      const aiResult = await generateWithFallback(prompt, true);
+      console.log(`✅ CV processado via ${aiResult.provider}`);
+      res.json(JSON.parse(aiResult.content));
+    } catch (err: any) {
+      console.error("❌ Erro em /api/parse-cv:", err.message);
+      res.status(500).json({ error: err.message });
     }
   });
 
   app.post("/api/chat", async (req, res) => {
     try {
       const { messages, context } = req.body;
-      const ai = getAI();
-      const MODEL_NAME = "gemini-1.5-flash"; // Mais rápido para chat
-
-      const systemPrompt = `
-      És o "Coach CV Fácil", um mentor de carreira sénior especializado no mercado de trabalho de Angola.
-      O teu objetivo é transformar jovens candidatos em profissionais magnéticos para as empresas angolanas.
+      const systemPrompt = `És o "Kamba de Carreira", o mentor de elite e amigo digital do CV Fácil em Angola.
       
-      Contexto do utilizador (Perfil atual): ${JSON.stringify(context || {})}
+      Diretrizes de Conversação:
+      1. Fala de forma calorosa, humana, humilde e motivadora no português fluído e respeitoso de Angola (tratando o utilizador de forma próxima mas profissional).
+      2. NUNCA uses qualquer tipo de formatação markdown, asteriscos ou negritos (ex: NUNCA escrevas **texto** ou *texto*). Escreve em texto limpo e natural, como se fosses uma pessoa real a responder no WhatsApp ou chat de apoio.
+      3. Restrição Absoluta de Assunto: O teu papel é EXCLUSIVAMENTE falar sobre a criação de CVs, melhorias de currículo, cartas de apresentação, preparação para entrevistas de emprego e dicas de empregabilidade no mercado angolano. 
+      4. Se o utilizador fizer qualquer pergunta ou comentário fora deste tema (ex: como cozinhar, desporto, cultura geral, programação genérica que não seja para o CV, etc.), deves recusar de forma muito educada e calorosa, lembrando que "O CV Fácil foca-se apenas no teu sucesso profissional e assuntos de carreira."
       
-      Regras de Ouro:
-      1. Linguagem: Português de Angola (formal mas caloroso). Usa expressões como "Estamos juntos", "Força aí", mas mantém o profissionalismo.
-      2. Estilo: Respostas curtas, incisivas e acionáveis. Máximo 150 palavras.
-      3. Sabedoria Local: Conheces os desafios de Luanda às províncias. Sabes que em Angola o "quem conheces" (networking) é forte, então sugere formas de abordar pessoas de forma profissional no LinkedIn ou pessoalmente.
-      4. Foco: Se o utilizador estiver inseguro, destaca que as competências "moles" (atitude, pontualidade, vontade de aprender) são o que as empresas mais procuram em perfis juniores.
-      5. Se o currículo dele tiver uma pontuação baixa, dá 1 dica prática imediata para subir o nível.
-      `;
-
-      let promptText = systemPrompt + "\n\n--- Diálogo Recente ---\n";
+      Contexto do Currículo do Candidato: ${JSON.stringify(context || {})}`;
+      
+      let promptText = systemPrompt + "\n\n";
       messages.forEach((msg: any) => {
-        const roleName = msg.role === 'user' ? 'Candidato' : 'Coach';
-        promptText += `${roleName}: ${msg.content || msg.text}\n`;
+        promptText += `${msg.role === 'user' ? 'Candidato' : 'Kamba'}: ${msg.content || msg.text}\n`;
       });
-      promptText += "\nCoach:";
+      promptText += "\nKamba:";
 
-      const response = await ai.models.generateContent({
-        model: MODEL_NAME,
-        contents: promptText,
-        config: {
-          temperature: 0.8,
-        },
-      });
-
-      const text = response.text;
-      if (!text) throw new Error("Sem resposta da IA.");
-
-      res.json({ content: text });
-    } catch (err: unknown) {
-      console.error(err);
-      const message = err instanceof Error ? err.message : String(err);
-      res.status(500).json({ error: message });
+      const aiResult = await generateWithFallback(promptText, false);
+      // Garantir no servidor que removemos qualquer asterisco gerado acidentalmente pela IA
+      const cleanContent = aiResult.content.replace(/\*\*/g, "").replace(/\*/g, "");
+      res.json({ content: cleanContent });
+    } catch (err: any) {
+      console.error("❌ Erro no Chat:", err.message);
+      res.status(500).json({ error: err.message });
     }
   });
 
-  // Vite middleware for development
+  console.log("✅ Rotas da API registadas com sucesso.");
+
+  // ─── Vite Middleware ─────────────────────────────────────────────
   if (process.env.NODE_ENV !== "production") {
+    console.log("🔧 Iniciando Vite em modo middleware...");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -222,7 +172,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`🚀 SERVIDOR CV FÁCIL ATIVO: http://localhost:${PORT}`);
   });
 }
 

@@ -1,6 +1,6 @@
 /**
- * App.tsx — Arquitetura de Ponte (Bridge Architecture)
- * ─────────────────────────────────────────────────────
+ * App.tsx - Arquitetura de Ponte (Bridge Architecture)
+ * -----------------------------------------------------
  * Desktop (lg+) → Landing Page com header fixo no topo, sem bottom nav
  * Mobile/Tablet (< lg) → App nativo com Bottom Navigation Sheet
  *
@@ -20,19 +20,22 @@ import {
   Globe,
   Headphones,
   ExternalLink,
-  Sparkles,
   ArrowRight,
   LogOut,
   Menu,
 } from "lucide-react";
 import { cn } from "./lib/utils";
+import { Logo } from "./components/ui/Logo";
 import { CVProvider, useCV } from "./context/CVContext";
 import { Intro } from "./components/layout/Intro";
 import { CVWizard } from "./components/wizard/CVWizard";
 import { CVDashboard } from "./components/dashboard/CVDashboard";
 import { LoginView } from "./components/auth/LoginView";
 import { AboutView } from "./components/layout/AboutView";
+import { TemplatesView } from "./components/layout/TemplatesView";
+import { TermsView, PrivacyView } from "./components/layout/LegalViews";
 import { PaymentModal } from "./components/PaymentModal";
+import { ImportCVView } from "./components/import/ImportCVView";
 import { motion, AnimatePresence } from "motion/react";
 import { pageTransition } from "./lib/motion";
 
@@ -47,11 +50,11 @@ function useIsDesktop() {
   return isDesktop;
 }
 
-/* ──────────────────────────────────────
-   Desktop Header — apenas lg+
+/* --------------------------------------
+   Desktop Header - apenas lg+
    ────────────────────────────────────── */
-/* ──────────────────────────────────────
-   Mobile Header — apenas < lg
+/* --------------------------------------
+   Mobile Header - apenas < lg
    ────────────────────────────────────── */
 const MobileHeader: React.FC<{ setView: (v: any) => void }> = ({ setView }) => (
   <header className="lg:hidden fixed top-0 left-0 right-0 z-[100] h-16 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 flex items-center justify-center px-6">
@@ -60,7 +63,7 @@ const MobileHeader: React.FC<{ setView: (v: any) => void }> = ({ setView }) => (
       className="flex items-center gap-2 group"
     >
       <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30 transition-transform active:scale-90">
-        <Sparkles size={20} className="text-white" />
+        <BriefcaseBusiness size={20} className="text-white" />
       </div>
       <span className="text-xl font-black text-slate-900 dark:text-white tracking-tighter">
         CV<span className="text-blue-600">Fácil</span>
@@ -79,7 +82,7 @@ const DesktopHeader: React.FC<{
 }> = ({ view, setView, darkMode, toggleDarkMode, user, logout }) => {
   const navLinks = [
     { label: "Início", v: "intro" },
-    { label: "Modelos", v: "about" },
+    { label: "Modelos", v: "templates" },
     { label: "Preços", v: "intro", hash: "precos" },
   ];
 
@@ -89,14 +92,9 @@ const DesktopHeader: React.FC<{
         {/* Logo */}
         <button
           onClick={() => setView("intro")}
-          className="flex items-center gap-3 group"
+          className="flex items-center group h-12"
         >
-          <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/30">
-            <Sparkles size={20} className="text-white" />
-          </div>
-          <span className="text-xl font-black text-slate-900 dark:text-white tracking-tighter">
-            CV<span className="text-blue-600">Fácil</span>
-          </span>
+          <Logo size={44} />
         </button>
 
         {/* Nav Links */}
@@ -165,7 +163,7 @@ const DesktopHeader: React.FC<{
   );
 };
 
-/* ──────────────────────────────────────
+/* --------------------------------------
    Bottom Nav Button
    ────────────────────────────────────── */
 const NavBtn: React.FC<{
@@ -190,7 +188,7 @@ const NavBtn: React.FC<{
   </button>
 );
 
-/* ──────────────────────────────────────
+/* --------------------------------------
    More Menu Panel
    ────────────────────────────────────── */
 const MoreMenuPanel: React.FC<{
@@ -345,8 +343,8 @@ const MoreMenuPanel: React.FC<{
   );
 };
 
-/* ──────────────────────────────────────
-   AppContent — Orquestrador Principal
+/* --------------------------------------
+   AppContent - Orquestrador Principal
    ────────────────────────────────────── */
 const AppContent: React.FC = () => {
   const { view, setView, darkMode, toggleDarkMode, user, logout } = useCV();
@@ -363,8 +361,9 @@ const AppContent: React.FC = () => {
     }
   }, [darkMode]);
 
-  // Esconder bottom nav no wizard independentemente do device
-  const showNav = view !== "wizard";
+  // Esconder bottom nav no wizard e import independentemente do device
+  const showNav = view !== "wizard" && view !== "import";
+  const showHeader = view !== "wizard" && view !== "import";
 
   return (
     <div
@@ -376,8 +375,8 @@ const AppContent: React.FC = () => {
     >
       <PaymentModal />
 
-      {/* ── HEADER DESKTOP (lg+) — Landing Page Style ── */}
-      {isDesktop && view !== "wizard" && (
+      {/* -- HEADER DESKTOP (lg+) - Landing Page Style -- */}
+      {isDesktop && showHeader && (
         <DesktopHeader
           view={view}
           setView={setView}
@@ -388,12 +387,12 @@ const AppContent: React.FC = () => {
         />
       )}
 
-      {/* ── HEADER MOBILE (< lg) — App Style ── */}
-      {!isDesktop && view !== "wizard" && (
+      {/* -- HEADER MOBILE (< lg) - App Style -- */}
+      {!isDesktop && showHeader && (
         <MobileHeader setView={setView} />
       )}
 
-      {/* ── MENU "MAIS" ── */}
+      {/* -- MENU "MAIS" -- */}
       <MoreMenuPanel
         show={showMoreMenu}
         onClose={() => setShowMoreMenu(false)}
@@ -402,14 +401,14 @@ const AppContent: React.FC = () => {
         setView={setView}
       />
 
-      {/* ── CONTEÚDO PRINCIPAL ── */}
+      {/* -- CONTEÚDO PRINCIPAL -- */}
       <main
         className={cn(
           "flex-1 w-full flex flex-col relative overflow-x-hidden",
           // No desktop, empurrar conteúdo abaixo do header fixo
-          isDesktop && view !== "wizard" ? "pt-20" : "",
+          isDesktop && showHeader ? "pt-20" : "",
           // No mobile, header fixo h-16
-          !isDesktop && view !== "wizard" ? "pt-16" : "",
+          !isDesktop && showHeader ? "pt-16" : "",
           // No mobile, espaço extra no fundo para a bottom nav
           !isDesktop && showNav ? "pb-32" : ""
         )}
@@ -425,14 +424,18 @@ const AppContent: React.FC = () => {
           >
             {view === "intro" && <Intro />}
             {view === "wizard" && <CVWizard />}
+            {view === "import" && <ImportCVView />}
             {view === "about" && <AboutView />}
+            {view === "templates" && <TemplatesView />}
             {view === "login" && <LoginView />}
             {view === "dashboard" && <CVDashboard />}
+            {view === "terms" && <TermsView />}
+            {view === "privacy" && <PrivacyView />}
           </motion.div>
         </AnimatePresence>
       </main>
 
-      {/* ── BOTTOM NAV — apenas mobile/tablet (< lg) ── */}
+      {/* -- BOTTOM NAV - apenas mobile/tablet (< lg) -- */}
       <AnimatePresence>
         {!isDesktop && showNav && (
           <motion.nav
@@ -451,8 +454,8 @@ const AppContent: React.FC = () => {
             <NavBtn
               icon={LayoutTemplate}
               label="Modelos"
-              active={view === "about"}
-              onClick={() => setView("about")}
+              active={view === "templates"}
+              onClick={() => setView("templates")}
             />
             <NavBtn
               icon={User}
@@ -473,7 +476,7 @@ const AppContent: React.FC = () => {
   );
 };
 
-/* ──────────────────────────────────────
+/* --------------------------------------
    Root App
    ────────────────────────────────────── */
 const App: React.FC = () => (

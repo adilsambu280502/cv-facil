@@ -1,12 +1,29 @@
-import { Timestamp } from "firebase/firestore";
-
 export interface TransformResult {
   title: string;
+  displayName?: string;
   professionalSummary: string;
-  descriptionBullets: string[];
+  transformedExperience: {
+    role: string;
+    company: string;
+    period: string;
+    responsibilities: string[];
+  }[];
+  transformedEducation: {
+    degree: string;
+    institution: string;
+    period: string;
+  }[];
+  projects: {
+    name: string;
+    description: string;
+  }[];
   skills: string[];
+  languages: string[];
   atsKeywords: string[];
   coverLetter?: string;
+  layoutStrategy: {
+    profileType: "entry_level" | "experienced" | "operational";
+  };
   score: number;
   scoreFeedback: {
     strengths: { point: string; explanation: string }[];
@@ -16,6 +33,14 @@ export interface TransformResult {
     sixSecondImpression: string;
     highlights: string[];
     rejectionRisks: string[];
+  };
+  extractedContact?: {
+    name: string;
+    email: string;
+    phone: string;
+    location: string;
+    linkedin: string;
+    website: string;
   };
 }
 
@@ -50,8 +75,8 @@ export interface CV {
   userId: string;
   answers: Answers;
   result: TransformResult;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface UserProfile {
@@ -59,9 +84,9 @@ export interface UserProfile {
   email: string;
   name: string;
   photoURL?: string;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
-  plan: "free" | "premium";
+  createdAt: string;
+  updatedAt: string;
+  plan: "free" | "pro" | "elite";
 }
 
 export interface ChatMessage {

@@ -1,20 +1,18 @@
 import React, { RefObject, useState } from "react";
 import html2canvas from "html2canvas";
 import { pdf } from "@react-pdf/renderer";
-import { 
-  Document, 
-  Packer, 
-  Paragraph, 
-  TextRun, 
-  HeadingLevel, 
-  AlignmentType 
+import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  HeadingLevel,
+  AlignmentType,
 } from "docx";
 import { saveAs } from "file-saver";
 import { Answers, TransformResult } from "../types";
-import { ModernElite } from "../components/templates/premium/ModernElite";
-import { ExecutiveElite } from "../components/templates/premium/ExecutiveElite";
-import { CreativeElite } from "../components/templates/premium/CreativeElite";
-import { CleanATS } from "../components/templates/premium/CleanATS";
+import { ProfessionalPDF } from "../components/templates/premium/ProfessionalPDF";
+import { useCV } from "../context/CVContext";
 
 export const useExport = (
   cvRef: RefObject<HTMLDivElement | null>,
@@ -22,174 +20,175 @@ export const useExport = (
   result: TransformResult | null
 ) => {
   const [isExporting, setIsExporting] = useState(false);
+  const { hasPaid } = useCV();
 
+  // ─── PDF VECTORIAL (react-pdf) ─────────────────────────────────
   const handleExportPDF = async () => {
     if (!result) return false;
     setIsExporting(true);
-    try {
-      // Usando o novo motor de renderização Pro Max dinâmico
-      const templateProps = { 
-        data: { ...answers, ...result },
-        color: answers.color || '#2563eb'
-      };
+    await new Promise((r) => setTimeout(r, 600));
 
-      const doc = React.createElement(
-        answers.template === "executive" ? ExecutiveElite : 
-        answers.template === "creative" ? CreativeElite :
-        answers.template === "technical" || answers.template === "minimalist" ? CleanATS :
-        ModernElite, 
-        templateProps
-      );
-      
+    try {
+      const doc = React.createElement(ProfessionalPDF, {
+        answers,
+        result,
+        hasPaid,
+      });
+
       const blob = await pdf(doc).toBlob();
-      saveAs(blob, answers.name ? `${answers.name}_CV_Profissional.pdf` : "CV_Facil.pdf");
+      const filename = answers.name
+        ? `${answers.name.replace(/\s+/g, "_")}_CV_CVFacil.pdf`
+        : "CV_Facil.pdf";
+      saveAs(blob, filename);
       return true;
     } catch (err) {
-      console.error("Error generating Premium PDF:", err);
-      // Fallback para o método antigo se necessário (opcional)
+      console.error("Erro ao gerar PDF:", err);
       return false;
     } finally {
       setIsExporting(false);
     }
   };
 
+  // ─── IMAGEM PNG (html2canvas) ──────────────────────────────────
   const handleExportImage = async () => {
     if (!cvRef.current) return;
     setIsExporting(true);
     try {
       await new Promise((r) => setTimeout(r, 300));
-      const canvas = await html2canvas(cvRef.current, { scale: 2 });
+      const canvas = await html2canvas(cvRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+      });
       const imgData = canvas.toDataURL("image/png");
-      const filename = answers.name ? answers.name + "_CV.png" : "CV.png";
+      const filename = answers.name
+        ? `${answers.name.replace(/\s+/g, "_")}_CV.png`
+        : "CV.png";
       saveAs(imgData, filename);
       return true;
     } catch (err) {
-      console.error("Error generating Image:", err);
+      console.error("Erro ao gerar imagem:", err);
       return false;
     } finally {
       setIsExporting(false);
     }
   };
 
+  // ─── WORD DOCX ─────────────────────────────────────────────────
   const handleExportDOCX = async () => {
     if (!result) return false;
     setIsExporting(true);
     try {
+      const experienceParagraphs = (result.transformedExperience || []).flatMap(
+        (exp) => [
+          new Paragraph({
+            text: `${exp.role} — ${exp.company} (${exp.period})`,
+            heading: HeadingLevel.HEADING_3,
+            spacing: { before: 200, after: 80 },
+          }),
+          ...exp.responsibilities.map(
+            (r) =>
+              new Paragraph({
+                text: r,
+                bullet: { level: 0 },
+                spacing: { after: 80 },
+              })
+          ),
+        ]
+      );
+
+      const educationParagraphs = (result.transformedEducation || []).flatMap(
+        (edu) => [
+          new Paragraph({
+            children: [
+              new TextRun({ text: edu.degree, bold: true }),
+              new TextRun({ text: `\n${edu.institution}` }),
+              new TextRun({ text: `\n${edu.period}`, color: "666666" }),
+            ],
+            spacing: { after: 120 },
+          }),
+        ]
+      );
+
+      const projectParagraphs = (result.projects || []).map(
+        (proj) =>
+          new Paragraph({
+            children: [
+              new TextRun({ text: proj.name.toUpperCase(), bold: true }),
+              new TextRun({ text: ` — ${proj.description}` }),
+            ],
+            spacing: { after: 100 },
+          })
+      );
+
       const doc = new Document({
         title: `CV - ${answers.name}`,
         creator: "CV Fácil",
-        description: "Currículo Profissional Otimizado",
+        description: "Currículo Profissional Otimizado por IA",
         sections: [
           {
             properties: {},
             children: [
-              // HEADER - NAME
               new Paragraph({
-                text: (answers.name || "CURRÍCULO PROFISSIONAL").toUpperCase(),
+                text: (answers.name || "CURRÍCULO").toUpperCase(),
                 heading: HeadingLevel.TITLE,
                 alignment: AlignmentType.CENTER,
-                spacing: { after: 120 },
+                spacing: { after: 80 },
               }),
-              
-              // HEADER - TITLE
               new Paragraph({
                 text: (result.title || "").toUpperCase(),
                 heading: HeadingLevel.HEADING_1,
                 alignment: AlignmentType.CENTER,
-                spacing: { after: 200 },
+                spacing: { after: 160 },
               }),
-
-              // CONTACT INFO
               new Paragraph({
                 children: [
-                  new TextRun({ text: answers.email || "", bold: true }),
-                  new TextRun({ text: answers.phone ? ` | ${answers.phone}` : "" }),
-                  new TextRun({ text: answers.location ? ` | ${answers.location}` : "" }),
-                  new TextRun({ text: answers.linkedin ? ` | LinkedIn: ${answers.linkedin}` : "" }),
+                  new TextRun({ text: answers.email || "" }),
+                  new TextRun({ text: answers.phone ? `  |  ${answers.phone}` : "" }),
+                  new TextRun({ text: answers.location ? `  |  ${answers.location}` : "" }),
+                  new TextRun({ text: answers.linkedin ? `  |  ${answers.linkedin}` : "" }),
                 ],
                 alignment: AlignmentType.CENTER,
                 spacing: { after: 400 },
               }),
 
-              // SUMMARY
-              new Paragraph({
-                text: "PERFIL PROFISSIONAL",
-                heading: HeadingLevel.HEADING_2,
-                spacing: { before: 200, after: 120 },
-              }),
-              new Paragraph({
-                text: result.professionalSummary || "",
-                alignment: AlignmentType.JUSTIFIED,
-                spacing: { after: 400 },
-              }),
+              new Paragraph({ text: "RESUMO PROFISSIONAL", heading: HeadingLevel.HEADING_2, spacing: { before: 200, after: 120 } }),
+              new Paragraph({ text: result.professionalSummary || "", alignment: AlignmentType.JUSTIFIED, spacing: { after: 400 } }),
 
-              // EXPERIENCE
-              new Paragraph({
-                text: "EXPERIÊNCIA E REALIZAÇÕES",
-                heading: HeadingLevel.HEADING_2,
-                spacing: { before: 200, after: 120 },
-              }),
-              ...(result.descriptionBullets || []).map(
-                (bullet) =>
-                  new Paragraph({
-                    text: bullet,
-                    bullet: { level: 0 },
-                    spacing: { after: 100 },
-                  }),
-              ),
+              new Paragraph({ text: "EXPERIÊNCIA PROFISSIONAL", heading: HeadingLevel.HEADING_2, spacing: { before: 200, after: 120 } }),
+              ...experienceParagraphs,
 
-              // EDUCATION
-              new Paragraph({
-                text: "EDUCAÇÃO E FORMAÇÃO",
-                heading: HeadingLevel.HEADING_2,
-                spacing: { before: 400, after: 120 },
-              }),
-              new Paragraph({
-                text: answers.education || "Informação não fornecida.",
-                spacing: { after: 400 },
-              }),
+              ...(result.projects?.length > 0 ? [
+                new Paragraph({ text: "PROJECTOS E REALIZAÇÕES", heading: HeadingLevel.HEADING_2, spacing: { before: 400, after: 120 } }),
+                ...projectParagraphs,
+              ] : []),
 
-              // SKILLS
-              new Paragraph({
-                text: "COMPETÊNCIAS TÉCNICAS E SOFT SKILLS",
-                heading: HeadingLevel.HEADING_2,
-                spacing: { before: 200, after: 120 },
-              }),
-              new Paragraph({
-                text: (result.skills || []).join(" • "),
-                spacing: { after: 400 },
-              }),
+              new Paragraph({ text: "FORMAÇÃO ACADÉMICA", heading: HeadingLevel.HEADING_2, spacing: { before: 400, after: 120 } }),
+              ...educationParagraphs,
 
-              // LANGUAGES
-              new Paragraph({
-                text: "IDIOMAS",
-                heading: HeadingLevel.HEADING_2,
-                spacing: { before: 200, after: 120 },
-              }),
-              new Paragraph({
-                text: answers.languages || "Português",
-                spacing: { after: 400 },
-              }),
+              new Paragraph({ text: "COMPETÊNCIAS", heading: HeadingLevel.HEADING_2, spacing: { before: 400, after: 120 } }),
+              new Paragraph({ text: (result.skills || []).join("  •  "), spacing: { after: 200 } }),
+
+              ...(result.languages?.length > 0 ? [
+                new Paragraph({ text: "IDIOMAS", heading: HeadingLevel.HEADING_2, spacing: { before: 200, after: 120 } }),
+                new Paragraph({ text: result.languages.join("\n"), spacing: { after: 200 } }),
+              ] : []),
             ],
           },
         ],
       });
 
       const blob = await Packer.toBlob(doc);
-      saveAs(blob, `${answers.name || "CV"}_Hoje.docx`);
+      saveAs(blob, `${(answers.name || "CV").replace(/\s+/g, "_")}_CVFacil.docx`);
       return true;
     } catch (err) {
-      console.error("Error generating DOCX:", err);
+      console.error("Erro ao gerar DOCX:", err);
       return false;
     } finally {
       setIsExporting(false);
     }
   };
 
-  return {
-    isExporting,
-    handleExportPDF,
-    handleExportImage,
-    handleExportDOCX
-  };
+  return { isExporting, handleExportPDF, handleExportImage, handleExportDOCX };
 };

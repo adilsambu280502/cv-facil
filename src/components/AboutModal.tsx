@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Users, Target, ShieldCheck, Sparkles } from 'lucide-react';
+import { X, Users, Target, ShieldCheck } from 'lucide-react';
 import { Button } from './ui/button';
 import { scaleIn, staggerContainer, slideUp } from '../lib/motion';
 
@@ -52,7 +52,7 @@ export function AboutModal({ isOpen, onClose }: AboutModalProps) {
           >
             <motion.div variants={slideUp} className="text-center mb-12">
               <div className="w-20 h-20 bg-slate-900 dark:bg-white rounded-3xl mx-auto flex items-center justify-center mb-6 text-white dark:text-slate-900 shadow-2xl shadow-blue-500/10">
-                <Sparkles size={32} />
+                <Target size={32} />
               </div>
               <h3 className="text-[32px] font-black text-slate-900 dark:text-white tracking-tighter leading-tight mb-4">A Revolucionar o Recrutamento em Angola</h3>
               <p className="text-slate-500 dark:text-slate-400 font-bold max-w-lg mx-auto leading-relaxed">Nascemos para dar às mentes brilhantes de Angola as ferramentas para mostrarem o seu valor de forma perfeita e sem frustrações.</p>

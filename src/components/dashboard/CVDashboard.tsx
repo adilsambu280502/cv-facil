@@ -3,13 +3,18 @@ import { motion, AnimatePresence } from "motion/react";
 import { 
   Download, 
   FileText, 
-  UserCheck, 
   Share2, 
   ChevronRight, 
   ExternalLink,
   Lock,
-  Sparkles,
-  Loader2
+  Target,
+  Loader2,
+  Trophy,
+  X,
+  CheckCircle2,
+  Mail,
+  MessageSquare,
+  Edit3
 } from "lucide-react";
 import { useCV } from "../../context/CVContext";
 import { useExport } from "../../hooks/useExport";
@@ -20,17 +25,32 @@ import { slideUp, scaleIn, fadeIn, staggerContainer } from "../../lib/motion";
 
 import { ChatAssistant } from "./ChatAssistant";
 
-// Lazy loading templates for performance
-const ModernEliteWeb = React.lazy(() => import("../cv/ModernEliteWeb").then(m => ({ default: m.ModernEliteWeb })));
-const ExecutiveEliteWeb = React.lazy(() => import("../cv/ExecutiveEliteWeb").then(m => ({ default: m.ExecutiveEliteWeb })));
-const CreativeEliteWeb = React.lazy(() => import("../cv/CreativeEliteWeb").then(m => ({ default: m.CreativeEliteWeb })));
-const CleanATSWeb = React.lazy(() => import("../cv/CleanATSWeb").then(m => ({ default: m.CleanATSWeb })));
+// Templates profissionais
+const ProfessionalCVWeb = React.lazy(() => import("../cv/ProfessionalCVWeb").then(m => ({ default: m.ProfessionalCVWeb })));
+const CoverLetterWeb = React.lazy(() => import("../cv/CoverLetterWeb").then(m => ({ default: m.CoverLetterWeb })));
 
 export const CVDashboard: React.FC = () => {
-  const { answers, result, hasPaid, setShowPaymentModal, setView } = useCV();
+  const { 
+    answers, 
+    setAnswers, 
+    result, 
+    setResult, 
+    hasPaid, 
+    setShowPaymentModal, 
+    setView, 
+    savedCVs, 
+    user,
+    isGenerating,
+    generateCV
+  } = useCV();
   const cvRef = useRef<HTMLDivElement>(null);
-  const { isExporting, handleExportPDF, handleExportDOCX, handleExportImage } = useExport(cvRef, answers, result);
-  const [activeTab, setActiveTab] = useState<"cv" | "letter" | "coach">("cv");
+  const { isExporting, handleExportPDF } = useExport(cvRef, answers, result);
+  const [activeTab, setActiveTab] = useState<"cv" | "letter" | "coach" | "edit">("cv");
+  const [showTips, setShowTips] = useState(false);
+
+  // Lógica de bloqueio: templates premium exigem pagamento
+  const isPremiumTemplate = ["executive", "creative", "technical"].includes(answers.template);
+  const canDownload = !isPremiumTemplate || hasPaid;
 
   if (!result) {
     return (
@@ -58,24 +78,15 @@ export const CVDashboard: React.FC = () => {
   }
 
   const renderTemplate = () => {
-    const props = { answers, result, hasPaid, cvRef };
+    const props = { answers, result, hasPaid };
     return (
       <React.Suspense fallback={
         <div className="flex flex-col items-center justify-center h-[600px] gap-4">
           <Loader2 className="animate-spin text-accent" size={40} />
-          <p className="text-gray-500 font-bold animate-pulse">A preparar o teu design...</p>
+          <p className="text-gray-500 font-bold animate-pulse">A preparar o teu currículo...</p>
         </div>
       }>
-        {(() => {
-          switch (answers.template) {
-            case "modern": return <ModernEliteWeb {...props} />;
-            case "executive": return <ExecutiveEliteWeb {...props} />;
-            case "creative": return <CreativeEliteWeb {...props} />;
-            case "technical": return <CleanATSWeb {...props} />;
-            case "minimalist": return <CleanATSWeb {...props} />;
-            default: return <ModernEliteWeb {...props} />;
-          }
-        })()}
+        <ProfessionalCVWeb {...props} />
       </React.Suspense>
     );
   };
@@ -104,38 +115,57 @@ export const CVDashboard: React.FC = () => {
           </div>
           <p className="text-base text-slate-500 dark:text-slate-400 mt-8 font-bold leading-relaxed relative z-10">
             O teu perfil está {result.score > 70 ? "extremamente forte" : "equilibrado"}. <br />
-            <button className="text-blue-600 font-black uppercase tracking-widest text-[10px] mt-4 hover:underline">Vê como chegar aos 100%</button>
+            <button 
+              onClick={() => setShowTips(true)}
+              className="text-blue-600 font-black uppercase tracking-widest text-[10px] mt-4 hover:underline flex items-center gap-2"
+            >
+              <Trophy size={14} /> Vê como chegar aos 100%
+            </button>
           </p>
         </Card>
 
         {/* Tabs Selector App-Style */}
-        <div className="flex bg-white dark:bg-slate-900 p-2 rounded-[32px] border-2 border-slate-100 dark:border-slate-800 shadow-xl">
+        <div className="flex bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-md p-1.5 rounded-[32px] border border-slate-200/50 dark:border-slate-800 shadow-lg relative overflow-hidden">
           {[
             { id: "cv", label: "Currículo", icon: FileText },
-            { id: "letter", label: "Carta", icon: Share2 },
-            { id: "coach", label: "Assistente", icon: UserCheck }
-          ].map((tab) => (
-            <button 
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={cn(
-                "flex-1 py-4 rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3",
-                activeTab === tab.id 
-                  ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl scale-[1.02]" 
-                  : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-              )}
-            >
-              <tab.icon size={20} />
-              <span className="hidden sm:inline">{tab.label}</span>
-            </button>
-          ))}
+            { id: "letter", label: "Carta", icon: Mail },
+            { id: "coach", label: "Kamba", icon: MessageSquare },
+            { id: "edit", label: "Editar", icon: Edit3 }
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className="flex-1 py-4 rounded-[26px] text-[10px] sm:text-xs font-black uppercase tracking-[0.15em] transition-colors duration-300 flex items-center justify-center gap-2.5 relative z-10 select-none"
+                style={{ WebkitTapHighlightColor: "transparent" }}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="activeTabPill"
+                    className="absolute inset-0 bg-slate-950 dark:bg-white rounded-[26px] shadow-lg shadow-slate-950/20 dark:shadow-white/5"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className={cn(
+                  "relative z-20 flex items-center gap-2 transition-colors duration-300",
+                  isActive 
+                    ? "text-white dark:text-slate-950 font-black" 
+                    : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-bold"
+                )}>
+                  <tab.icon size={18} className={cn("transition-transform duration-300", isActive && "scale-110")} />
+                  <span className="hidden md:inline">{tab.label}</span>
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Actions Group */}
         <div className="flex flex-col gap-4">
           <Button 
             onClick={() => {
-              if (hasPaid) {
+              if (canDownload) {
                 handleExportPDF();
               } else {
                 setShowPaymentModal(true);
@@ -145,43 +175,9 @@ export const CVDashboard: React.FC = () => {
             size="2xl"
             className="w-full bg-blue-600 hover:bg-blue-500 text-white py-8 rounded-[32px] font-black text-xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] border-none shadow-[0_24px_48px_-12px_rgba(37,99,235,0.4)] group"
           >
-            {isExporting ? <Loader2 className="animate-spin" size={28} /> : (hasPaid ? <Download size={28} className="group-hover:-translate-y-1 transition-transform" /> : <Lock size={28} className="group-hover:scale-110 transition-transform" />)}
-            {isExporting ? "A Gerar PDF..." : (hasPaid ? "Descarregar PDF" : "Desbloquear PDF Premium")}
+            {isExporting ? <Loader2 className="animate-spin" size={28} /> : (canDownload ? <Download size={28} className="group-hover:-translate-y-1 transition-transform" /> : <Lock size={28} className="group-hover:scale-110 transition-transform" />)}
+            {isExporting ? "A Gerar PDF..." : (canDownload ? "Descarregar PDF" : "Desbloquear PDF Premium")}
           </Button>
-
-          <div className="grid grid-cols-2 gap-4">
-            {hasPaid ? (
-               <Button 
-                 onClick={handleExportDOCX}
-                 disabled={isExporting}
-                 variant="outline"
-                 size="xl"
-                 className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white py-8 rounded-[28px] font-black text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-md flex items-center justify-center gap-3 disabled:opacity-50"
-               >
-                 {isExporting ? <Loader2 size={18} className="animate-spin" /> : <FileText size={18} />}
-                 DOCX
-               </Button>
-            ) : (
-               <Button 
-                 variant="outline"
-                 size="xl"
-                 onClick={() => setShowPaymentModal(true)} 
-                 className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-slate-800 text-slate-400 py-8 rounded-[28px] font-black text-sm flex items-center justify-center gap-3 cursor-pointer hover:bg-slate-100 transition-all"
-               >
-                 <Lock size={18} /> DOCX
-               </Button>
-            )}
-            <Button 
-              onClick={handleExportImage}
-              disabled={isExporting}
-              variant="outline"
-              size="xl"
-              className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white py-8 rounded-[28px] font-black text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-md flex items-center justify-center gap-3 disabled:opacity-50"
-            >
-              {isExporting ? <Loader2 size={18} className="animate-spin" /> : <Share2 size={18} />}
-              PNG
-            </Button>
-          </div>
 
           <button 
             onClick={() => {
@@ -232,12 +228,43 @@ export const CVDashboard: React.FC = () => {
                <div className="w-20 h-20 bg-white dark:bg-slate-900 rounded-3xl flex items-center justify-center shadow-2xl mb-8 text-blue-600">
                   <Lock size={36} />
                </div>
-               <h4 className="font-black text-slate-900 dark:text-white mb-4 text-xl tracking-tighter uppercase leading-tight">Dicas de Elite <br /> Bloqueadas</h4>
-               <p className="text-xs font-bold text-slate-500 mb-8 max-w-[200px]">Desbloqueia a análise completa do Arquiteto para este currículo.</p>
+                <h4 className="font-black text-slate-900 dark:text-white mb-4 text-xl tracking-tighter uppercase leading-tight">Análise Estratégica <br /> Bloqueada</h4>
+                <p className="text-xs font-bold text-slate-500 mb-8 max-w-[200px]">Desbloqueia a análise completa do Arquiteto de Carreira para este currículo.</p>
                <Button onClick={() => setShowPaymentModal(true)} size="lg" className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-blue-600/30">Ver Planos</Button>
             </div>
           )}
         </Card>
+
+        {/* Histórico de CVs (Só para Logged In) */}
+        {user && savedCVs.length > 1 && (
+          <Card className="bg-white dark:bg-slate-900 rounded-[40px] p-8 border-2 border-slate-100 dark:border-slate-800 shadow-xl overflow-hidden">
+            <h4 className="font-black text-slate-900 dark:text-white mb-6 text-sm tracking-widest uppercase">Teus Currículos</h4>
+            <div className="space-y-3">
+              {savedCVs.map((cv) => (
+                <button
+                  key={cv.id}
+                  onClick={() => {
+                    setAnswers(cv.answers);
+                    setResult(cv.result);
+                  }}
+                  className={cn(
+                    "w-full p-4 rounded-2xl flex items-center justify-between transition-all group",
+                    // Comparação simples para destacar o ativo
+                    result?.title === cv.result.title
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                      : "bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-slate-100"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <FileText size={18} />
+                    <span className="text-xs font-bold truncate max-w-[180px]">{cv.title}</span>
+                  </div>
+                  <ChevronRight size={16} className="opacity-40 group-hover:translate-x-1 transition-transform" />
+                </button>
+              ))}
+            </div>
+          </Card>
+        )}
       </div>
 
       {/* Main Content Area - O Canvas */}
@@ -250,11 +277,18 @@ export const CVDashboard: React.FC = () => {
             <div className="w-4 h-4 rounded-full bg-emerald-400" />
           </div>
           <div className="flex items-center gap-3">
+             {user && (
+               <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 rounded-full border border-emerald-500/20 mr-4">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Sincronizado</span>
+               </div>
+             )}
              <div className={cn("w-2 h-2 rounded-full animate-pulse", activeTab === "cv" ? "bg-blue-600" : "bg-slate-400")} />
              <span className="text-[12px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.4em]">
                {activeTab === "cv" && "Modo Visualização Final"}
-               {activeTab === "letter" && "Gerador de Cartas"}
-               {activeTab === "coach" && "Consultoria de Carreira"}
+               {activeTab === "letter" && "Branding Pessoal · Carta"}
+               {activeTab === "coach" && "Kamba de Carreira"}
+               {activeTab === "edit" && "Editar Informação"}
              </span>
           </div>
           <div className="hidden sm:flex items-center gap-4">
@@ -292,36 +326,25 @@ export const CVDashboard: React.FC = () => {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="mx-auto bg-white dark:bg-slate-900 shadow-[0_64px_128px_-32px_rgba(0,0,0,0.15)] w-full max-w-[850px] p-20 min-h-[800px] rounded-[48px] border-2 border-slate-100 dark:border-slate-800"
+                className="mx-auto bg-white shadow-[0_64px_128px_-32px_rgba(0,0,0,0.15)] w-full max-w-[850px] min-h-[800px] p-10 sm:p-16 relative"
               >
-                <div className="flex justify-between items-start mb-20 border-b-2 border-slate-50 dark:border-slate-800 pb-12">
-                  <div>
-                    <h2 className="text-[32px] font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tight">{answers.name}</h2>
-                    <p className="text-xl text-blue-600 font-bold tracking-tight">{result.title}</p>
-                  </div>
-                  <div className="text-right text-sm text-slate-400 font-black uppercase tracking-widest">
-                    <p>{new Date().toLocaleDateString('pt-AO', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                  </div>
-                </div>
-                
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <p className="text-xl text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line font-bold tracking-tight">
-                    {result.coverLetter || "A preparar a tua carta de apresentação personalizada..."}
-                  </p>
-                </div>
-                
-                {!hasPaid && (
-                  <div className="mt-20 p-12 bg-slate-50 dark:bg-slate-800/50 border-4 border-dashed border-slate-100 dark:border-slate-800 rounded-[40px] text-center">
-                    <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl text-slate-300">
-                       <Lock size={32} />
+                {result.coverLetter ? (
+                  <React.Suspense fallback={<div className="flex items-center justify-center h-64"><Loader2 className="animate-spin" size={32} /></div>}>
+                    <CoverLetterWeb answers={answers} result={result} />
+                  </React.Suspense>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-[500px] gap-6 text-center">
+                    <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-300">
+                      <Lock size={32} />
                     </div>
-                    <h4 className="text-2xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">Carta de Apresentação de Elite</h4>
-                    <p className="text-lg text-slate-500 dark:text-slate-400 mb-10 max-w-sm mx-auto font-bold tracking-tight leading-relaxed">Deixa que o nosso sistema escreva a carta perfeita para convencer os recrutadores.</p>
-                    <button onClick={() => setShowPaymentModal(true)} className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-12 py-5 rounded-[24px] font-black text-lg hover:scale-110 transition-all shadow-2xl">Upgrade Premium</button>
+                    <h4 className="text-2xl font-black text-slate-900 tracking-tight">Carta de Apresentação</h4>
+                    <p className="text-slate-500 max-w-xs font-medium leading-relaxed">Para gerar a carta, preenche a descrição da vaga no assistente ou volta ao wizard e adiciona uma vaga.</p>
+                    <button onClick={() => setShowPaymentModal(true)} className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black tracking-wide hover:bg-slate-700 transition-all shadow-xl">Desbloquear Premium</button>
                   </div>
                 )}
               </motion.div>
             )}
+
 
             {activeTab === "coach" && (
               <motion.div
@@ -336,9 +359,211 @@ export const CVDashboard: React.FC = () => {
                 </div>
               </motion.div>
             )}
+
+            {activeTab === "edit" && (
+              <motion.div
+                key="edit-tab"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="w-full max-w-3xl mx-auto"
+              >
+                <Card className="bg-white dark:bg-slate-900 rounded-[48px] p-8 sm:p-12 border-2 border-slate-100 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col gap-8">
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Editar Dados do CV</h3>
+                    <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-1">Atualiza a informação e deixa o Kamba polir o teu CV</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Nome Completo */}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Nome Completo</label>
+                      <input 
+                        type="text" 
+                        value={answers.name || ""} 
+                        onChange={(e) => setAnswers({ ...answers, name: e.target.value })}
+                        className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-700/50 focus:border-blue-600 rounded-2xl p-4 text-sm font-bold outline-none transition-all"
+                      />
+                    </div>
+                    {/* Vaga Desejada */}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Vaga Desejada / Cargo</label>
+                      <input 
+                        type="text" 
+                        value={answers.jobDescription || ""} 
+                        onChange={(e) => setAnswers({ ...answers, jobDescription: e.target.value })}
+                        className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-700/50 focus:border-blue-600 rounded-2xl p-4 text-sm font-bold outline-none transition-all"
+                        placeholder="Ex: Contabilista Júnior, Assistente de Vendas"
+                      />
+                    </div>
+                    {/* Telemóvel */}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Contacto / Telemóvel</label>
+                      <input 
+                        type="text" 
+                        value={answers.phone || ""} 
+                        onChange={(e) => setAnswers({ ...answers, phone: e.target.value })}
+                        className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-700/50 focus:border-blue-600 rounded-2xl p-4 text-sm font-bold outline-none transition-all"
+                      />
+                    </div>
+                    {/* E-mail */}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest">E-mail</label>
+                      <input 
+                        type="text" 
+                        value={answers.email || ""} 
+                        onChange={(e) => setAnswers({ ...answers, email: e.target.value })}
+                        className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-700/50 focus:border-blue-600 rounded-2xl p-4 text-sm font-bold outline-none transition-all"
+                      />
+                    </div>
+                    {/* Localização */}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Localização (ex: Luanda, Talatona)</label>
+                      <input 
+                        type="text" 
+                        value={answers.location || ""} 
+                        onChange={(e) => setAnswers({ ...answers, location: e.target.value })}
+                        className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-700/50 focus:border-blue-600 rounded-2xl p-4 text-sm font-bold outline-none transition-all"
+                      />
+                    </div>
+                    {/* LinkedIn */}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest">LinkedIn / Link Profissional</label>
+                      <input 
+                        type="text" 
+                        value={answers.linkedin || ""} 
+                        onChange={(e) => setAnswers({ ...answers, linkedin: e.target.value })}
+                        className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-700/50 focus:border-blue-600 rounded-2xl p-4 text-sm font-bold outline-none transition-all"
+                        placeholder="link para o teu perfil"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Experiência Principal */}
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Experiência Principal (Trabalho, Projetos, etc.)</label>
+                    <textarea 
+                      value={answers.activity || ""} 
+                      onChange={(e) => setAnswers({ ...answers, activity: e.target.value })}
+                      rows={4}
+                      className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-700/50 focus:border-blue-600 rounded-2xl p-4 text-sm font-bold outline-none transition-all resize-none"
+                      placeholder="Descreve o teu trabalho ou responsabilidades principais..."
+                    />
+                  </div>
+
+                  {/* Formação Académica */}
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Formação Académica / Cursos</label>
+                    <textarea 
+                      value={answers.education || ""} 
+                      onChange={(e) => setAnswers({ ...answers, education: e.target.value })}
+                      rows={3}
+                      className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-700/50 focus:border-blue-600 rounded-2xl p-4 text-sm font-bold outline-none transition-all resize-none"
+                      placeholder="Ex: Licenciatura em Contabilidade - UAN (2020 - 2024)..."
+                    />
+                  </div>
+
+                  {/* Competências Técnicas */}
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Competências Técnicas / Ferramentas</label>
+                    <input 
+                      type="text" 
+                      value={answers.hardSkills || ""} 
+                      onChange={(e) => setAnswers({ ...answers, hardSkills: e.target.value })}
+                      className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-700/50 focus:border-blue-600 rounded-2xl p-4 text-sm font-bold outline-none transition-all"
+                      placeholder="Ex: Excel Avançado, Gestão de Stocks, Vendas Diretas"
+                    />
+                  </div>
+
+                  <div className="mt-4">
+                    <Button 
+                      onClick={() => generateCV()}
+                      disabled={isGenerating}
+                      size="2xl"
+                      className="w-full bg-blue-600 hover:bg-blue-500 text-white py-6 rounded-[28px] font-black text-lg flex items-center justify-center gap-4 transition-all active:scale-[0.98] border-none shadow-[0_20px_40px_-10px_rgba(37,99,235,0.3)] group"
+                    >
+                      {isGenerating ? <Loader2 className="animate-spin" size={24} /> : null}
+                      {isGenerating ? "A Re-gerar Currículo..." : "Salvar e Re-gerar com o Kamba de Carreira 🚀"}
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
       </div>
+      {/* Modal de Dicas de Perfil */}
+      <AnimatePresence>
+        {showTips && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowTips(false)}
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[40px] p-10 relative z-10 shadow-2xl border-2 border-slate-100 dark:border-slate-800"
+            >
+              <button 
+                onClick={() => setShowTips(false)}
+                className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 transition-colors"
+              >
+                <X size={24} />
+              </button>
+              
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-600">
+                  <Trophy size={32} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Rumo aos 100%</h3>
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Checklist de Elite</p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                {(result.scoreFeedback?.improvements || []).map((tip: any, i) => {
+                  const title = typeof tip === "string" ? tip : (tip?.point || tip?.title || `Melhoria ${i + 1}`);
+                  const advice = typeof tip === "string" ? "Segue este conselho prático para subires o teu score." : (tip?.actionableAdvice || tip?.explanation || "");
+                  return (
+                    <div key={i} className="flex gap-5 p-6 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-100 dark:border-slate-700 group hover:border-blue-600/20 transition-all">
+                      <div className="w-6 h-6 rounded-full border-2 border-blue-600/20 flex items-center justify-center mt-1 shrink-0 group-hover:border-blue-600/50 transition-colors">
+                         <ChevronRight size={14} className="text-blue-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-black text-slate-900 dark:text-white text-sm mb-1">{title}</h4>
+                        {advice && <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{advice}</p>}
+                      </div>
+                    </div>
+                  );
+                })}
+                
+                {(!result.scoreFeedback?.improvements || result.scoreFeedback.improvements.length === 0) && (
+                  <div className="text-center py-10">
+                    <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-500 mx-auto mb-6">
+                      <CheckCircle2 size={40} />
+                    </div>
+                    <h4 className="text-xl font-black text-slate-900 tracking-tight">Perfil de Topo!</h4>
+                    <p className="text-slate-500 font-medium">Já tens um currículo de nível mundial.</p>
+                  </div>
+                )}
+              </div>
+
+              <Button 
+                onClick={() => setShowTips(false)}
+                className="w-full bg-slate-900 text-white py-6 rounded-2xl font-black text-sm mt-10"
+              >
+                Continuar a Editar
+              </Button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

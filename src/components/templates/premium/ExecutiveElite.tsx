@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   page: {
     padding: 50,
     backgroundColor: '#ffffff',
-    fontFamily: 'Times-Roman', // Serif para um ar executivo e tradicional
+    fontFamily: 'Times-Roman',
   },
   header: {
     textAlign: 'center',
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   name: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#0f172a',
     letterSpacing: 2,
@@ -39,9 +39,6 @@ const styles = StyleSheet.create({
     borderTopColor: '#e2e8f0',
     paddingTop: 10,
   },
-  mainContent: {
-    flexDirection: 'column',
-  },
   section: {
     marginBottom: 25,
   },
@@ -59,39 +56,46 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 10,
     color: '#334155',
-    lineHeight: 1.6,
+    lineHeight: 1.7,
     textAlign: 'justify',
   },
-  experienceItem: {
-    marginBottom: 15,
-  },
-  jobHeader: {
+  bulletPoint: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 5,
-  },
-  jobTitle: {
-    fontSize: 11,
-    fontWeight: 'bold',
-    color: '#0f172a',
-  },
-  company: {
-    fontSize: 10,
-    color: '#64748b',
-    fontStyle: 'italic',
-  },
-  date: {
-    fontSize: 9,
-    color: '#94a3b8',
-  },
-  bulletList: {
-    marginTop: 5,
+    marginBottom: 6,
     paddingLeft: 10,
   },
   bullet: {
+    width: 15,
+    fontSize: 10,
+    color: '#0f172a',
+  },
+  bulletText: {
+    flex: 1,
+    fontSize: 10,
+    color: '#334155',
+    lineHeight: 1.6,
+  },
+  skillRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 10,
+    marginTop: 5,
+  },
+  skillItem: {
     fontSize: 9,
-    color: '#475569',
-    marginBottom: 3,
+    fontWeight: 'bold',
+    color: '#1e293b',
+  },
+  watermark: {
+    position: 'absolute',
+    top: '45%',
+    left: '10%',
+    transform: 'rotate(-45deg)',
+    fontSize: 60,
+    color: 'rgba(200, 200, 200, 0.2)',
+    fontWeight: 700,
+    zIndex: -1,
   }
 });
 
@@ -100,15 +104,13 @@ interface ExecutiveEliteProps {
 }
 
 export const ExecutiveElite: React.FC<ExecutiveEliteProps> = ({ data }) => {
-  // Lógica de Designer para Executivos
-  const totalLength = (data.activity?.length || 0) + (data.teamwork?.length || 0) + (data.problemSolving?.length || 0);
-  const isTooLong = totalLength > 1500;
-  const baseSize = isTooLong ? 9 : 10;
-  const leading = isTooLong ? 1.4 : 1.6;
+  const hasPaid = data.hasPaid;
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {!hasPaid && <Text style={styles.watermark}>PREVIEW - CV FÁCIL</Text>}
+
         {/* Header Centralizado */}
         <View style={styles.header}>
           <Text style={styles.name}>{data.name}</Text>
@@ -116,52 +118,56 @@ export const ExecutiveElite: React.FC<ExecutiveEliteProps> = ({ data }) => {
           
           <View style={styles.contactBar}>
             <Text>{data.email}</Text>
-            <Text>{data.phone}</Text>
-            <Text>{data.location}</Text>
+            <Text>| {data.phone}</Text>
+            <Text>| {data.location}</Text>
           </View>
         </View>
 
-        {/* Sumário Executivo */}
+        {/* Perfil */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Perfil Executivo</Text>
-          <Text style={[styles.content, { fontSize: baseSize, lineHeight: leading }]}>
-            {data.activity || 'Líder orientado a resultados com vasta experiência em gestão estratégica e entrega de valor organizacional.'}
+          <Text style={styles.sectionTitle}>Sumário Executivo</Text>
+          <Text style={styles.content}>
+            {data.professionalSummary || data.activity}
           </Text>
         </View>
 
-        {/* Experiência / Impacto */}
+        {/* Experiência / Realizações */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Experiência e Realizações</Text>
-          <View style={styles.experienceItem}>
-            <Text style={[styles.content, { fontSize: baseSize, lineHeight: leading }]}>
-              {data.teamwork || 'Experiência comprovada na gestão de equipas de alto rendimento e coordenação de projetos complexos.'}
-            </Text>
-          </View>
-          {data.problemSolving && (
-            <View style={styles.experienceItem}>
-              <Text style={[styles.jobTitle, { fontSize: baseSize, marginBottom: 4 }]}>Principais Conquistas</Text>
-              <Text style={[styles.content, { fontSize: baseSize, lineHeight: leading }]}>{data.problemSolving}</Text>
-            </View>
+          <Text style={styles.sectionTitle}>Trajetória e Realizações</Text>
+          {data.descriptionBullets && data.descriptionBullets.length > 0 ? (
+            data.descriptionBullets.map((bullet: string, i: number) => (
+              <View key={i} style={styles.bulletPoint}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.bulletText}>{bullet}</Text>
+              </View>
+            ))
+          ) : (
+            <Text style={styles.content}>{data.teamwork}</Text>
           )}
         </View>
 
-        {/* Formação e Competências */}
+        {/* Expertise */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Formação & Expertise</Text>
-          <Text style={[styles.content, { fontSize: baseSize }]}>
-            <Text style={{ fontWeight: 'bold' }}>Educação: </Text>
-            {data.education}
-          </Text>
-          <Text style={[styles.content, { marginTop: 8, fontSize: baseSize }]}>
-            <Text style={{ fontWeight: 'bold' }}>Áreas de Domínio: </Text>
-            {data.hardSkills}
-          </Text>
+          <Text style={styles.sectionTitle}>Competências Chave</Text>
+          <View style={styles.skillRow}>
+            {(data.skills || []).map((skill: string, i: number) => (
+              <Text key={i} style={styles.skillItem}>
+                {skill.toUpperCase()}{i < data.skills.length - 1 ? ' |' : ''}
+              </Text>
+            ))}
+          </View>
+        </View>
+
+        {/* Formação */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Formação Académica</Text>
+          <Text style={styles.content}>{data.education}</Text>
         </View>
 
         {/* Footer */}
         <View style={{ marginTop: 'auto', textAlign: 'center', borderTopWidth: 0.5, borderTopColor: '#e2e8f0', paddingTop: 10 }}>
-          <Text style={{ fontSize: 7, color: '#94a3b8', letterSpacing: 1 }}>
-            CONFIDENCIAL — DOCUMENTO GERADO POR CV FÁCIL ARQUITETO DE CARREIRA
+          <Text style={{ fontSize: 7, color: '#94a3b8', textAlign: 'center' }}>
+            Gerado pelo Arquiteto de Carreira - CV Fácil (cvfacil.ao)
           </Text>
         </View>
       </Page>

@@ -1,165 +1,241 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Lock, CheckCircle2, Loader2, Star, Phone } from "lucide-react";
+import { Lock, MessageCircle, Key, ArrowRight, X, ShieldCheck, CheckCircle2, Loader2 } from "lucide-react";
 import { useCV } from "../context/CVContext";
 import { verifyPaymentToken } from "../services/payment";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { slideUp, scaleIn, fadeIn } from "../lib/motion";
+import { cn } from "../lib/utils";
 
 export const PaymentModal: React.FC = () => {
   const { showPaymentModal, setShowPaymentModal, setHasPaid } = useCV();
-  const [token, setToken] = useState("");
+  const [code, setCode] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
+  const handleWhatsAppClick = () => {
+    const orderId = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const waNumber = "244929766995";
+    const text = `Olá CV Fácil! O meu ID de pedido é #${orderId}. Gostaria de efetuar o pagamento (Multicaixa) para receber o meu Código de Desbloqueio e exportar o meu currículo.`;
+    window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
   const handleVerify = async () => {
-    if (token.length !== 8) {
-      setErrorMsg("O código deve ter exatamente 8 caracteres.");
+    if (code.length < 6) {
+      setErrorMsg("O código deve ter pelo menos 6 caracteres.");
       return;
     }
-
     setStatus("loading");
     setErrorMsg("");
-
-    const response = await verifyPaymentToken(token);
-    
+    const response = await verifyPaymentToken(code);
     if (response.success) {
       setStatus("success");
       setTimeout(() => {
         setHasPaid(true);
         setShowPaymentModal(false);
-      }, 2000);
+        setStatus("idle");
+        setCode("");
+      }, 2500);
     } else {
       setStatus("error");
-      setErrorMsg(response.message || "Erro na validação.");
+      setErrorMsg(response.message || "Código inválido ou já utilizado.");
     }
   };
 
-  if (!showPaymentModal) return null;
+  const handleClose = () => {
+    setShowPaymentModal(false);
+    setStatus("idle");
+    setCode("");
+    setErrorMsg("");
+  };
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-          onClick={() => setShowPaymentModal(false)}
-        />
-        <motion.div
-          variants={scaleIn}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          className="relative bg-white dark:bg-slate-900 w-full max-w-md rounded-[40px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] border border-slate-100 dark:border-slate-800"
-        >
-          <div className="bg-slate-950 px-8 py-10 text-white relative">
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => setShowPaymentModal(false)}
-              className="absolute top-6 right-6 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
-            >
-              <X size={20} />
-            </Button>
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-accent/20 rounded-2xl flex items-center justify-center border border-accent/30 shadow-[0_0_20px_rgba(var(--accent),0.3)]">
-                <Star size={32} className="text-accent fill-accent" />
-              </div>
-            </div>
-            <h2 className="text-2xl font-black text-center text-balance mb-2">
-              Desbloquear Premium
-            </h2>
-            <p className="text-gray-400 text-center text-sm font-medium">
-              Modelos Executivos, Carta de Apresentação personalizada e análise completa de recrutador.
-            </p>
-          </div>
+      {showPaymentModal && (
+        <>
+          {/* Overlay com backdrop blur */}
+          <motion.div
+            key="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => {
+              if (status !== "loading" && status !== "success") {
+                handleClose();
+              }
+            }}
+            className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[200]"
+          />
 
-          <div className="p-8 overflow-y-auto">
-            {status === "success" ? (
-              <motion.div 
-                variants={fadeIn}
-                initial="initial"
-                animate="animate"
-                className="text-center py-10"
-              >
+          {/* Modal Principal */}
+          <motion.div
+            key="modal"
+            initial={{ opacity: 0, scale: 0.92, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 24 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-[201] px-4 sm:px-0"
+          >
+            <div className="bg-white dark:bg-slate-900 rounded-[36px] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
+
+              {/* Estado: Sucesso */}
+              {status === "success" ? (
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1, rotate: [0, 10, 0] }}
-                  transition={{ type: "spring", damping: 12 }}
-                  className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-8"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="p-12 sm:p-16 text-center flex flex-col items-center"
                 >
-                  <CheckCircle2 size={48} className="text-green-500" />
-                </motion.div>
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3 tracking-tighter">
-                  Pagamento Confirmado!
-                </h3>
-                <p className="text-slate-500 dark:text-slate-400 font-bold leading-relaxed">
-                  Todos os recursos premium foram desbloqueados com sucesso no teu perfil.
-                </p>
-              </motion.div>
-            ) : (
-              <>
-                <div className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 rounded-3xl p-6 mb-8 text-center">
-                  <p className="text-sm font-black text-slate-900 dark:text-white mb-3 uppercase tracking-widest">Paga por Multicaixa Express</p>
-                  <div className="flex items-center justify-center gap-3 mb-4">
-                    <Phone size={20} className="text-blue-600" />
-                    <span className="font-mono text-2xl tracking-tighter text-blue-600 font-black">9XX XXX XXX</span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-bold">
-                    Envia o comprovativo para o nosso WhatsApp e recebe o teu <strong className="text-slate-900 dark:text-white">Código Premium de 8 dígitos</strong> em instantes.
-                  </p>
-                </div>
-
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-4 block">
-                      Código Premium
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-                        <Lock size={18} className="text-slate-400" />
-                      </div>
-                      <Input
-                        type="text"
-                        placeholder="Ex: A1B2C3D4"
-                        maxLength={8}
-                        className="h-16 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl pl-14 pr-6 font-mono text-xl uppercase font-black focus:border-blue-600 transition-all shadow-sm"
-                        value={token}
-                        onChange={(e) => setToken(e.target.value.toUpperCase())}
-                      />
-                    </div>
-                    {errorMsg && (
-                      <p className="text-red-500 text-xs font-black mt-2 ml-4 animate-pulse uppercase tracking-widest">{errorMsg}</p>
-                    )}
-                  </div>
- 
-                  <Button
-                    onClick={handleVerify}
-                    disabled={status === "loading" || token.length < 8}
-                    size="2xl"
-                    className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-2xl py-8 font-black text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] border-none shadow-[0_20px_40px_-10px_rgba(37,99,235,0.4)]"
+                  <motion.div
+                    initial={{ scale: 0, rotate: -20 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
+                    className="w-24 h-24 bg-emerald-100 dark:bg-emerald-500/20 rounded-full flex items-center justify-center mb-8 shadow-xl shadow-emerald-500/20"
                   >
-                    {status === "loading" ? (
-                      <>
-                        <Loader2 size={24} className="animate-spin text-white" />
-                        <span>Validando...</span>
-                      </>
-                    ) : (
-                      <>
-                        Confirmar e Desbloquear
-                        <CheckCircle2 size={24} />
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-        </motion.div>
-      </div>
+                    <CheckCircle2 size={48} className="text-emerald-500" />
+                  </motion.div>
+                  <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+                    Acesso Desbloqueado!
+                  </h3>
+                  <p className="text-slate-500 dark:text-slate-400 font-semibold leading-relaxed">
+                    O teu currículo Premium foi desbloqueado com sucesso. Podes agora exportar o PDF de Alta Fidelidade.
+                  </p>
+                </motion.div>
+              ) : (
+                <>
+                  {/* Header Gradiente */}
+                  <div className="relative h-36 bg-gradient-to-br from-blue-600 via-blue-600 to-indigo-700 flex items-center justify-center overflow-hidden">
+                    <button
+                      onClick={handleClose}
+                      className="absolute top-4 right-4 w-9 h-9 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-colors z-10"
+                    >
+                      <X size={18} />
+                    </button>
+                    <div className="w-16 h-16 bg-white/15 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/25 shadow-xl relative z-10">
+                      <Lock size={30} className="text-white drop-shadow" />
+                    </div>
+                    {/* Glows decorativos */}
+                    <div className="absolute -top-12 -right-12 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-black/20 rounded-full blur-3xl" />
+                  </div>
+
+                  {/* Corpo */}
+                  <div className="p-6 sm:p-10">
+                    <div className="text-center mb-8">
+                      <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">
+                        Desbloqueio Premium
+                      </h3>
+                      <p className="text-slate-500 dark:text-slate-400 font-semibold text-sm leading-relaxed">
+                        Para exportar o teu CV em PDF sem marca d'água, precisas de um{" "}
+                        <span className="text-blue-600 font-black">Código de Acesso</span>.
+                      </p>
+                    </div>
+
+                    <div className="space-y-5">
+                      {/* Opção 1: WhatsApp */}
+                      <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-5 border-2 border-transparent hover:border-emerald-500/30 transition-all group">
+                        <div className="flex items-start gap-4">
+                          <div className="w-11 h-11 bg-emerald-100 dark:bg-emerald-500/20 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm">
+                            <MessageCircle size={22} className="text-emerald-600" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-black text-slate-900 dark:text-white mb-1 text-sm">Pedir o meu Código</h4>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold mb-4 leading-relaxed">
+                              Fala connosco via WhatsApp, paga por Multicaixa e recebe o código imediatamente.
+                            </p>
+                            <Button
+                              onClick={handleWhatsAppClick}
+                              className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black rounded-xl py-5 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all border-none text-sm"
+                            >
+                              <MessageCircle size={18} className="mr-2" />
+                              Solicitar via WhatsApp
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Separador */}
+                      <div className="relative py-1">
+                        <div className="absolute inset-0 flex items-center">
+                          <span className="w-full border-t border-slate-200 dark:border-slate-700" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                          <span className="bg-white dark:bg-slate-900 px-4 font-black text-slate-400 tracking-widest">
+                            Ou inserir código
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Opção 2: Inserir código */}
+                      <div>
+                        <div className="relative group">
+                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <Key
+                              size={18}
+                              className={cn(
+                                "transition-colors",
+                                status === "error" ? "text-rose-500" : "text-slate-400 group-focus-within:text-blue-600"
+                              )}
+                            />
+                          </div>
+                          <input
+                            type="text"
+                            placeholder="XXXX-XXXX"
+                            value={code}
+                            onChange={(e) => {
+                              setCode(e.target.value.toUpperCase());
+                              setStatus("idle");
+                              setErrorMsg("");
+                            }}
+                            onKeyDown={(e) => e.key === "Enter" && handleVerify()}
+                            className={cn(
+                              "w-full pl-11 pr-4 py-4 rounded-xl border-2 font-black text-slate-900 dark:text-white uppercase tracking-widest text-sm outline-none transition-all shadow-inner",
+                              "bg-slate-50 dark:bg-slate-800",
+                              status === "error"
+                                ? "border-rose-400 bg-rose-50 dark:bg-rose-500/10 focus:border-rose-400"
+                                : "border-slate-200 dark:border-slate-700 focus:border-blue-600 dark:focus:border-blue-500"
+                            )}
+                          />
+                        </div>
+                        {errorMsg && (
+                          <motion.p
+                            initial={{ opacity: 0, y: -4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-rose-500 font-bold text-xs mt-2 ml-1"
+                          >
+                            {errorMsg}
+                          </motion.p>
+                        )}
+                        <Button
+                          onClick={handleVerify}
+                          disabled={status === "loading" || !code}
+                          className="w-full mt-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-6 rounded-xl font-black text-base hover:scale-[1.02] active:scale-95 transition-transform border-none shadow-xl shadow-slate-900/10 disabled:opacity-50 disabled:hover:scale-100"
+                        >
+                          {status === "loading" ? (
+                            <span className="flex items-center gap-2">
+                              <Loader2 size={18} className="animate-spin" />
+                              A validar código...
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-2">
+                              Desbloquear Download
+                              <ArrowRight size={18} />
+                            </span>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer de Confiança */}
+                  <div className="bg-slate-50 dark:bg-slate-800/80 px-6 py-4 flex items-center justify-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800">
+                    <ShieldCheck size={15} className="text-blue-600 shrink-0" />
+                    Transação Segura · Pagamentos 100% Angolanos
+                  </div>
+                </>
+              )}
+            </div>
+          </motion.div>
+        </>
+      )}
     </AnimatePresence>
   );
 };

@@ -76,7 +76,7 @@ export const CleanATSWeb: React.FC<Props> = ({ answers, result }) => {
 
       <footer className="mt-auto pt-10 border-t border-slate-200 text-center">
         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-          Documento Otimizado para ATS — Gerado por CV Fácil
+          Documento Otimizado para ATS - Gerado por CV Fácil
         </p>
       </footer>
     </div>

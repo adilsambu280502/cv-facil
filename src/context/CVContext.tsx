@@ -1,20 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { onAuthStateChanged, User, signOut } from "firebase/auth";
-import { auth, db } from "../lib/firebase";
-import { doc, collection, setDoc, Timestamp } from "firebase/firestore";
+import { Session, User } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase";
 import { transformExperience } from "../lib/gemini";
 import { Answers, TransformResult, CV } from "../types";
 
 interface CVContextType {
   user: User | null;
+  session: Session | null;
   authLoading: boolean;
-  view: 'intro' | 'wizard' | 'about' | 'login' | 'dashboard';
-  setView: (view: 'intro' | 'wizard' | 'about' | 'login' | 'dashboard') => void;
+  view: 'intro' | 'wizard' | 'about' | 'login' | 'dashboard' | 'terms' | 'privacy' | 'import';
+  setView: (view: 'intro' | 'wizard' | 'about' | 'login' | 'dashboard' | 'terms' | 'privacy' | 'import') => void;
   step: number;
   setStep: (step: number) => void;
   answers: Answers;
   setAnswers: (answers: Answers) => void;
   result: TransformResult | null;
+  setResult: (res: TransformResult | null) => void;
   isGenerating: boolean;
   generateCV: () => Promise<void>;
   hasPaid: boolean;
@@ -25,6 +26,8 @@ interface CVContextType {
   logout: () => Promise<void>;
   darkMode: boolean;
   toggleDarkMode: () => void;
+  savedCVs: CV[];
+  fetchCVs: () => Promise<void>;
 }
 
 const CVContext = createContext<CVContextType | undefined>(undefined);
@@ -55,48 +58,91 @@ const initialAnswers: Answers = {
   photo: ""
 };
 
+const formatDisplayName = (fullName: string) => {
+  if (!fullName) return "";
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length <= 2) return fullName;
+  return `${parts[0]} ${parts[parts.length - 1]}`;
+};
+
 export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [view, setView] = useState<'intro' | 'wizard' | 'about' | 'login' | 'dashboard'>('intro');
+  const [view, setView] = useState<'intro' | 'wizard' | 'about' | 'login' | 'dashboard' | 'terms' | 'privacy' | 'import'>('intro');
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasPaid, setHasPaid] = useState(() => {
     return localStorage.getItem("cv_has_paid") === "true";
   });
-
-  useEffect(() => {
-    localStorage.setItem("cv_has_paid", hasPaid.toString());
-  }, [hasPaid]);
-
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [result, setResult] = useState<TransformResult | null>(null);
-  
   const [answers, setAnswers] = useState<Answers>(() => {
     const saved = localStorage.getItem("cv_answers");
     return saved ? JSON.parse(saved) : initialAnswers;
   });
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("cv_theme") === "dark";
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [savedCVs, setSavedCVs] = useState<CV[]>([]);
+
+  // ── Supabase Auth: escutar mudanças de sessão ──
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+      if (session?.user) {
+        // Quando loga, buscar CVs
+        fetchCVs();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // ── Buscar CVs do Utilizador ──
+  const fetchCVs = async () => {
+    if (!user) return;
+    try {
+      const { data, error } = await supabase
+        .from('resumes')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setSavedCVs(data || []);
+      
+      // Se houver um CV recente e estivermos no dashboard, carregar o último
+      if (data && data.length > 0 && view === 'dashboard' && !result) {
+        setAnswers(data[0].answers);
+        setResult(data[0].result);
+      }
+    } catch (err) {
+      console.error("Erro ao buscar CVs:", err);
+    }
+  };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setAuthLoading(false);
-      if (u) setView('dashboard');
-    });
-    return unsubscribe;
-  }, []);
+    if (user) fetchCVs();
+  }, [user]);
+
+  // ── Persistência local ──
+  useEffect(() => {
+    localStorage.setItem("cv_has_paid", hasPaid.toString());
+  }, [hasPaid]);
 
   useEffect(() => {
     localStorage.setItem("cv_answers", JSON.stringify(answers));
   }, [answers]);
-
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("cv_theme") === "dark";
-  });
-
-  const toggleDarkMode = () => {
-    setDarkMode(prev => !prev);
-  };
 
   useEffect(() => {
     localStorage.setItem("cv_theme", darkMode ? "dark" : "light");
@@ -107,8 +153,9 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     }
   }, [darkMode]);
 
-  const [error, setError] = useState<string | null>(null);
+  const toggleDarkMode = () => setDarkMode(prev => !prev);
 
+  // ── Geração do CV ──
   const generateCV = async () => {
     setIsGenerating(true);
     setError(null);
@@ -119,52 +166,67 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         Email: ${answers.email || "Não fornecido"}
         Telemóvel: ${answers.phone || "Não fornecido"}
         Localização: ${answers.location || "Não fornecido"}
+        LinkedIn: ${answers.linkedin || "Não fornecido"}
+        GitHub: ${answers.github || "Não fornecido"}
+        Website/Portfólio: ${answers.website || "Não fornecido"}
+        
         Formação Académica: ${answers.education}
         Línguas: ${answers.languages || "Não referidas"}
+        
+        Ferramentas / Software / Competências Técnicas: ${answers.hardSkills || "Não referidas"}
         Linguagens de Programação: ${answers.programmingLanguages || "Não referidas"}
-        Ferramentas/Software: ${answers.hardSkills || "Não referidas"}
-        LinkedIn: ${answers.linkedin}
-        GitHub: ${answers.github}
-        Atividade Recente: ${answers.activity}
+        
+        Atividade Principal / Experiência de Trabalho: ${answers.activity}
         Trabalho em Equipa: ${answers.teamwork}
         Resolução de Problemas: ${answers.problemSolving}
         Gestão de Tempo: ${answers.timeManagement}
         Liderança: ${answers.leadership}
       `;
 
-      const res = await transformExperience(
-        rawInput,
-        answers.jobDescription
-      );
+      const res = await transformExperience(rawInput, answers.jobDescription);
       setResult(res);
-      
+
+      // Guardar CV no Supabase (só se autenticado)
       if (user) {
-        const cvRef = doc(collection(db, `users/${user.uid}/cvs`));
-        await setDoc(cvRef, {
-          title: `CV - ${answers.jobDescription || "Geral"}`,
-          data: res,
-          createdAt: Timestamp.now(),
+        const { error: insertError } = await supabase.from('resumes').insert({
+          user_id: user.id,
+          title: `CV - ${answers.jobDescription?.slice(0, 40) || "Geral"}`,
+          template: answers.template,
+          answers: answers,
+          result: res,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         });
+        
+        if (insertError) console.error("Erro ao guardar CV:", insertError);
+        fetchCVs(); // Recarregar lista
       }
-      
+
       setView('dashboard');
     } catch (err) {
       console.error(err);
       setError("Falha ao comunicar com os servidores. Por favor, tenta novamente.");
-      setStep(14); 
+      setStep(14);
     } finally {
       setIsGenerating(false);
     }
   };
 
+  // ── Logout ──
   const logout = async () => {
-    await signOut(auth);
+    await supabase.auth.signOut();
+    setUser(null);
+    setSession(null);
+    setSavedCVs([]);
+    setResult(null);
+    setAnswers(initialAnswers);
     setView('intro');
   };
 
   return (
     <CVContext.Provider value={{
       user,
+      session,
       authLoading,
       view,
       setView,
@@ -173,6 +235,7 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       answers,
       setAnswers,
       result,
+      setResult,
       isGenerating,
       generateCV,
       hasPaid,
@@ -182,7 +245,9 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       setShowPaymentModal,
       error,
       darkMode,
-      toggleDarkMode
+      toggleDarkMode,
+      savedCVs,
+      fetchCVs
     }}>
       {children}
     </CVContext.Provider>

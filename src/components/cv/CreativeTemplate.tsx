@@ -1,18 +1,5 @@
 import React from "react";
 import { 
-  Lock 
-} from "lucide-react";
-import { Answers, TransformResult } from "../../types";
-import { cn } from "../../lib/utils";
-
-interface TemplateProps {
-  answers: Answers;
-  result: TransformResult;
-  hasPaid: boolean;
-}
-
-import React from "react";
-import { 
   Lock, 
   Mail, 
   Phone, 

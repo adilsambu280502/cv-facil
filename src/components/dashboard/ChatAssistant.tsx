@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Send, User, Loader2, Sparkles } from "lucide-react";
+import { Send, User, Loader2 } from "lucide-react";
 import { useCV } from "../../context/CVContext";
 import { cn } from "../../lib/utils";
 
@@ -16,7 +16,7 @@ export const ChatAssistant: React.FC = () => {
     {
       id: "1",
       role: "assistant",
-      content: "Olá! Sou o teu Coach CV Fácil. Analisei o teu currículo e estou aqui para te ajudar a brilhar em qualquer entrevista em Angola. O que queres saber?"
+      content: "Olá! Sou o teu Kamba de Carreira. Analisei o teu currículo e estou aqui para te ajudar a brilhar nas tuas candidaturas e entrevistas de emprego em Angola. O que gostarias de melhorar ou perguntar sobre o teu CV?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -60,7 +60,7 @@ export const ChatAssistant: React.FC = () => {
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: data.content || "Desculpa, tive um problema técnico. Podes repetir?"
+        content: (data.content || "Desculpa, tive um problema técnico. Podes repetir?").replace(/\*\*/g, "")
       };
       
       setMessages(prev => [...prev, botMessage]);
@@ -80,10 +80,10 @@ export const ChatAssistant: React.FC = () => {
     <div className="flex flex-col h-[500px] bg-white rounded-[24px] overflow-hidden border border-gray-100 shadow-sm">
       <div className="p-4 border-b border-gray-50 flex items-center gap-3 bg-gray-50/50">
         <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center text-white">
-          <Sparkles size={16} />
+          <User size={16} />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-gray-900 leading-none">Coach CV Fácil</h4>
+          <h4 className="text-sm font-bold text-gray-900 leading-none">Kamba de Carreira</h4>
           <span className="text-[10px] text-green-500 font-bold uppercase tracking-wider">Online agora</span>
         </div>
       </div>
@@ -156,7 +156,7 @@ export const ChatAssistant: React.FC = () => {
           </button>
         </div>
         <p className="text-[10px] text-gray-400 mt-3 text-center font-medium">
-          O assistente usa tecnologia avançada para analisar o teu perfil.
+          O Kamba de Carreira responde exclusivamente a dúvidas sobre o teu CV, carta e dicas de entrevista.
         </p>
       </div>
     </div>

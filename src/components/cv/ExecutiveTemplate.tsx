@@ -3,27 +3,6 @@ import {
   Mail, 
   Phone, 
   MapPin, 
-  Globe, 
-  Linkedin, 
-  Github, 
-  Facebook, 
-  Instagram, 
-  Lock 
-} from "lucide-react";
-import { Answers, TransformResult } from "../../types";
-import { cn } from "../../lib/utils";
-
-interface TemplateProps {
-  answers: Answers;
-  result: TransformResult;
-  hasPaid: boolean;
-}
-
-import React from "react";
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
   Linkedin, 
   Lock,
   Award,
@@ -108,7 +87,7 @@ export const ExecutiveTemplate: React.FC<TemplateProps> = ({
                 <div className="absolute -left-[9px] top-0 w-4 h-4 bg-white border-2 border-slate-900 rounded-full" style={{ borderColor: primaryColor }} />
                 <div className="flex justify-between items-start mb-4">
                   <h4 className="text-[20px] font-black text-slate-900 tracking-tight">{result.title}</h4>
-                  <span className="text-[13px] font-black text-slate-400 uppercase tracking-widest">2020 — Presente</span>
+                  <span className="text-[13px] font-black text-slate-400 uppercase tracking-widest">2020 - Presente</span>
                 </div>
                 <ul className="space-y-4">
                   {result.descriptionBullets.map((bullet, i) => (

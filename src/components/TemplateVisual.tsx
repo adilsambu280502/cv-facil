@@ -66,10 +66,16 @@ export const TemplateVisual: React.FC<TemplateVisualProps> = ({ type, className,
 
   return (
     <div className={cn(
-      "aspect-[3/4] w-full bg-white dark:bg-slate-900 border-2 rounded-2xl overflow-hidden shadow-sm transition-all duration-500 relative p-4 flex flex-col group",
+      "aspect-[3/4] w-full bg-white dark:bg-slate-900 border-2 rounded-2xl overflow-hidden shadow-sm transition-all duration-700 relative p-4 flex flex-col group/visual",
       active ? "border-blue-600 scale-[1.03] shadow-2xl z-10" : "border-slate-100 dark:border-slate-800",
       className
     )}>
+      {/* Glossy Sheen Effect */}
+      <div className="absolute inset-0 translate-x-[-100%] group-hover/visual:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] pointer-events-none z-20" />
+      
+      {/* Subtle Paper Texture Overlay */}
+      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none z-10 bg-[url('https://www.transparenttextures.com/patterns/paper.png')]" />
+
       {/* Header Realista */}
       <div className={s.header}>
         <div className={cn(s.name, "dark:text-white")}>ADILSON SAMBUMBA</div>
@@ -118,7 +124,7 @@ export const TemplateVisual: React.FC<TemplateVisualProps> = ({ type, className,
       </div>
 
       {/* Overlay de Qualidade */}
-      <div className="absolute inset-0 bg-gradient-to-t from-white/10 dark:from-black/10 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-white/10 dark:from-black/10 to-transparent pointer-events-none z-10" />
       
       {/* Badge de Seleção ou Premium */}
       {(active || type === 'modern') && (
