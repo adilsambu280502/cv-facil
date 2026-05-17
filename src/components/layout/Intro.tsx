@@ -288,7 +288,7 @@ export const Intro: React.FC = () => {
               <h1
                 className="text-[32px] sm:text-[60px] lg:text-[72px] xl:text-[88px] font-black leading-[1.05] tracking-[-0.04em] mb-6 lg:mb-10 text-slate-900 dark:text-white break-words"
               >
-                <span className="hidden lg:inline">A primeira plataforma em Angola que transforma a tua história num <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">currículo impossível de ignorar.</span></span>
+                <span className="hidden lg:inline">A primeira plataforma angolana que transforma a tua história num <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">currículo impossível de ignorar.</span></span>
                 <span className="lg:hidden text-center block">
                   Gera o <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">CV de Elite</span> que te coloca no <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">topo.</span>
                 </span>
