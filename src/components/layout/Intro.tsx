@@ -346,7 +346,7 @@ export const Intro: React.FC = () => {
               >
                 <div className="lg:rotate-y-[-8deg] rounded-[24px] overflow-hidden border-2 border-slate-100 dark:border-slate-800 shadow-[0_60px_120px_-30px_rgba(0,0,0,0.35)] bg-white">
                   <img 
-                    src="/rui-sardinha-cv.png" 
+                    src="/rui-sardinha-home-cv.png" 
                     alt="CV de Rui Sardinha" 
                     className="w-full h-auto object-cover"
                   />
