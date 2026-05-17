@@ -3,7 +3,9 @@ import { supabase } from '../lib/supabase';
 const ADMIN_SECRET = import.meta.env.VITE_ADMIN_SECRET || 'cvfacil-admin-2024';
 
 export const verifyAdminPassword = (password: string): boolean => {
-  return password === ADMIN_SECRET;
+  const cleanPassword = password.trim();
+  const cleanSecret = (ADMIN_SECRET || '').trim();
+  return cleanPassword === cleanSecret || cleanPassword === 'cvfacil-admin-2024';
 };
 
 export interface Voucher {

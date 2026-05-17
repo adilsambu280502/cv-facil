@@ -4,7 +4,8 @@ import {
   Key, Plus, Copy, Check, Trash2, TrendingUp,
   Users, FileText, DollarSign, RefreshCw, X,
   ShieldCheck, LogOut, ArrowLeft, CheckCircle2,
-  Clock, AlertCircle, Loader2, MessageCircle
+  Clock, AlertCircle, Loader2, MessageCircle,
+  Eye, EyeOff
 } from "lucide-react";
 import {
   createVoucher, listVouchers, listTransactions,
@@ -20,11 +21,12 @@ const PLANS = [
 // ─── Login do Admin ────────────────────────────────────────────────────────────
 const AdminLogin: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (verifyAdminPassword(password)) {
+    if (verifyAdminPassword(password.trim())) {
       sessionStorage.setItem("admin_auth", "true");
       onSuccess();
     } else {
@@ -49,16 +51,26 @@ const AdminLogin: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
         <p className="text-slate-500 text-center text-sm font-bold mb-10">Acesso restrito</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="password"
-            placeholder="Password de Admin"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            className={`w-full bg-slate-900 border-2 rounded-2xl px-5 py-4 text-white font-bold outline-none transition-all ${
-              error ? "border-red-500" : "border-slate-800 focus:border-blue-600"
-            }`}
-            autoFocus
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password de Admin"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              className={`w-full bg-slate-900 border-2 rounded-2xl pl-5 pr-14 py-4 text-white font-bold outline-none transition-all ${
+                error ? "border-red-500" : "border-slate-800 focus:border-blue-600"
+              }`}
+              autoFocus
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors p-2"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
           {error && (
             <p className="text-red-400 text-sm font-bold text-center">Password incorreta</p>
           )}
