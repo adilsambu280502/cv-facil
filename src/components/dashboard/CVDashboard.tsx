@@ -47,6 +47,18 @@ export const CVDashboard: React.FC = () => {
   const { isExporting, handleExportPDF } = useExport(cvRef, answers, result);
   const [activeTab, setActiveTab] = useState<"cv" | "letter" | "coach" | "edit">("cv");
   const [showTips, setShowTips] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const handleDownload = async () => {
+    if (canDownload) {
+      const success = await handleExportPDF();
+      if (success) {
+        setShowSuccessModal(true);
+      }
+    } else {
+      setShowPaymentModal(true);
+    }
+  };
 
   // Lógica de bloqueio: templates premium exigem pagamento
   const isPremiumTemplate = ["executive", "creative", "technical"].includes(answers.template);
@@ -164,13 +176,7 @@ export const CVDashboard: React.FC = () => {
         {/* Actions Group */}
         <div className="flex flex-col gap-4">
           <Button 
-            onClick={() => {
-              if (canDownload) {
-                handleExportPDF();
-              } else {
-                setShowPaymentModal(true);
-              }
-            }}
+            onClick={handleDownload}
             disabled={isExporting}
             size="2xl"
             className="w-full bg-blue-600 hover:bg-blue-500 text-white py-8 rounded-[32px] font-black text-xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] border-none shadow-[0_24px_48px_-12px_rgba(37,99,235,0.4)] group"
@@ -559,6 +565,101 @@ export const CVDashboard: React.FC = () => {
                 className="w-full bg-slate-900 text-white py-6 rounded-2xl font-black text-sm mt-10"
               >
                 Continuar a Editar
+              </Button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal de Sucesso de Download */}
+      <AnimatePresence>
+        {showSuccessModal && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowSuccessModal(false)}
+              className="absolute inset-0 bg-slate-950/65 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[40px] p-8 sm:p-10 relative z-10 shadow-2xl border-2 border-slate-100 dark:border-slate-800"
+            >
+              <button 
+                onClick={() => setShowSuccessModal(false)}
+                className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >
+                <X size={24} />
+              </button>
+              
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-600">
+                  <CheckCircle2 size={32} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Download Concluído!</h3>
+                  <p className="text-xs font-black text-emerald-500 uppercase tracking-widest">🎉 Boa Sorte na tua Jornada!</p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="p-6 bg-slate-50 dark:bg-slate-800/40 rounded-3xl border border-slate-100 dark:border-slate-700/50">
+                  <p className="text-sm text-slate-700 dark:text-slate-300 font-bold leading-relaxed">
+                    O teu currículo profissional foi gerado e descarregado com sucesso! Agora estás com uma vantagem competitiva brutal para conquistar a vaga dos teus sonhos. 🚀
+                  </p>
+                  <p className="text-sm text-slate-700 dark:text-slate-300 font-black mt-4">
+                    Desejamos-te o maior sucesso e boa sorte!
+                  </p>
+                </div>
+
+                <div className="text-center space-y-4">
+                  <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                    Gostaste do resultado? Dá-nos uma força!
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={() => {
+                        const waNumber = "244929766995";
+                        const text = "Olá CV Fácil! Acabei de exportar o meu currículo. Gostei imenso da plataforma! Deixo aqui o meu feedback/sugestão de melhoria: ";
+                        window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, "_blank");
+                      }}
+                      className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 px-6 rounded-2xl font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-emerald-500/15"
+                    >
+                      <MessageSquare size={16} />
+                      Deixar Feedback
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        if (navigator.share) {
+                          navigator.share({
+                            title: 'CV Fácil',
+                            text: 'Cria o teu currículo profissional de nível mundial em minutos com o CV Fácil! 🚀',
+                            url: window.location.origin
+                          }).catch(console.error);
+                        } else {
+                          navigator.clipboard.writeText(window.location.origin);
+                          alert("Link do CV Fácil copiado para partilhar com os teus amigos!");
+                        }
+                      }}
+                      className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white py-4 px-6 rounded-2xl font-black text-xs uppercase tracking-wider transition-all hover:bg-slate-50 dark:hover:bg-slate-750"
+                    >
+                      <Share2 size={16} />
+                      Partilhar com Amigos
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <Button 
+                onClick={() => setShowSuccessModal(false)}
+                className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-6 rounded-2xl font-black text-xs uppercase tracking-widest mt-8"
+              >
+                Voltar ao Painel
               </Button>
             </motion.div>
           </div>

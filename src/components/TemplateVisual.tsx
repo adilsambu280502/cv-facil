@@ -30,12 +30,13 @@ export const TemplateVisual: React.FC<TemplateVisualProps> = ({ type, className,
         };
       case 'executive':
         return {
-          header: "text-center border-y border-slate-200 py-3 mb-4",
-          name: "text-slate-900 font-black text-[12px] tracking-tight",
-          title: "text-slate-600 font-serif italic text-[7px]",
-          section: "text-slate-900 font-black text-[8px] mb-2 uppercase text-center bg-slate-50 py-1",
-          text: "text-slate-600 font-medium text-[5px] leading-relaxed",
-          bullet: "w-1 h-1 bg-slate-900 rounded-full shrink-0 mt-1",
+          header: "flex justify-between items-start border-b border-slate-200 pb-4 mb-4",
+          name: "text-slate-900 font-black text-[13px] leading-none uppercase tracking-tight",
+          title: "text-blue-600 font-black text-[6.5px] uppercase tracking-[0.25em] mt-1.5",
+          section: "text-slate-900 font-black text-[7px] mb-2.5 uppercase border-b border-slate-100 pb-1 tracking-wider",
+          text: "text-slate-500 font-bold text-[5.5px] leading-relaxed",
+          bullet: "w-1 h-1 bg-blue-600 rounded-full shrink-0 mt-1",
+          sidebar: "w-[35%] bg-slate-50 p-3 rounded-xl -mr-2 -mb-2 ml-4 flex flex-col gap-2 shrink-0 border border-slate-100",
         };
       case 'creative':
         return {
@@ -58,11 +59,108 @@ export const TemplateVisual: React.FC<TemplateVisualProps> = ({ type, className,
           skill: "bg-slate-100 px-1.5 py-0.5 rounded text-black font-bold",
         };
       default:
-        return getStyles();
+        return {
+          header: "border-b-2 border-slate-900 pb-3 mb-4",
+          name: "text-slate-900 font-black text-[10px]",
+          title: "text-slate-500 font-bold text-[6px] uppercase tracking-widest",
+          section: "text-slate-900 font-black text-[7px] mb-2 uppercase border-b border-slate-100 pb-1",
+          text: "text-slate-400 font-medium text-[5px] leading-relaxed",
+          bullet: "w-1 h-1 bg-slate-300 rounded-full shrink-0 mt-1",
+        };
+    }
+  };
+
+  const getTemplateInfo = () => {
+    switch (type) {
+      case 'minimalist':
+        return { 
+          name: "MAURO CHILUTE", 
+          title: "Engenheiro Eletrotécnico",
+          email: "mauro.chilute@email.ao",
+          phone: "+244 923 112 334",
+          location: "Benguela, Angola",
+          role1: "Engenheiro de Manutenção",
+          desc1: "Supervisão e comissionamento de subestações elétricas de média e alta tensão.",
+          role2: "Técnico de Redes Elétricas",
+          desc2: "Manutenção corretiva e preventiva de sistemas elétricos industriais complexos.",
+          education: "Licenciatura em Engenharia Eletrotécnica - ISPTEC",
+          skills: ["Liderança", "Estratégia", "Redes Elétricas", "Manutenção Industrial"]
+        };
+      case 'modern':
+        return { 
+          name: "ANABELA KASSOLA", 
+          title: "Gestora de Recursos Humanos",
+          email: "anabela.kassola@email.ao",
+          phone: "+244 931 445 566",
+          location: "Luanda, Angola",
+          role1: "Business Partner de RH",
+          desc1: "Desenho e implementação de planos de carreira, recrutamento e retenção de talentos chave.",
+          role2: "Analista de Desenvolvimento",
+          desc2: "Coordenação de avaliações de desempenho de larga escala e planos de formação.",
+          education: "Licenciatura em Gestão de Recursos Humanos - UAN",
+          skills: ["Gestão de Talentos", "Relações Laborais", "Desenvolvimento", "Liderança"]
+        };
+      case 'technical':
+        return { 
+          name: "VALTER CHIPENDA", 
+          title: "Desenvolvedor Full Stack",
+          email: "valter.chipenda@email.ao",
+          phone: "+244 945 778 899",
+          location: "Huambo, Angola",
+          role1: "Desenvolvedor Core Sénior",
+          desc1: "Desenvolvimento de APIs robustas em Node.js e arquiteturas SPA em React/TypeScript.",
+          role2: "Engenheiro de Software",
+          desc2: "Desenho de bases de dados PostgreSQL seguras e otimização de consultas críticas.",
+          education: "Licenciatura em Ciências da Computação - ISUTIC",
+          skills: ["React / Next.js", "Node.js / Express", "PostgreSQL", "Prisma ORM"]
+        };
+      case 'creative':
+        return { 
+          name: "NAYARA BENTO", 
+          title: "Motion Designer Sénior",
+          email: "nayara.bento@email.ao",
+          phone: "+244 922 889 900",
+          location: "Luanda, Angola",
+          role1: "Lead Motion Designer",
+          desc1: "Criação de animações e identidades dinâmicas para campanhas publicitárias premium.",
+          role2: "Designer Multimédia",
+          desc2: "Produção de designs interativos e protótipos de alta fidelidade baseados em UX.",
+          education: "Licenciatura em Design de Comunicação - ISIA",
+          skills: ["After Effects", "UI/UX & Figma", "Motion Graphics", "Photoshop"]
+        };
+      case 'executive':
+        return { 
+          name: "RUI SARDINHA", 
+          title: "Diretor Comercial & Operações",
+          email: "rui.sardinha@email.ao",
+          phone: "+244 929 766 995",
+          location: "Luanda, Angola",
+          role1: "Diretor Geral de Vendas",
+          desc1: "Liderança de operações comerciais de larga escala, resultando em 45% de crescimento anual.",
+          role2: "Gestor de Vendas Sénior",
+          desc2: "Gestão e reestruturação da equipa comercial de alta performance com foco em conversão.",
+          education: "Mestrado em Gestão de Negócios (MBA) - UAN",
+          skills: ["Gestão Comercial", "Liderança de Equipas", "Negociação B2B"]
+        };
+      default:
+        return { 
+          name: "CANDIDATO ANGOLANO", 
+          title: "Profissional Qualificado",
+          email: "candidato@email.ao",
+          phone: "+244 923 000 000",
+          location: "Angola",
+          role1: "Profissional Sénior",
+          desc1: "Descrição da experiência profissional e conquistas mensuráveis relevantes.",
+          role2: "Especialista Sénior",
+          desc2: "Descrição de responsabilidades e realizações de alto impacto.",
+          education: "Formação Superior Concluída",
+          skills: ["Competência A", "Competência B", "Competência C"]
+        };
     }
   };
 
   const s = getStyles();
+  const info = getTemplateInfo();
 
   return (
     <div className={cn(
@@ -78,23 +176,25 @@ export const TemplateVisual: React.FC<TemplateVisualProps> = ({ type, className,
 
       {/* Header Realista */}
       <div className={s.header}>
-        <div className={cn(s.name, "dark:text-white")}>ADILSON SAMBUMBA</div>
-        <div className={cn(s.title, "dark:text-slate-400")}>Gestor de Projetos Digitais</div>
+        <div className={cn(s.name, "dark:text-white")}>{info.name}</div>
+        <div className={cn(s.title, "dark:text-slate-400")}>{info.title}</div>
       </div>
 
       {/* Conteúdo Realista */}
-      <div className="flex flex-1 gap-0">
-        {s.sidebar && (
+      <div className="flex flex-1 gap-4 overflow-hidden">
+        {/* Se não for executive e tiver sidebar, renderiza na esquerda (como o creative) */}
+        {s.sidebar && type !== 'executive' && (
           <div className={cn(s.sidebar, "dark:border-slate-800")}>
             <div className={cn(s.section, "dark:text-blue-400")}>Contacto</div>
             <div className="space-y-1 mb-4">
-              <div className={cn(s.text, "dark:text-slate-400")}>Luanda, Angola</div>
-              <div className={cn(s.text, "dark:text-slate-400")}>adilson@email.ao</div>
+              <div className={cn(s.text, "dark:text-slate-400")}>{info.location}</div>
+              <div className={cn(s.text, "dark:text-slate-400")}>{info.email}</div>
             </div>
             <div className={cn(s.section, "dark:text-blue-400")}>Skills</div>
             <div className="flex flex-wrap gap-1">
-               <div className={cn(s.text, "dark:text-slate-400")}>Leadership</div>
-               <div className={cn(s.text, "dark:text-slate-400")}>Strategy</div>
+               {info.skills.slice(0, 2).map((skill, idx) => (
+                 <div key={idx} className={cn(s.text, "dark:text-slate-400")}>{skill}</div>
+               ))}
             </div>
           </div>
         )}
@@ -104,23 +204,51 @@ export const TemplateVisual: React.FC<TemplateVisualProps> = ({ type, className,
           <div className="space-y-3 mb-6">
             <div>
               <div className="flex justify-between items-center mb-1">
-                <div className="text-[6px] font-black text-slate-800 dark:text-slate-200">Senior Manager</div>
+                <div className="text-[6px] font-black text-slate-800 dark:text-slate-200">
+                  {info.role1}
+                </div>
                 <div className="text-[5px] font-bold text-slate-400">2020 - Presente</div>
               </div>
-              <div className={cn(s.text, "dark:text-slate-400")}>Liderança de equipas multidisciplinares para entrega de produtos escaláveis no mercado nacional.</div>
+              <div className={cn(s.text, "dark:text-slate-400")}>
+                {info.desc1}
+              </div>
             </div>
             <div>
               <div className="flex justify-between items-center mb-1">
-                <div className="text-[6px] font-black text-slate-800 dark:text-slate-200">Consultor Digital</div>
+                <div className="text-[6px] font-black text-slate-800 dark:text-slate-200">
+                  {info.role2}
+                </div>
                 <div className="text-[5px] font-bold text-slate-400">2018 - 2020</div>
               </div>
-              <div className={cn(s.text, "dark:text-slate-400")}>Implementação de estratégias digitais de alto impacto para retenção de utilizadores.</div>
+              <div className={cn(s.text, "dark:text-slate-400")}>
+                {info.desc2}
+              </div>
             </div>
           </div>
 
           <div className={cn(s.section, "dark:text-blue-400")}>Educação</div>
-          <div className={cn(s.text, "dark:text-slate-400")}>Licenciatura em Engenharia Informática - ITEL/UAN</div>
+          <div className={cn(s.text, "dark:text-slate-400")}>
+            {info.education}
+          </div>
         </div>
+
+        {/* Se for executive, renderiza a sidebar na direita (Layout Espelhado do Executivo Pro!) */}
+        {s.sidebar && type === 'executive' && (
+          <div className={cn(s.sidebar, "dark:border-slate-800 bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 flex flex-col gap-2 shrink-0")}>
+            <div className={cn(s.section, "dark:text-blue-400")}>Contacto</div>
+            <div className="space-y-1 mb-3">
+              <div className={cn(s.text, "dark:text-slate-400")}>{info.location}</div>
+              <div className={cn(s.text, "dark:text-slate-400")}>{info.email}</div>
+              <div className={cn(s.text, "dark:text-slate-400")}>{info.phone}</div>
+            </div>
+            <div className={cn(s.section, "dark:text-blue-400")}>Skills</div>
+            <div className="flex flex-col gap-1">
+               {info.skills.map((skill, idx) => (
+                 <div key={idx} className={cn(s.text, "dark:text-slate-400")}>• {skill}</div>
+               ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Overlay de Qualidade */}

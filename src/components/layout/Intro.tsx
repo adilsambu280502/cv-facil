@@ -346,7 +346,7 @@ export const Intro: React.FC = () => {
               >
                 <div className="lg:rotate-y-[-8deg]">
                   <TemplateVisual
-                  type="creative"
+                  type="executive"
                   active
                   className="w-full shadow-[0_60px_120px_-30px_rgba(0,0,0,0.3)]"
                 />

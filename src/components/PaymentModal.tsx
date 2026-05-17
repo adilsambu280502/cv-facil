@@ -133,23 +133,36 @@ export const PaymentModal: React.FC = () => {
                     </div>
 
                     <div className="space-y-5">
-                      {/* Opção 1: WhatsApp */}
-                      <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-5 border-2 border-transparent hover:border-emerald-500/30 transition-all group">
+                      {/* Opção 1: Multicaixa Express */}
+                      <div className="bg-slate-50 dark:bg-slate-800/60 rounded-[24px] p-5 border border-slate-100 dark:border-slate-800 hover:border-emerald-500/25 transition-all group">
                         <div className="flex items-start gap-4">
-                          <div className="w-11 h-11 bg-emerald-100 dark:bg-emerald-500/20 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm">
-                            <MessageCircle size={22} className="text-emerald-600" />
+                          <div className="w-11 h-11 bg-emerald-100 dark:bg-emerald-500/10 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-sm">
+                            <MessageCircle size={22} className="text-emerald-500" />
                           </div>
                           <div className="flex-1">
-                            <h4 className="font-black text-slate-900 dark:text-white mb-1 text-sm">Pedir o meu Código</h4>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold mb-4 leading-relaxed">
-                              Fala connosco via WhatsApp, paga por Multicaixa e recebe o código imediatamente.
-                            </p>
+                            <h4 className="font-black text-slate-900 dark:text-white mb-2 text-sm uppercase tracking-wide">
+                              Paga na logo via Multicaixa Express ⚡
+                            </h4>
+                            <div className="space-y-2 mb-4 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                              <p className="flex items-center gap-2">
+                                <span className="w-5 h-5 bg-blue-600/10 text-blue-500 flex items-center justify-center rounded-full font-black shrink-0">1</span>
+                                Envia o valor para o telemóvel: <strong className="text-blue-500 dark:text-blue-400 select-all font-black">929 766 995</strong>
+                              </p>
+                              <p className="flex items-center gap-2">
+                                <span className="w-5 h-5 bg-blue-600/10 text-blue-500 flex items-center justify-center rounded-full font-black shrink-0">2</span>
+                                Clica abaixo para enviar o comprovativo no WhatsApp.
+                              </p>
+                              <p className="flex items-center gap-2">
+                                <span className="w-5 h-5 bg-blue-600/10 text-blue-500 flex items-center justify-center rounded-full font-black shrink-0">3</span>
+                                Recebe o teu código de validação (voucher) de imediato.
+                              </p>
+                            </div>
                             <Button
                               onClick={handleWhatsAppClick}
-                              className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black rounded-xl py-5 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all border-none text-sm"
+                              className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black rounded-xl py-5 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all border-none text-xs uppercase tracking-wider"
                             >
                               <MessageCircle size={18} className="mr-2" />
-                              Solicitar via WhatsApp
+                              Deixar Comprovativo no WhatsApp
                             </Button>
                           </div>
                         </div>
