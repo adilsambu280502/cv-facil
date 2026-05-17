@@ -14,8 +14,8 @@ import {
 } from "../../services/admin";
 
 const PLANS = [
-  { value: "premium", label: "Premium (PDF + Dicas VIP)", price: 1500 },
-  { value: "pro", label: "Pro (PDF + DOCX + Carta)", price: 2500 },
+  { value: "pro", label: "Pro (Modelos ATS + Carta)", price: 700 },
+  { value: "elite", label: "Elite (Plano Completo + Consultor)", price: 1500 },
 ];
 
 // ─── Login do Admin ────────────────────────────────────────────────────────────
@@ -257,8 +257,9 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const handleWhatsApp = (code: string) => {
-    const msg = `Olá! O teu pagamento foi confirmado ✅\n\nO teu Código de Acesso Premium CV Fácil é:\n\n*${code}*\n\nInsere este código no CV Fácil para desbloquear o teu PDF Premium. Qualquer dúvida estamos aqui! 🚀`;
+  const handleWhatsApp = (code: string, plan: string) => {
+    const planName = plan === "elite" ? "Elite" : "Pro";
+    const msg = `Olá! O teu pagamento foi confirmado ✅\n\nO teu Código de Acesso CV Fácil (${planName}) é:\n\n*${code}*\n\nInsere este código no CV Fácil para desbloquear o teu currículo. Qualquer dúvida estamos aqui! 🚀`;
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -404,7 +405,7 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                       className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl font-black text-xs transition-all disabled:opacity-60"
                     >
                       {generatingPlan === p.value ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
-                      {p.value === "premium" ? "Premium" : "Pro"}
+                      {p.value === "pro" ? "Pro" : "Elite"}
                     </button>
                   ))}
                 </div>
@@ -453,7 +454,7 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                               Copiar
                             </button>
                             <button
-                              onClick={() => handleWhatsApp(v.code)}
+                              onClick={() => handleWhatsApp(v.code, v.plan)}
                               className="flex items-center gap-2 bg-[#25D366]/10 hover:bg-[#25D366]/20 px-3 py-2 rounded-xl text-xs font-black text-[#25D366] transition-all"
                             >
                               <MessageCircle size={14} />
