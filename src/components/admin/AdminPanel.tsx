@@ -229,6 +229,24 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [copied, setCopied] = useState<string | null>(null);
   const [txModal, setTxModal] = useState<{ code: string; plan: string } | null>(null);
 
+  const isExpired = (createdAt: string) => {
+    const created = new Date(createdAt).getTime();
+    const now = new Date().getTime();
+    return (now - created) > 60 * 60 * 1000; // 1 hour in ms
+  };
+
+  const getStatusLabel = (v: Voucher) => {
+    if (v.is_used) return `Utilizado em: ${formatDate(v.used_at)}`;
+    if (isExpired(v.created_at)) return "Expirado";
+    return "Disponível";
+  };
+
+  const getStatusColor = (v: Voucher) => {
+    if (v.is_used) return "text-slate-500";
+    if (isExpired(v.created_at)) return "text-rose-400 font-black";
+    return "text-emerald-400";
+  };
+
   const refresh = useCallback(async () => {
     setLoading(true);
     const [s, v, t] = await Promise.all([fetchAdminStats(), listVouchers(), listTransactions()]);
@@ -419,20 +437,30 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                       <div key={v.code} className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border transition-all ${
                         v.is_used
                           ? "bg-slate-900/50 border-slate-800 opacity-60"
-                          : "bg-slate-900 border-slate-700"
+                          : isExpired(v.created_at)
+                            ? "bg-slate-900/30 border-rose-950/40 opacity-70"
+                            : "bg-slate-900 border-slate-700"
                       }`}>
                         <div className="flex items-center gap-4">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${v.is_used ? "bg-slate-700" : "bg-blue-600/20"}`}>
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                            v.is_used 
+                              ? "bg-slate-700" 
+                              : isExpired(v.created_at)
+                                ? "bg-rose-950/20"
+                                : "bg-blue-600/20"
+                          }`}>
                             {v.is_used
                               ? <CheckCircle2 size={16} className="text-slate-400" />
-                              : <Key size={16} className="text-blue-400" />
+                              : isExpired(v.created_at)
+                                ? <AlertCircle size={16} className="text-rose-400" />
+                                : <Key size={16} className="text-blue-400" />
                             }
                           </div>
                           <div>
                             <p className="text-white font-black tracking-wider text-sm">{v.code}</p>
                             <div className="flex items-center gap-3 mt-0.5">
-                              <span className={`text-xs font-black uppercase tracking-widest ${v.is_used ? "text-slate-500" : "text-emerald-400"}`}>
-                                {v.is_used ? "Utilizado" : "Disponível"}
+                              <span className={`text-xs font-black uppercase tracking-widest ${getStatusColor(v)}`}>
+                                {getStatusLabel(v)}
                               </span>
                               <span className="text-slate-600 text-xs">·</span>
                               <span className="text-slate-500 text-xs font-bold">{v.plan}</span>
@@ -444,7 +472,7 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                           </div>
                         </div>
 
-                        {!v.is_used && (
+                        {!v.is_used && !isExpired(v.created_at) && (
                           <div className="flex items-center gap-2 shrink-0">
                             <button
                               onClick={() => handleCopy(v.code)}
@@ -460,6 +488,17 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                               <MessageCircle size={14} />
                               WhatsApp
                             </button>
+                            <button
+                              onClick={() => handleDelete(v.code)}
+                              className="p-2 text-slate-500 hover:text-red-400 transition-colors rounded-xl hover:bg-red-400/10"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        )}
+
+                        {!v.is_used && isExpired(v.created_at) && (
+                          <div className="flex items-center gap-2 shrink-0">
                             <button
                               onClick={() => handleDelete(v.code)}
                               className="p-2 text-slate-500 hover:text-red-400 transition-colors rounded-xl hover:bg-red-400/10"

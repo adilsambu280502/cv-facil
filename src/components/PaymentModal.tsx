@@ -29,6 +29,9 @@ export const PaymentModal: React.FC = () => {
     const response = await verifyPaymentToken(code);
     if (response.success) {
       setStatus("success");
+      if (response.plan) {
+        sessionStorage.setItem("active_plan", response.plan);
+      }
       setTimeout(() => {
         setHasPaid(true);
         setShowPaymentModal(false);

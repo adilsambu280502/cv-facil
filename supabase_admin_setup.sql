@@ -41,7 +41,7 @@ BEGIN
         'total_cvs', (SELECT COUNT(*) FROM public.resumes),
         'total_vouchers', (SELECT COUNT(*) FROM public.vouchers),
         'vouchers_used', (SELECT COUNT(*) FROM public.vouchers WHERE is_used = true),
-        'vouchers_available', (SELECT COUNT(*) FROM public.vouchers WHERE is_used = false),
+        'vouchers_available', (SELECT COUNT(*) FROM public.vouchers WHERE is_used = false AND (now() - created_at) <= INTERVAL '1 hour'),
         'total_revenue', COALESCE((SELECT SUM(amount) FROM public.transactions), 0),
         'total_transactions', (SELECT COUNT(*) FROM public.transactions)
     );

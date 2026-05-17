@@ -186,20 +186,25 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       const res = await transformExperience(rawInput, answers.jobDescription);
       setResult(res);
 
-      // Guardar CV no Supabase (só se autenticado)
+      // Guardar CV no Supabase para monitorização total (grátis e pagos)
+      const activePlan = hasPaid ? (sessionStorage.getItem("active_plan") || "pro") : "free";
+      const { error: insertError } = await supabase.from('resumes').insert({
+        user_id: user?.id || null, // NULL para convidados/não autenticados
+        title: `CV - ${answers.jobDescription?.slice(0, 40) || "Geral"}`,
+        template: answers.template,
+        answers: answers,
+        result: res,
+        plan: activePlan,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+      
+      if (insertError) {
+        console.error("Erro ao guardar CV para monitorização:", insertError);
+      }
+      
       if (user) {
-        const { error: insertError } = await supabase.from('resumes').insert({
-          user_id: user.id,
-          title: `CV - ${answers.jobDescription?.slice(0, 40) || "Geral"}`,
-          template: answers.template,
-          answers: answers,
-          result: res,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
-        
-        if (insertError) console.error("Erro ao guardar CV:", insertError);
-        fetchCVs(); // Recarregar lista
+        fetchCVs(); // Recarregar lista do utilizador
       }
 
       setView('dashboard');

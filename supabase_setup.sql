@@ -7,11 +7,12 @@
 -- Armazena os currículos de cada utilizador (formato flexível JSONB)
 CREATE TABLE IF NOT EXISTS public.resumes (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE, -- NULLABLE para convidados/anonimos
     title TEXT NOT NULL,
     template TEXT DEFAULT 'minimalist',
     answers JSONB NOT NULL DEFAULT '{}'::jsonb,
     result JSONB NOT NULL DEFAULT '{}'::jsonb,
+    plan TEXT DEFAULT 'free', -- 'free' | 'pro' | 'elite'
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
@@ -30,10 +31,10 @@ CREATE POLICY "Utilizadores podem ver os seus próprios currículos"
 ON public.resumes FOR SELECT 
 USING (auth.uid() = user_id);
 
--- Política de Inserção: O utilizador só pode inserir se o user_id for o dele
+-- Política de Inserção: Qualquer pessoa pode inserir currículos (para monitorizar convidados)
 CREATE POLICY "Utilizadores podem criar os seus próprios currículos" 
 ON public.resumes FOR INSERT 
-WITH CHECK (auth.uid() = user_id);
+WITH CHECK (true);
 
 -- Política de Atualização: O utilizador só pode atualizar os seus próprios currículos
 CREATE POLICY "Utilizadores podem atualizar os seus próprios currículos" 
@@ -94,6 +95,11 @@ BEGIN
     -- Se o código já foi utilizado
     IF voucher_record.is_used THEN
         RETURN json_build_object('success', false, 'message', 'Este código já foi utilizado.');
+    END IF;
+
+    -- Se o código expirou (criado há mais de 1 hora)
+    IF (now() - voucher_record.created_at) > INTERVAL '1 hour' THEN
+        RETURN json_build_object('success', false, 'message', 'Este código expirou (validade de 1 hora).');
     END IF;
 
     -- Marcar como utilizado
