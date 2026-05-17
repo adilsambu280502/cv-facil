@@ -26,8 +26,10 @@ const AdminLogin: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (verifyAdminPassword(password.trim())) {
+    const cleanPass = password.trim();
+    if (verifyAdminPassword(cleanPass)) {
       sessionStorage.setItem("admin_auth", "true");
+      sessionStorage.setItem("admin_password", cleanPass);
       onSuccess();
     } else {
       setError(true);
