@@ -475,9 +475,21 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         <div key={tx.id} className="flex items-center justify-between p-4 bg-slate-800 rounded-xl">
                           <div>
                             <p className="text-white font-black text-sm">{tx.customer_name || "Cliente"}</p>
-                            <p className="text-slate-400 text-xs font-bold">{formatDate(tx.created_at)} · {tx.payment_method}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-slate-400 text-xs font-bold">{formatDate(tx.created_at)} · {tx.payment_method}</span>
+                              <span className="text-slate-600 text-xs">·</span>
+                              <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                                tx.status === 'confirmada' ? "bg-emerald-500/10 text-emerald-400" :
+                                tx.status === 'expirada' ? "bg-rose-500/10 text-rose-400" :
+                                "bg-amber-500/10 text-amber-400"
+                              }`}>
+                                {tx.status === 'confirmada' ? 'Confirmada' : tx.status === 'expirada' ? 'Expirada' : 'Disponível'}
+                              </span>
+                            </div>
                           </div>
-                          <span className="text-emerald-400 font-black">{formatAOA(tx.amount)}</span>
+                          <span className={`font-black text-sm ${tx.status === 'confirmada' ? 'text-emerald-400' : 'text-slate-500 line-through opacity-60'}`}>
+                            {formatAOA(tx.amount)}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -618,7 +630,7 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-slate-800">
-                          {["Cliente", "Voucher", "Valor", "Método", "Data"].map(h => (
+                          {["Cliente", "Voucher", "Valor", "Método", "Status", "Data"].map(h => (
                             <th key={h} className="text-left text-xs font-black uppercase tracking-widest text-slate-500 py-3 px-4">{h}</th>
                           ))}
                         </tr>
@@ -636,10 +648,19 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                               </span>
                             </td>
                             <td className="py-4 px-4">
-                              <span className="text-emerald-400 font-black">{formatAOA(tx.amount)}</span>
+                              <span className={`font-black ${tx.status === 'confirmada' ? 'text-emerald-400' : 'text-slate-500 line-through opacity-60'}`}>{formatAOA(tx.amount)}</span>
                             </td>
                             <td className="py-4 px-4">
                               <span className="text-slate-400 font-bold text-sm">{tx.payment_method}</span>
+                            </td>
+                            <td className="py-4 px-4">
+                              <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                                tx.status === 'confirmada' ? "bg-emerald-500/10 text-emerald-400" :
+                                tx.status === 'expirada' ? "bg-rose-500/10 text-rose-400" :
+                                "bg-amber-500/10 text-amber-400"
+                              }`}>
+                                {tx.status === 'confirmada' ? 'Confirmada' : tx.status === 'expirada' ? 'Expirada' : 'Disponível'}
+                              </span>
                             </td>
                             <td className="py-4 px-4">
                               <span className="text-slate-500 text-xs font-bold">{formatDate(tx.created_at)}</span>

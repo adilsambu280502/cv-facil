@@ -42,8 +42,18 @@ BEGIN
         'total_vouchers', (SELECT COUNT(*) FROM public.vouchers),
         'vouchers_used', (SELECT COUNT(*) FROM public.vouchers WHERE is_used = true),
         'vouchers_available', (SELECT COUNT(*) FROM public.vouchers WHERE is_used = false AND (now() - created_at) <= INTERVAL '1 hour'),
-        'total_revenue', COALESCE((SELECT SUM(amount) FROM public.transactions), 0),
-        'total_transactions', (SELECT COUNT(*) FROM public.transactions)
+        'total_revenue', COALESCE((
+            SELECT SUM(t.amount) 
+            FROM public.transactions t
+            JOIN public.vouchers v ON t.voucher_code = v.code
+            WHERE v.is_used = true
+        ), 0),
+        'total_transactions', (
+            SELECT COUNT(*) 
+            FROM public.transactions t
+            JOIN public.vouchers v ON t.voucher_code = v.code
+            WHERE v.is_used = true
+        )
     );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -96,12 +106,29 @@ BEGIN
     END IF;
 
     RETURN QUERY 
-    SELECT t.id, t.voucher_code, t.customer_name, t.customer_phone, t.customer_whatsapp, t.amount, t.currency, t.payment_method, t.notes, t.status, t.created_at
+    SELECT 
+        t.id, 
+        t.voucher_code, 
+        t.customer_name, 
+        t.customer_phone, 
+        t.customer_whatsapp, 
+        t.amount, 
+        t.currency, 
+        t.payment_method, 
+        t.notes, 
+        CASE 
+            WHEN v.is_used = true THEN 'confirmada'
+            WHEN (now() - v.created_at) > INTERVAL '1 hour' THEN 'expirada'
+            ELSE 'pendente'
+        END AS status, 
+        t.created_at
     FROM public.transactions t
+    LEFT JOIN public.vouchers v ON t.voucher_code = v.code
     ORDER BY t.created_at DESC
     LIMIT 100;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
 
 
 -- ─── 4. Função para Criar Voucher de forma Segura ───────────────────────────────
