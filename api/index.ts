@@ -1,21 +1,8 @@
 import express from "express";
-import Stripe from "stripe";
 import * as dotenv from "dotenv";
 import { generateWithFallback } from "../src/services/ai_orchestrator";
 
 dotenv.config();
-
-let stripeClient: Stripe | null = null;
-function getStripe(): Stripe {
-  if (!stripeClient) {
-    const key = process.env.STRIPE_SECRET_KEY;
-    if (!key) {
-      throw new Error('STRIPE_SECRET_KEY environment variable is required');
-    }
-    stripeClient = new Stripe(key);
-  }
-  return stripeClient;
-}
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
