@@ -78,7 +78,7 @@ export const PaymentModal: React.FC = () => {
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-[201] px-4 sm:px-0"
           >
-            <div className="bg-white dark:bg-slate-900 rounded-[36px] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-slate-900 rounded-[36px] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 max-h-[90vh] sm:max-h-[94vh] flex flex-col">
 
               {/* Estado: Sucesso */}
               {status === "success" ? (
@@ -121,7 +121,7 @@ export const PaymentModal: React.FC = () => {
                   </div>
 
                   {/* Corpo */}
-                  <div className="p-6 sm:p-10">
+                  <div className="p-5 sm:p-10 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
                     <div className="text-center mb-8">
                       <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">
                         Desbloqueio Premium
@@ -133,32 +133,32 @@ export const PaymentModal: React.FC = () => {
 
                     <div className="space-y-5">
                       {/* Opção 1: Multicaixa Express */}
-                      <div className="bg-slate-50 dark:bg-slate-800/60 rounded-[24px] p-5 border border-slate-100 dark:border-slate-800 hover:border-emerald-500/25 transition-all group">
-                        <div className="flex items-start gap-4">
+                      <div className="bg-slate-50 dark:bg-slate-800/60 rounded-[24px] p-4 sm:p-5 border border-slate-100 dark:border-slate-800 hover:border-emerald-500/25 transition-all group">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
                           <div className="w-11 h-11 bg-emerald-100 dark:bg-emerald-500/10 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-sm">
                             <MessageCircle size={22} className="text-emerald-500" />
                           </div>
-                          <div className="flex-1">
-                            <h4 className="font-black text-slate-900 dark:text-white mb-2 text-sm uppercase tracking-wide">
+                          <div className="flex-1 w-full text-center sm:text-left">
+                            <h4 className="font-black text-slate-900 dark:text-white mb-3 text-sm uppercase tracking-wide">
                               Pagamento Rápido via Multicaixa Express ⚡
                             </h4>
-                            <div className="space-y-2 mb-4 text-xs font-semibold text-slate-600 dark:text-slate-300">
-                              <p className="flex items-center gap-2">
-                                <span className="w-5 h-5 bg-blue-600/10 text-blue-500 flex items-center justify-center rounded-full font-black shrink-0">1</span>
-                                Envia o valor para o telemóvel: <strong className="text-blue-500 dark:text-blue-400 select-all font-black">929 766 995</strong>
+                            <div className="space-y-3 mb-5 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                              <p className="flex items-start gap-2.5 text-left">
+                                <span className="w-5 h-5 bg-blue-600/10 text-blue-500 flex items-center justify-center rounded-full font-black shrink-0 mt-0.5">1</span>
+                                <span className="flex-1">Envia o valor para o telemóvel: <strong className="text-blue-500 dark:text-blue-400 select-all font-black">929 766 995</strong></span>
                               </p>
-                              <p className="flex items-center gap-2">
-                                <span className="w-5 h-5 bg-blue-600/10 text-blue-500 flex items-center justify-center rounded-full font-black shrink-0">2</span>
-                                Clica abaixo para enviar o comprovativo no WhatsApp.
+                              <p className="flex items-start gap-2.5 text-left">
+                                <span className="w-5 h-5 bg-blue-600/10 text-blue-500 flex items-center justify-center rounded-full font-black shrink-0 mt-0.5">2</span>
+                                <span className="flex-1">Clica abaixo para enviar o comprovativo no WhatsApp.</span>
                               </p>
-                              <p className="flex items-center gap-2">
-                                <span className="w-5 h-5 bg-blue-600/10 text-blue-500 flex items-center justify-center rounded-full font-black shrink-0">3</span>
-                                Recebe o teu código de validação (voucher) de imediato.
+                              <p className="flex items-start gap-2.5 text-left">
+                                <span className="w-5 h-5 bg-blue-600/10 text-blue-500 flex items-center justify-center rounded-full font-black shrink-0 mt-0.5">3</span>
+                                <span className="flex-1">Recebe o teu código de validação (voucher) de imediato.</span>
                               </p>
                             </div>
                             <Button
                               onClick={handleWhatsAppClick}
-                              className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black rounded-xl py-5 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all border-none text-xs uppercase tracking-wider"
+                              className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black rounded-xl py-5 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all border-none text-xs uppercase tracking-wider flex items-center justify-center"
                             >
                               <MessageCircle size={18} className="mr-2" />
                               Deixar Comprovativo no WhatsApp
