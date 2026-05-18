@@ -127,7 +127,7 @@ export const PaymentModal: React.FC = () => {
                         Desbloqueio Premium
                       </h3>
                       <p className="text-slate-500 dark:text-slate-400 font-semibold text-sm leading-relaxed">
-                        Para exportar o teu CV em PDF de alta fidelidade e desbloquear a <span className="text-blue-600 font-black">Importação por Texto na logo</span> nos planos <span className="text-blue-600 font-black">Pro</span> ou <span className="text-blue-600 font-black">Carreira</span>, precisas de um <span className="text-blue-600 font-black">Código de Acesso</span>.
+                        Para exportar o teu CV em PDF de alta fidelidade e desbloquear a <span className="text-blue-600 font-black">Importação por Texto Instantânea</span> nos planos <span className="text-blue-600 font-black">Pro</span> ou <span className="text-blue-600 font-black">Carreira</span>, precisas de um <span className="text-blue-600 font-black">Código de Acesso</span>.
                       </p>
                     </div>
 
@@ -140,7 +140,7 @@ export const PaymentModal: React.FC = () => {
                           </div>
                           <div className="flex-1">
                             <h4 className="font-black text-slate-900 dark:text-white mb-2 text-sm uppercase tracking-wide">
-                              Paga na logo via Multicaixa Express ⚡
+                              Pagamento Rápido via Multicaixa Express ⚡
                             </h4>
                             <div className="space-y-2 mb-4 text-xs font-semibold text-slate-600 dark:text-slate-300">
                               <p className="flex items-center gap-2">

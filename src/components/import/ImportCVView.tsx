@@ -142,7 +142,7 @@ export const ImportCVView: React.FC = () => {
               </div>
               
               <h2 className="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight mb-3 uppercase">
-                Importação por Texto na Logo
+                Importação por Texto Instantânea
               </h2>
               
               <p className="text-slate-500 dark:text-slate-400 font-semibold text-sm lg:text-base mb-8 leading-relaxed">
@@ -157,7 +157,7 @@ export const ImportCVView: React.FC = () => {
                   <span className="text-blue-600 font-black">✓</span> Otimização automática contra filtros de recrutamento (ATS)
                 </p>
                 <p className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-2">
-                  <span className="text-blue-600 font-black">✓</span> Formatação perfeita de cargos e contactos na logo
+                  <span className="text-blue-600 font-black">✓</span> Formatação perfeita de cargos e contactos de imediato
                 </p>
               </div>
               
