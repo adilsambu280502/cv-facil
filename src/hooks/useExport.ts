@@ -125,7 +125,7 @@ export const useExport = (
       const doc = new Document({
         title: `CV - ${answers.name}`,
         creator: "CV Fácil",
-        description: "Currículo Profissional Otimizado por IA",
+        description: "Currículo Profissional de Elite - CV Fácil",
         sections: [
           {
             properties: {},

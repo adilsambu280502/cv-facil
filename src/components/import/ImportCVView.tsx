@@ -137,31 +137,28 @@ export const ImportCVView: React.FC = () => {
               <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[80px] -z-10" />
               <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/10 rounded-full blur-[80px] -z-10" />
               
-              <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-6 shadow-xl shadow-blue-600/5 animate-pulse">
-                <Lock size={28} />
+              <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-600 dark:text-slate-400 mx-auto mb-6 border border-slate-200 dark:border-slate-700/60">
+                <Lock size={20} />
               </div>
               
-              <h2 className="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight mb-4 uppercase">
-                Geração por IA Premium
+              <h2 className="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight mb-3 uppercase">
+                Importação por Texto na Logo
               </h2>
               
               <p className="text-slate-500 dark:text-slate-400 font-semibold text-sm lg:text-base mb-8 leading-relaxed">
-                A importação inteligente e conversão instantânea de CV por texto está reservada exclusivamente para os planos <strong className="text-blue-600">Pro</strong> e <strong className="text-blue-600">Carreira</strong>.
+                A conversão instantânea do teu currículo por texto está reservada exclusivamente para os planos <strong className="text-blue-600">Pro</strong> e <strong className="text-blue-600">Carreira</strong>. Tens o teu CV pronto na hora!
               </p>
               
-              <div className="p-5 bg-slate-50/80 dark:bg-slate-800/40 rounded-3xl border border-slate-100/50 dark:border-slate-700/50 mb-8 text-left space-y-3">
-                <div className="flex items-center gap-3 text-xs font-bold text-slate-600 dark:text-slate-300">
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
-                  <span>Converte qualquer texto ou rascunho de CV em segundos</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs font-bold text-slate-600 dark:text-slate-300">
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
-                  <span>Otimização automática contra filtros de recrutamento (ATS)</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs font-bold text-slate-600 dark:text-slate-300">
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
-                  <span>Extração de contactos e formatação perfeita de cargos</span>
-                </div>
+              <div className="p-6 bg-slate-50/50 dark:bg-slate-800/20 rounded-3xl border border-slate-100 dark:border-slate-800/80 mb-8 text-left space-y-3">
+                <p className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                  <span className="text-blue-600 font-black">✓</span> Converte qualquer rascunho de currículo em segundos
+                </p>
+                <p className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                  <span className="text-blue-600 font-black">✓</span> Otimização automática contra filtros de recrutamento (ATS)
+                </p>
+                <p className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                  <span className="text-blue-600 font-black">✓</span> Formatação perfeita de cargos e contactos na logo
+                </p>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-3 justify-center">

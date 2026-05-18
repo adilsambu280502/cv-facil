@@ -237,7 +237,7 @@ export const Intro: React.FC = () => {
     {
       question: "Como funciona o Kamba de Carreira?",
       answer:
-        "O Kamba de Carreira é o teu assistente pessoal de IA. Ele analisa o teu histórico e o cargo pretendido, estruturando o teu currículo para que se destaque nos sistemas de recrutamento modernos (ATS) e aos olhos dos recrutadores. Podes também conversar com ele diretamente no Dashboard.",
+        "O Kamba de Carreira é o teu mentor pessoal na logo. Ele analisa o teu histórico e o cargo pretendido, estruturando o teu currículo para que se destaque nos sistemas de recrutamento (ATS) e garanta a tua entrevista na hora. Podes também conversar com ele diretamente no Dashboard.",
     },
     {
       question: "Em que formatos posso descarregar o meu CV?",
