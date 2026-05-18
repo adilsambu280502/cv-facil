@@ -12,10 +12,21 @@ export async function transformExperience(rawInput: string, jobDescription?: str
     let errorMessage = 'Erro ao comunicar com o servidor.';
     try {
       const errorText = await response.text();
-      const errorData = JSON.parse(errorText);
-      errorMessage = errorData.error || errorMessage;
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMessage = errorData.error || errorMessage;
+      } catch {
+        // Se o retorno não for um JSON válido (ex: timeout da Vercel)
+        if (response.status === 504) {
+          errorMessage = 'O tempo limite de processamento foi excedido (Timeout da Vercel). O texto da tua experiência é muito longo ou o servidor está sobrecarregado. Tenta novamente em instantes.';
+        } else if (response.status === 404) {
+          errorMessage = 'A rota de transformação de experiência não foi encontrada (Erro 404).';
+        } else {
+          errorMessage = `Ocorreu um erro no servidor (Status HTTP ${response.status}). Verifica se a variável de ambiente GEMINI_API_KEY está configurada no painel da Vercel.`;
+        }
+      }
     } catch {
-      errorMessage = 'Ocorreu um erro no servidor. Verifica a tua chave API ou tenta novamente.';
+      errorMessage = 'Não foi possível obter a resposta de erro do servidor. Verifica a tua ligação à rede.';
     }
     throw new Error(errorMessage);
   }
