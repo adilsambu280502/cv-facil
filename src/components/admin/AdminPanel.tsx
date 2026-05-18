@@ -15,7 +15,7 @@ import {
 
 const PLANS = [
   { value: "pro", label: "Pro (Modelos ATS + Carta)", price: 700 },
-  { value: "elite", label: "Elite (Plano Completo + Consultor)", price: 1500 },
+  { value: "elite", label: "Carreira (Plano Completo + Mentoria)", price: 1500 },
 ];
 
 // ─── Login do Admin ────────────────────────────────────────────────────────────
@@ -175,7 +175,7 @@ const TransactionModal: React.FC<{
               </div>
             </div>
             <div className="bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider">
-              Plano {planInfo.value === "pro" ? "Pro" : "Elite"}
+              Plano {planInfo.value === "pro" ? "Pro" : "Carreira"}
             </div>
           </div>
 
@@ -367,7 +367,7 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   };
 
   const handleWhatsApp = (code: string, plan: string) => {
-    const planName = plan === "elite" ? "Elite" : "Pro";
+    const planName = plan === "elite" ? "Carreira" : "Pro";
     const msg = `Olá! O teu pagamento foi confirmado ✅\n\nO teu Código de Acesso CV Fácil (${planName}) é:\n\n*${code}*\n\nInsere este código no CV Fácil para desbloquear o teu currículo. Qualquer dúvida estamos aqui! 🚀`;
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
   };
@@ -526,7 +526,7 @@ export const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                       className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl font-black text-xs transition-all disabled:opacity-60"
                     >
                       {generatingPlan === p.value ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
-                      {p.value === "pro" ? "Pro" : "Elite"}
+                      {p.value === "pro" ? "Pro" : "Carreira"}
                     </button>
                   ))}
                 </div>

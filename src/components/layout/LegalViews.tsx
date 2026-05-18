@@ -37,7 +37,7 @@ export const TermsView = () => {
             <p className="mb-6">O CV Fácil concede-te uma licença limitada, não exclusiva e não transferível para utilizares os nossos serviços. Os modelos de CV e Cartas de Apresentação são propriedade intelectual da plataforma e é expressamente proibida a revenda ou comercialização de designs extraídos daqui.</p>
 
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-8 mb-4">3. Planos e Acesso</h3>
-            <p className="mb-6">O plano gratuito oferece acesso limitado a modelos básicos e um número restrito de gerações diárias. A subscrição de planos pagos (Pro e Elite) desbloqueia modelos otimizados para ATS, a geração automática de Cartas de Apresentação com design alinhado e acesso vitalício a esse conteúdo.</p>
+            <p className="mb-6">O plano gratuito oferece acesso limitado a modelos básicos e um número restrito de gerações diárias. A subscrição de planos pagos (Pro e Carreira) desbloqueia modelos otimizados para ATS, a geração automática de Cartas de Apresentação com design alinhado e acesso vitalício a esse conteúdo.</p>
 
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-8 mb-4">4. Política de Pagamentos e Reembolsos</h3>
             <p className="mb-6">Os planos pagos concedem acesso imediato a ficheiros digitais finais (PDFs de Alta Fidelidade). Pela natureza instantânea e digital da entrega do produto finalizado, não emitimos reembolsos após a geração e download bem-sucedidos dos teus documentos.</p>

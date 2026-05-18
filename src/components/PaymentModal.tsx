@@ -127,8 +127,7 @@ export const PaymentModal: React.FC = () => {
                         Desbloqueio Premium
                       </h3>
                       <p className="text-slate-500 dark:text-slate-400 font-semibold text-sm leading-relaxed">
-                        Para exportar o teu CV em PDF sem marca d'água, precisas de um{" "}
-                        <span className="text-blue-600 font-black">Código de Acesso</span>.
+                        Para exportar o teu CV em PDF de alta fidelidade e desbloquear a Geração inteligente por Texto (IA) nos planos <span className="text-blue-600 font-black">Pro</span> ou <span className="text-blue-600 font-black">Carreira</span>, precisas de um <span className="text-blue-600 font-black">Código de Acesso</span>.
                       </p>
                     </div>
 

@@ -187,11 +187,11 @@ const StatItem = ({ value, label, icon: Icon }: { value: string; label: string; 
    INTRO - Componente Principal
    ════════════════════════════════════════ */
 export const Intro: React.FC = () => {
-  const { setView } = useCV();
+  const { setView, hasPaid, setShowPaymentModal } = useCV();
 
   const plans = [
     {
-      title: "Essencial",
+      title: "Básico",
       price: "Grátis",
       subtitle: "Começa a tua jornada",
       features: [
@@ -215,9 +215,9 @@ export const Intro: React.FC = () => {
       ],
     },
     {
-      title: "Elite",
+      title: "Carreira",
       price: "1.500",
-      subtitle: "Para Cargos Executivos",
+      subtitle: "Aceleração Profissional",
       features: [
         "Tudo do Plano Pro",
         "Consultor Digital 24/7",
@@ -319,7 +319,13 @@ export const Intro: React.FC = () => {
                 <Button
                   size="xl"
                   variant="outline"
-                  onClick={() => setView("import")}
+                  onClick={() => {
+                    if (hasPaid) {
+                      setView("import");
+                    } else {
+                      setShowPaymentModal(true);
+                    }
+                  }}
                   className="w-full sm:w-auto bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-2 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white px-8 lg:px-10 py-6 lg:py-8 rounded-[28px] font-black text-lg lg:text-xl hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-blue-600/40 dark:hover:border-blue-600/40 transition-all shadow-sm"
                 >
                   Importar Texto
