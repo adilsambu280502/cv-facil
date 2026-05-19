@@ -35,7 +35,8 @@ export const CVDashboard: React.FC = () => {
     setAnswers, 
     result, 
     setResult, 
-    hasPaid, 
+    hasPaid,
+    setHasPaid,
     setShowPaymentModal, 
     setView, 
     savedCVs, 
@@ -53,6 +54,8 @@ export const CVDashboard: React.FC = () => {
     if (canDownload) {
       const success = await handleExportPDF();
       if (success) {
+        // Voucher consumido: o acesso premium expira imediatamente após o download
+        setHasPaid(false);
         setShowSuccessModal(true);
       }
     } else {

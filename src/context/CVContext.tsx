@@ -72,9 +72,35 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const [view, setView] = useState<'intro' | 'wizard' | 'about' | 'login' | 'dashboard' | 'terms' | 'privacy' | 'import' | 'admin'>('intro');
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [hasPaid, setHasPaid] = useState(() => {
-    return localStorage.getItem("cv_has_paid") === "true";
+  const [hasPaid, _setHasPaid] = useState(() => {
+    try {
+      const raw = localStorage.getItem("cv_premium_session");
+      if (!raw) return false;
+      const session = JSON.parse(raw);
+      // Expira se já passou 1 hora sem download (60 * 60 * 1000 ms)
+      if (Date.now() - session.timestamp > 3600000) {
+        localStorage.removeItem("cv_premium_session");
+        return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
   });
+
+  const setHasPaid = (val: boolean) => {
+    if (val) {
+      // Gravar o timestamp do momento em que o voucher foi ativado
+      localStorage.setItem("cv_premium_session", JSON.stringify({
+        timestamp: Date.now(),
+        plan: sessionStorage.getItem("active_plan") || "premium"
+      }));
+    } else {
+      // Voucher consumido ou expirado: limpar a sessão
+      localStorage.removeItem("cv_premium_session");
+    }
+    _setHasPaid(val);
+  };
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [result, setResult] = useState<TransformResult | null>(null);
   const [answers, setAnswers] = useState<Answers>(() => {
@@ -136,10 +162,6 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   }, [user]);
 
   // ── Persistência local ──
-  useEffect(() => {
-    localStorage.setItem("cv_has_paid", hasPaid.toString());
-  }, [hasPaid]);
-
   useEffect(() => {
     localStorage.setItem("cv_answers", JSON.stringify(answers));
   }, [answers]);
