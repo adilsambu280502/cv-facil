@@ -35,12 +35,14 @@ Este sistema pensa e organiza a melhor estratégia de escrita por ti. Olha só c
 
 O CV Fácil é a primeira plataforma angolana criada de raiz para fazer com que a tua história seja impossível de ignorar pelos recrutadores.
 
-Quero muito que testes este sistema e vejas a força do teu perfil na hora! Acede aqui de forma gratuita:
+Este sistema ainda está em fase de testes e validação ativa com a comunidade. Por isso, o vosso apoio é fundamental! 
+
+Quero muito que testes a plataforma e partilhes a tua experiência. Acede aqui de forma gratuita:
 👉 https://cvfacil-ao.vercel.app/
 
-Experimenta e deixa-me o teu feedback nos comentários! 👇🔥
+Deixa a tua opinião sincera nos comentários e partilha um print do teu currículo gerado ou de qualquer etapa do processo. Vamos validar e melhorar isto juntos! 👇🔥
 
-#CVFácil #EmpregoAngola #Carreira #Sistemas #Tecnologia #ProductDesign #Angola
+#CVFácil #EmpregoAngola #Carreira #Sistemas #Tecnologia #ProductDesign #Angola #TesteComunidade
 ```
 
 ---
