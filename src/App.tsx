@@ -39,6 +39,7 @@ import { ImportCVView } from "./components/import/ImportCVView";
 import { motion, AnimatePresence } from "motion/react";
 import { pageTransition } from "./lib/motion";
 import { AdminPanelGuard } from "./components/admin/AdminPanel";
+import { Analytics } from "@vercel/analytics/react";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 1024);
@@ -494,6 +495,7 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => (
   <CVProvider>
     <AppContent />
+    <Analytics />
   </CVProvider>
 );
 
