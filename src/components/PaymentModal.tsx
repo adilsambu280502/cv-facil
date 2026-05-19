@@ -96,10 +96,10 @@ export const PaymentModal: React.FC = () => {
                     <CheckCircle2 size={48} className="text-emerald-500" />
                   </motion.div>
                   <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
-                    Acesso Desbloqueado!
+                    PDF Desbloqueado
                   </h3>
                   <p className="text-slate-500 dark:text-slate-400 font-semibold leading-relaxed">
-                    O teu currículo Premium foi desbloqueado com sucesso. Podes agora exportar o PDF de Alta Fidelidade.
+                    O pagamento foi validado. O teu documento está pronto para exportação em PDF de alta fidelidade.
                   </p>
                 </motion.div>
               ) : (
@@ -124,10 +124,10 @@ export const PaymentModal: React.FC = () => {
                   <div className="p-5 sm:p-10 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
                     <div className="text-center mb-8">
                       <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">
-                        Desbloqueio Premium
+                        Exportar em PDF
                       </h3>
                       <p className="text-slate-500 dark:text-slate-400 font-semibold text-sm leading-relaxed">
-                        Para exportar o teu CV em PDF de alta fidelidade e desbloquear a <span className="text-blue-600 font-black">Importação por Texto Instantânea</span> nos planos <span className="text-blue-600 font-black">Pro</span> ou <span className="text-blue-600 font-black">Carreira</span>, precisas de um <span className="text-blue-600 font-black">Código de Acesso</span>.
+                        Este é um <span className="text-blue-600 font-black">pagamento único</span> pelo currículo que acabaste de criar. Após o download, o documento fica guardado na tua conta para acesso vitalicio.
                       </p>
                     </div>
 

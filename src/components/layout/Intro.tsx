@@ -191,39 +191,39 @@ export const Intro: React.FC = () => {
 
   const plans = [
     {
-      title: "Básico",
+      title: "Gratuito",
       price: "Grátis",
-      subtitle: "Começa a tua jornada",
+      subtitle: "Explora sem compromisso",
       features: [
-        "2 Modelos Básicos de Currículo",
-        "1 Geração por dia (visitante)",
-        "+1 Geração diária ao criares conta",
-        "Exportação Imediata em PDF",
+        "Responde ao Questionário completo",
+        "Visualiza o teu CV em tempo real",
+        "Modelo Profissional Padrão",
+        "Exportação PDF bloqueada até pagamento",
       ],
     },
     {
-      title: "Pro",
+      title: "Gerador Pro",
       price: "700",
-      subtitle: "Mais Escolhido em Angola",
+      subtitle: "Pagamento Único por CV gerado",
       recommended: true,
       features: [
-        "Todos os Modelos ATS Premium",
-        "Carta de Apresentação Combinada",
-        "Exportação em PDF de Alta Fidelidade",
-        "Análise de Score do Recrutador",
-        "Suporte Prioritário",
+        "1 CV Completo gerado pela IA",
+        "Modelos ATS Premium à escolha",
+        "Carta de Apresentação Incluida",
+        "Exportação PDF de Alta Fidelidade",
+        "Acesso vitalicio ao CV na tua conta",
       ],
     },
     {
-      title: "Carreira",
+      title: "Importação por Texto",
       price: "1.500",
-      subtitle: "Aceleração Profissional",
+      subtitle: "Pagamento Único por conversão",
       features: [
-        "Tudo do Plano Pro",
-        "Consultor Digital 24/7",
-        "Revisão de Perfil LinkedIn",
-        "Preparação para Entrevistas",
-        "Destaque na Base de Dados",
+        "Cola o teu CV existente em texto",
+        "A IA reestrutura e otimiza tudo",
+        "Escolhe o Modelo Premium final",
+        "Exportação PDF imediata",
+        "Acesso vitalicio ao CV na tua conta",
       ],
     },
   ];
@@ -232,22 +232,22 @@ export const Intro: React.FC = () => {
     {
       question: "O CV Fácil é gratuito?",
       answer:
-        "Podes criar o teu perfil e visualizar o teu design gratuitamente. Para descarregar o teu currículo em PDF de Alta Fidelidade ou DOCX editável, e aceder à análise completa do Kamba de Carreira, oferecemos planos acessíveis desenhados para o mercado angolano.",
+        "Sim, podes criar o teu perfil, preencher o questionário e visualizar o teu currículo gratuitamente. O pagamento só é exigido no momento de exportar o PDF final — e é um pagamento único por currículo gerado, sem subscrições mensais.",
     },
     {
-      question: "Como funciona o Kamba de Carreira?",
+      question: "Como funciona o pagamento?",
       answer:
-        "O Kamba de Carreira é o teu mentor de carreira pessoal. Ele analisa o teu histórico e o cargo pretendido, estruturando o teu currículo para que se destaque nos sistemas de recrutamento (ATS) e garanta a tua entrevista de imediato. Podes também conversar com ele diretamente no Dashboard.",
+        "Pagas apenas uma vez por cada currículo que geras. Depois do pagamento, recebes um código de acesso (voucher) que desbloqueia a exportação. Esse código é de uso único: depois do download, o sistema volta ao estado bloqueado. Se quiseres gerar outro CV, precisas de um novo pagamento.",
     },
     {
-      question: "Em que formatos posso descarregar o meu CV?",
+      question: "O acesso ao meu CV é vitalicio?",
       answer:
-        "Oferecemos exportação em PDF Premium (ideal para triagem digital) e DOCX (Microsoft Word), permitindo que tenhas sempre uma versão editável para ajustes manuais e outra pronta para envio.",
+        "Sim. Uma vez gerado e pago, o teu currículo fica guardado na tua conta de forma permanente. Podes voltar à plataforma a qualquer momento e descarregar novamente o mesmo PDF sem custos adicionais.",
     },
     {
       question: "Quais são as formas de pagamento?",
       answer:
-        "Aceitamos transferências bancárias, referências Multicaixa e pagamentos via aplicativos bancários angolanos (BAI Directo, Atlântico, etc.). O processo de ativação é imediato.",
+        "Aceitamos transferências bancárias via Multicaixa Express (envio para o telemovel 929 766 995). Após envio do comprovativo via WhatsApp, receberás o teu código de acesso de forma imediata.",
     },
   ];
 
@@ -593,11 +593,11 @@ export const Intro: React.FC = () => {
         <div className="max-w-[1440px] mx-auto px-6 lg:px-16 xl:px-24">
           <div className="text-center mb-14 lg:mb-20">
             <h2 className="text-[36px] sm:text-[48px] lg:text-[64px] font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] mb-4">
-              O Plano ideal para a{" "}
-              <span className="text-blue-600">tua ascensão.</span>
+              Simples assim:
+              <span className="text-blue-600"> Pagas uma vez, fica para sempre.</span>
             </h2>
-            <p className="text-base lg:text-xl text-slate-500 dark:text-slate-400 font-bold">
-              Inviste no teu futuro com ferramentas que os recrutadores exigem.
+            <p className="text-base lg:text-xl text-slate-500 dark:text-slate-400 font-bold max-w-2xl mx-auto">
+              Sem subscrições. Sem mensalidades. Pagas apenas pelo CV que precisas — e ele fica guardado na tua conta para sempre.
             </p>
           </div>
 
