@@ -3,7 +3,7 @@ import { createServer as createViteServer } from "vite";
 import path from "node:path";
 import * as dotenv from "dotenv";
 import cors from "cors";
-import { generateWithFallback } from "./src/services/ai_orchestrator";
+import { generateWithFallback } from "./api/services/ai_orchestrator";
 
 dotenv.config();
 
