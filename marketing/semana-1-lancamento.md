@@ -13,34 +13,26 @@ Esta semana é dedicada a criar impacto e empatia. As pessoas compram histórias
 ## ✍️ Post 1: LinkedIn & Facebook (O Storytelling do Fundador)
 
 ```text
-Durante muito tempo, atendi pessoalmente dezenas de profissionais que precisavam de ajuda para criar os seus currículos e cartas de apresentação. 
+Durante muito tempo, ajudei dezenas de profissionais de forma direta a estruturar currículos. 
 
-Vi pessoas altamente capacitadas — com excelentes formações, competências e anos de experiência — entrarem em pânico quando precisavam de colocar tudo isso num papel. 
+Vi pessoas qualificadas, com boa formação e anos de experiência, a travar completamente quando precisavam de colocar isso no papel. O maior problema em Angola não é falta de talento, é a terrível folha em branco.
 
-O problema número um de quem procura emprego em Angola não é a falta de talento. É a terrível "página em branco". Aquele bloqueio que dá quando tentas explicar a tua própria história profissional. 
+E o processo é sempre o mesmo: perdes horas no Canva com templates que desconfiguram tudo, ou pagas caro a um profissional.
 
-E a jornada para resolver isso costuma ser desgastante:
-❌ Procuras alguém de confiança para te ajudar a estruturar o CV, mas é muito difícil encontrar alguém disponível a tempo.
-❌ Perdes horas em sites como o Canva a escolher um modelo bonito, e depois passas mais metade do dia a lutar para fazer o teu texto caber nas caixas de texto que desconfiguram tudo.
+Para resolver isso criei o CV Fácil. 🚀
 
-Eu percebi esta dor. Ajudei muita gente de forma direta, cheguei a ganhar dinheiro com isso, mas percebi que precisava de criar algo maior. Um sistema que pudesse fazer este trabalho com a mesma qualidade de um mentor de carreira, de forma automática, 24 horas por dia, 7 dias por semana.
+É a primeira plataforma angolana pensada de raiz para estruturar o teu currículo automaticamente:
 
-Foi assim que nasceu o CV Fácil. 🚀
+1️⃣ Conversas com o nosso assistente ou colas o teu CV antigo. O sistema reorganiza tudo.
+2️⃣ Escolhes um template profissional (otimizado para os robôs de recrutamento ATS).
+3️⃣ Exportas em PDF na hora, com a estrutura ideal.
 
-Este sistema pensa e organiza a melhor estratégia de escrita por ti. Olha só como é simples:
+O sistema ainda está em fase de testes e validação com a comunidade. O vosso feedback é essencial para melhorar isto!
 
-1️⃣ Esquece o bloqueio da folha em branco: Basta responderes a algumas perguntas simples sobre a tua carreira. Se já tiveres um currículo antigo, podes colar o texto diretamente e o sistema reestrutura e organiza toda a informação com a melhor estratégia profissional.
-2️⃣ Encaixe Perfeito: Escolhes o template profissional que preferires (como o modelo "Executivo Pro") e o sistema adapta e enquadra toda a tua informação de forma limpa, sem quebras e sem desconfigurar.
-3️⃣ Pronto para o Mercado: Exportas o teu documento em PDF com modelos 100% otimizados para sistemas de recrutamento modernos (ATS).
-
-O CV Fácil é a primeira plataforma angolana criada de raiz para fazer com que a tua história seja impossível de ignorar pelos recrutadores.
-
-Este sistema ainda está em fase de testes e validação ativa com a comunidade. Por isso, o vosso apoio é fundamental! 
-
-Quero muito que testes a plataforma e partilhes a tua experiência. Acede aqui de forma gratuita:
+Acede grátis e faz o teste:
 👉 https://cvfacil-ao.vercel.app/
 
-Deixa a tua opinião sincera nos comentários e partilha um print do teu currículo gerado ou de qualquer etapa do processo. Vamos validar e melhorar isto juntos! 👇🔥
+Deixa a tua opinião sincera nos comentários e partilha um print do teu CV gerado ou da tua experiência para vermos o resultado final! 👇🔥
 
 #CVFácil #EmpregoAngola #Carreira #Sistemas #Tecnologia #ProductDesign #Angola #TesteComunidade
 ```
