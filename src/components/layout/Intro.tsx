@@ -601,7 +601,7 @@ export const Intro: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
             {plans.map((plan, i) => (
               <PlanCard 
                 key={i} 
@@ -646,7 +646,7 @@ export const Intro: React.FC = () => {
       {/* ══════════════════════════════════════
           CTA FINAL
           ══════════════════════════════════════ */}
-      <section className="hidden lg:block py-24 bg-slate-900 dark:bg-slate-800">
+      <section className="py-16 sm:py-24 bg-slate-900 dark:bg-slate-800">
         <div className="max-w-3xl mx-auto px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 24 }}

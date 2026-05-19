@@ -107,7 +107,7 @@ export const CVDashboard: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 w-full p-4 sm:p-6 lg:p-10">
+    <div className="flex flex-col xl:flex-row gap-6 xl:gap-10 w-full p-3 sm:p-6 lg:p-10">
       {/* Sidebar de Controle / Análise */}
       <div className="w-full xl:w-[420px] 2xl:w-[480px] flex flex-col gap-6">
         {/* Score Card Premium */}
@@ -317,7 +317,7 @@ export const CVDashboard: React.FC = () => {
                 exit={{ opacity: 0, y: -40, scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 100, damping: 20 }}
                 ref={cvRef} 
-                className="mx-auto bg-white shadow-[0_64px_128px_-32px_rgba(0,0,0,0.15)] w-full max-w-[850px] min-h-[1150px] transform origin-top p-10 sm:p-20 relative"
+                className="mx-auto bg-white shadow-[0_64px_128px_-32px_rgba(0,0,0,0.15)] w-full max-w-[850px] min-h-[1150px] transform origin-top p-4 sm:p-10 lg:p-20 relative"
                 style={{ 
                   "--cv-primary": answers.color || "#2563eb",
                   fontFamily: answers.font || "Inter"

@@ -244,7 +244,7 @@ export const ImportCVView: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="flex-1 flex flex-col lg:flex-row gap-0 max-w-7xl mx-auto w-full p-6 lg:p-10 gap-8"
+                className="flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-10 gap-6 lg:gap-8"
               >
                 {/* ── LEFT: TEXTAREA ── */}
                 <div className="flex-1 flex flex-col gap-4">
@@ -263,7 +263,7 @@ export const ImportCVView: React.FC = () => {
                       value={cvText}
                       onChange={(e) => { setCvText(e.target.value); setError(null); }}
                       placeholder={`Exemplo:\n\n# José Filipe da Conceição Figueredo\n\nContacto: +244 926 165 097\nE-mail: josefilipe@gmail.com\n\n## Perfil Profissional\nSou um profissional responsável...\n\n## Formação Académica\n...\n\n## Experiência Profissional\n...`}
-                      className="w-full h-full min-h-[420px] resize-none bg-white border-2 border-slate-100 rounded-[24px] p-6 text-sm text-slate-700 font-mono leading-relaxed placeholder:text-slate-300 focus:outline-none focus:border-blue-600/50 focus:ring-4 focus:ring-blue-600/5 transition-all shadow-sm"
+                      className="w-full h-full min-h-[260px] sm:min-h-[360px] lg:min-h-[420px] resize-none bg-white border-2 border-slate-100 rounded-[24px] p-4 sm:p-6 text-sm text-slate-700 font-mono leading-relaxed placeholder:text-slate-300 focus:outline-none focus:border-blue-600/50 focus:ring-4 focus:ring-blue-600/5 transition-all shadow-sm"
                     />
                     <div className="absolute bottom-4 right-5 text-[10px] text-slate-300 font-bold">
                       {charCount} caracteres
