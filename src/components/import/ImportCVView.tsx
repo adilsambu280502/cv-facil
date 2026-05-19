@@ -52,7 +52,7 @@ export const ImportCVView: React.FC = () => {
       });
 
       if (!response.ok) {
-        let errorMessage = "Erro ao processar o CV.";
+        let errorMessage = "Fazer currículos dá trabalho, e a nossa IA também se cansa. 🤯 No momento, estamos a receber muitos pedidos em simultâneo. É chato, nós sabemos, mas o sistema está sobrecarregado. Dá-nos um minuto e tenta novamente na logo!";
         try {
           const errorText = await response.text();
           try {
@@ -61,15 +61,13 @@ export const ImportCVView: React.FC = () => {
           } catch {
             // Se o retorno não for um JSON válido (ex: página de erro da Vercel)
             if (response.status === 504) {
-              errorMessage = "O tempo limite de processamento foi excedido (Timeout da Vercel). O teu CV antigo é muito longo ou o servidor está sobrecarregado. Reduz o tamanho do texto ou tenta novamente em instantes.";
+              errorMessage = "Fazer currículos dá trabalho, e a nossa IA também se cansa. 🤯 No momento, estamos a receber muitos pedidos em simultâneo. É chato, nós sabemos, mas o sistema está sobrecarregado. Dá-nos um minuto e tenta novamente na logo!";
             } else if (response.status === 404) {
-              errorMessage = "A rota de processamento do CV não foi encontrada (Erro 404).";
-            } else {
-              errorMessage = `Ocorreu um erro no servidor ao processar o CV (Status HTTP ${response.status}). Verifica se a variável de ambiente (GEMINI_API_KEY) está configurada no painel da Vercel.`;
+              errorMessage = "Parece que a rota de processamento do CV se perdeu pelo caminho (Erro 404). Avisa o suporte se isto persistir!";
             }
           }
         } catch {
-          errorMessage = "Não foi possível obter a resposta de erro do servidor. Verifica a tua ligação à rede.";
+          errorMessage = "Parece que a tua internet está com preguiça ou perdemos a ligação com os servidores. Verifica a rede e tenta novamente!";
         }
         throw new Error(errorMessage);
       }

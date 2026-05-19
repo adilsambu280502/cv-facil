@@ -234,9 +234,13 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       }
 
       setView('dashboard');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError("Falha ao comunicar com os servidores. Por favor, tenta novamente.");
+      setError(
+        err instanceof Error && err.message.includes("preguiça") 
+          ? err.message 
+          : "Fazer currículos dá trabalho, e a nossa IA também se cansa. 🤯 No momento, estamos a receber muitos pedidos em simultâneo. É chato, nós sabemos, mas o sistema está sobrecarregado. Dá-nos um minuto e tenta novamente na logo!"
+      );
       setStep(14);
     } finally {
       setIsGenerating(false);
