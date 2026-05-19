@@ -36,9 +36,9 @@ export const useExport = (
       });
 
       const blob = await pdf(doc).toBlob();
-      const filename = answers.name
-        ? `${answers.name.replace(/\s+/g, "_")}_CV_CVFacil.pdf`
-        : "CV_Facil.pdf";
+      const rawName = answers.name || (result.title ? `CV_${result.title}` : "CV_Profissional");
+      const cleanName = rawName.replace(/[^a-zA-Z0-9\u00C0-\u017F]/g, "_").replace(/_+/g, "_");
+      const filename = `${cleanName}.pdf`;
       saveAs(blob, filename);
       return true;
     } catch (err) {
@@ -180,7 +180,9 @@ export const useExport = (
       });
 
       const blob = await Packer.toBlob(doc);
-      saveAs(blob, `${(answers.name || "CV").replace(/\s+/g, "_")}_CVFacil.docx`);
+      const rawName = answers.name || (result.title ? `CV_${result.title}` : "CV_Profissional");
+      const cleanName = rawName.replace(/[^a-zA-Z0-9\u00C0-\u017F]/g, "_").replace(/_+/g, "_");
+      saveAs(blob, `${cleanName}.docx`);
       return true;
     } catch (err) {
       console.error("Erro ao gerar DOCX:", err);

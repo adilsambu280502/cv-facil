@@ -131,7 +131,7 @@ export const CVDashboard: React.FC = () => {
               onClick={() => setShowTips(true)}
               className="text-blue-600 font-black uppercase tracking-widest text-[10px] mt-4 hover:underline flex items-center gap-2"
             >
-              <Trophy size={14} /> Vê como chegar aos 100%
+              Vê como chegar aos 100%
             </button>
           </p>
         </Card>
@@ -489,7 +489,7 @@ export const CVDashboard: React.FC = () => {
                       className="w-full bg-blue-600 hover:bg-blue-500 text-white py-6 rounded-[28px] font-black text-lg flex items-center justify-center gap-4 transition-all active:scale-[0.98] border-none shadow-[0_20px_40px_-10px_rgba(37,99,235,0.3)] group"
                     >
                       {isGenerating ? <Loader2 className="animate-spin" size={24} /> : null}
-                      {isGenerating ? "A Atualizar..." : "Atualizar Currículo 🚀"}
+                      {isGenerating ? "A Atualizar..." : "Atualizar Currículo"}
                     </Button>
                   </div>
                 </Card>
@@ -523,12 +523,12 @@ export const CVDashboard: React.FC = () => {
               </button>
               
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-600">
-                  <Trophy size={32} />
+                <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-900 dark:text-white">
+                  <Target size={32} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Rumo aos 100%</h3>
-                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Checklist de Elite</p>
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Análise de Otimização</h3>
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Recomendações Estratégicas</p>
                 </div>
               </div>
 
@@ -596,22 +596,22 @@ export const CVDashboard: React.FC = () => {
               </button>
               
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-600">
+                <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-900 dark:text-white">
                   <CheckCircle2 size={32} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Download Concluído!</h3>
-                  <p className="text-xs font-black text-emerald-500 uppercase tracking-widest">🎉 Boa Sorte na tua Jornada!</p>
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Documento Exportado</h3>
+                  <p className="text-xs font-black text-slate-500 uppercase tracking-widest">Pronto para Envio</p>
                 </div>
               </div>
 
               <div className="space-y-6">
                 <div className="p-6 bg-slate-50 dark:bg-slate-800/40 rounded-3xl border border-slate-100 dark:border-slate-700/50">
                   <p className="text-sm text-slate-700 dark:text-slate-300 font-bold leading-relaxed">
-                    O teu currículo profissional foi gerado e descarregado com sucesso! Agora estás com uma vantagem competitiva brutal para conquistar a vaga dos teus sonhos. 🚀
+                    O seu currículo foi estruturado e exportado em formato PDF com sucesso. O documento está otimizado para sistemas de recrutamento (ATS) e pronto a ser enviado aos recrutadores.
                   </p>
                   <p className="text-sm text-slate-700 dark:text-slate-300 font-black mt-4">
-                    Desejamos-te o maior sucesso e boa sorte!
+                    Votos de um excelente processo de seleção.
                   </p>
                 </div>
 

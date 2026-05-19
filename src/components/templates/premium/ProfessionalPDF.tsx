@@ -621,7 +621,7 @@ export const ProfessionalPDF: React.FC<Props> = ({ answers, result, hasPaid }) =
           {/* ── FOOTER ── */}
           <View style={execStyles.footer}>
             <Text style={execStyles.footerText}>
-              Estruturado com CV Fácil – O teu currículo premium
+              {!hasPaid ? "Estruturado com CV Fácil – O teu currículo premium" : ""}
             </Text>
           </View>
         </Page>
@@ -795,7 +795,7 @@ export const ProfessionalPDF: React.FC<Props> = ({ answers, result, hasPaid }) =
         {/* ── FOOTER ── */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Estruturado com CV Fácil – O teu currículo premium
+            {!hasPaid ? "Estruturado com CV Fácil – O teu currículo premium" : ""}
           </Text>
         </View>
       </Page>

@@ -31,7 +31,7 @@ export const ImportCVView: React.FC = () => {
   const { setView, setResult, setAnswers, answers, hasPaid, setShowPaymentModal } = useCV();
   const [cvText, setCvText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState("professional");
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [step, setStep] = useState<"paste" | "template" | "loading" | "done">("paste");
   const [error, setError] = useState<string | null>(null);
   const charCount = cvText.length;
@@ -340,11 +340,11 @@ export const ImportCVView: React.FC = () => {
                     onClick={handleParse}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    disabled={cvText.trim().length < 50}
+                    disabled={cvText.trim().length < 50 || !selectedTemplate}
                     className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-200 disabled:text-slate-400 text-white py-6 rounded-[20px] font-black text-base flex items-center justify-center gap-3 transition-all shadow-[0_20px_40px_-10px_rgba(37,99,235,0.4)] disabled:shadow-none mt-2"
                   >
                     <FileText size={20} />
-                    Gerar CV Profissional
+                    {selectedTemplate ? "Gerar CV Profissional" : "Seleciona um Modelo ↑"}
                     <ChevronRight size={20} />
                   </motion.button>
 
