@@ -1,6 +1,6 @@
 import express from "express";
 import * as dotenv from "dotenv";
-import { generateWithFallback } from "./services/ai_orchestrator";
+import { generateWithFallback } from "./services/ai_orchestrator.js";
 
 dotenv.config();
 
