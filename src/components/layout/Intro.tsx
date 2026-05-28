@@ -207,7 +207,7 @@ export const Intro: React.FC = () => {
       subtitle: "Pagamento Único por CV gerado",
       recommended: true,
       features: [
-        "1 CV Completo gerado pela IA",
+        "1 CV Completo processado pelo sistema",
         "Modelos ATS Premium à escolha",
         "Carta de Apresentação Incluida",
         "Exportação PDF de Alta Fidelidade",
@@ -220,7 +220,7 @@ export const Intro: React.FC = () => {
       subtitle: "Pagamento Único por conversão",
       features: [
         "Cola o teu CV existente em texto",
-        "A IA reestrutura e otimiza tudo",
+        "O nosso sistema reestrutura e otimiza tudo",
         "Escolhe o Modelo Premium final",
         "Exportação PDF imediata",
         "Acesso vitalicio ao CV na tua conta",

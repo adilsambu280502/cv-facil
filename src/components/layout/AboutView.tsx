@@ -55,7 +55,7 @@ export const AboutView: React.FC = () => {
             </p>
             <h1 className="text-[40px] sm:text-[56px] lg:text-[72px] font-black text-slate-900 dark:text-white tracking-[-0.05em] leading-[0.9] mb-6">
               A ponte definitiva para o{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">teu novo futuro.</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">teu próximo passo.</span>
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-slate-500 dark:text-slate-400 font-semibold leading-relaxed max-w-4xl mx-auto lg:mx-0">
               O CV Fácil não é apenas uma ferramenta digital. Somos um ecossistema de aceleração de carreira criado orgulhosamente para impulsionar a empregabilidade dos profissionais em Angola.
@@ -76,7 +76,7 @@ export const AboutView: React.FC = () => {
               O que é o CV Fácil?
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed font-medium">
-              Criado com o objetivo de aproximar candidatos e recrutadores, o **CV Fácil** estruturou uma arquitetura visual e técnica de excelência. Nós eliminamos a fricção gráfica: tu concentras-te na tua história profissional, e o nosso sistema garante o layout e os dados que o mercado de trabalho moderno exige.
+              Criado com o objetivo de aproximar candidatos e recrutadores, o CV Fácil estruturou uma arquitetura visual e técnica de excelência. Nós eliminamos a fricção gráfica: tu concentras-te na tua história profissional, e o nosso sistema garante o layout e os dados que o mercado de trabalho moderno exige.
             </p>
             <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed font-medium">
               Em vez de usares modelos genéricos ou mal desenhados que os sistemas automáticos (ATS) das grandes empresas descartam de imediato, a nossa plataforma gera documentos limpos, estruturados e com tipografia refinada.

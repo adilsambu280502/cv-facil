@@ -75,14 +75,14 @@ export const LoginView: React.FC = () => {
   };
 
   const titles = {
-    login: 'Bem-vindo de volta.',
-    register: 'Criar conta é chato, nós sabemos.',
-    magic: 'Entrar sem senha.',
+    login: 'Acesso Direto',
+    register: 'Acesso Rápido',
+    magic: 'Acesso Imediato',
   };
   const subtitles = {
-    login: 'Pronto para atualizar o teu currículo?',
-    register: 'Mas prometemos que o teu currículo vai agradecer o esforço.',
-    magic: 'Enviamos-te um link mágico. Clicas e entras. Simples.',
+    login: 'Insere as tuas credenciais para continuar.',
+    register: 'Leva menos de 1 minuto.',
+    magic: 'Recebe um link no teu email. Clica e entra.',
   };
 
   return (
