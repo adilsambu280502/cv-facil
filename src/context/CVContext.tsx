@@ -239,7 +239,7 @@ export const CVProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       setError(
         err instanceof Error && err.message.includes("preguiça") 
           ? err.message 
-          : "Fazer currículos dá trabalho, e a nossa IA também se cansa. 🤯 No momento, estamos a receber muitos pedidos em simultâneo. É chato, nós sabemos, mas o sistema está sobrecarregado. Dá-nos um minuto e tenta novamente na logo!"
+          : "Fazer currículos dá trabalho, e o nosso sistema também se cansa. 🤯 No momento, estamos a receber muitos pedidos em simultâneo. É chato, nós sabemos, mas os servidores estão sobrecarregados. Dá-nos um minuto e tenta novamente!"
       );
       setStep(14);
     } finally {

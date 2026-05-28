@@ -80,6 +80,7 @@ const DesktopHeader: React.FC<{
   const navLinks = [
     { label: "Início", v: "intro" },
     { label: "Modelos", v: "templates" },
+    { label: "Sobre", v: "about" },
     { label: "Preços", v: "intro", hash: "precos" },
   ];
 

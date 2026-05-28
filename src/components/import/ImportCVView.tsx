@@ -52,7 +52,7 @@ export const ImportCVView: React.FC = () => {
       });
 
       if (!response.ok) {
-        let errorMessage = "Fazer currículos dá trabalho, e a nossa IA também se cansa. 🤯 No momento, estamos a receber muitos pedidos em simultâneo. É chato, nós sabemos, mas o sistema está sobrecarregado. Dá-nos um minuto e tenta novamente na logo!";
+        let errorMessage = "Fazer currículos dá trabalho, e o nosso sistema também se cansa. 🤯 No momento, estamos a receber muitos pedidos em simultâneo. É chato, nós sabemos, mas os servidores estão sobrecarregados. Dá-nos um minuto e tenta novamente!";
         try {
           const errorText = await response.text();
           try {
@@ -61,7 +61,7 @@ export const ImportCVView: React.FC = () => {
           } catch {
             // Se o retorno não for um JSON válido (ex: página de erro da Vercel)
             if (response.status === 504) {
-              errorMessage = "Fazer currículos dá trabalho, e a nossa IA também se cansa. 🤯 No momento, estamos a receber muitos pedidos em simultâneo. É chato, nós sabemos, mas o sistema está sobrecarregado. Dá-nos um minuto e tenta novamente na logo!";
+              errorMessage = "Fazer currículos dá trabalho, e o nosso sistema também se cansa. 🤯 No momento, estamos a receber muitos pedidos em simultâneo. É chato, nós sabemos, mas os servidores estão sobrecarregados. Dá-nos um minuto e tenta novamente!";
             } else if (response.status === 404) {
               errorMessage = "Parece que a rota de processamento do CV se perdeu pelo caminho (Erro 404). Avisa o suporte se isto persistir!";
             }

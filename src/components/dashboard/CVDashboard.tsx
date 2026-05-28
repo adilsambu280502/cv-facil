@@ -140,7 +140,7 @@ export const CVDashboard: React.FC = () => {
         </Card>
 
         {/* Tabs Selector App-Style */}
-        <div className="flex bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-md p-1.5 rounded-[32px] border border-slate-200/50 dark:border-slate-800 shadow-lg relative overflow-hidden">
+        <div className="flex bg-slate-100/60 dark:bg-slate-900/60 backdrop-blur-xl p-2 rounded-[32px] border border-slate-200/60 dark:border-slate-800 shadow-inner relative z-20">
           {[
             { id: "cv", label: "Currículo", icon: FileText },
             { id: "letter", label: "Carta", icon: Mail },
@@ -152,24 +152,24 @@ export const CVDashboard: React.FC = () => {
               <button 
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className="flex-1 py-4 rounded-[26px] text-[10px] sm:text-xs font-black uppercase tracking-[0.15em] transition-colors duration-300 flex items-center justify-center gap-2.5 relative z-10 select-none"
+                className="flex-1 py-3.5 px-1 sm:px-2 rounded-[24px] text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em] transition-colors duration-300 flex items-center justify-center relative z-10 select-none group"
                 style={{ WebkitTapHighlightColor: "transparent" }}
               >
                 {isActive && (
                   <motion.div
                     layoutId="activeTabPill"
-                    className="absolute inset-0 bg-slate-950 dark:bg-white rounded-[26px] shadow-lg shadow-slate-950/20 dark:shadow-white/5"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    className="absolute inset-0 bg-slate-900 dark:bg-white rounded-[24px] shadow-[0_8px_16px_-6px_rgba(0,0,0,0.3)] dark:shadow-[0_8px_16px_-6px_rgba(255,255,255,0.3)]"
+                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
                   />
                 )}
                 <span className={cn(
-                  "relative z-20 flex items-center gap-2 transition-colors duration-300",
+                  "relative z-20 flex items-center gap-2 sm:gap-2.5 transition-all duration-300",
                   isActive 
                     ? "text-white dark:text-slate-950 font-black" 
-                    : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-bold"
+                    : "text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 font-bold"
                 )}>
-                  <tab.icon size={18} className={cn("transition-transform duration-300", isActive && "scale-110")} />
-                  <span className="hidden md:inline">{tab.label}</span>
+                  <tab.icon size={16} strokeWidth={isActive ? 2.5 : 2} className={cn("transition-transform duration-300", isActive && "scale-110")} />
+                  <span className="hidden sm:inline">{tab.label}</span>
                 </span>
               </button>
             );
@@ -177,15 +177,18 @@ export const CVDashboard: React.FC = () => {
         </div>
 
         {/* Actions Group */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 mt-2">
           <Button 
             onClick={handleDownload}
             disabled={isExporting}
             size="2xl"
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white py-8 rounded-[32px] font-black text-xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] border-none shadow-[0_24px_48px_-12px_rgba(37,99,235,0.4)] group"
+            className="w-full bg-gradient-to-b from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600 text-white py-8 rounded-[32px] font-black text-[18px] sm:text-xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] border border-blue-400/20 shadow-[0_24px_48px_-12px_rgba(37,99,235,0.5)] group overflow-hidden relative"
           >
-            {isExporting ? <Loader2 className="animate-spin" size={28} /> : (canDownload ? <Download size={28} className="group-hover:-translate-y-1 transition-transform" /> : <Lock size={28} className="group-hover:scale-110 transition-transform" />)}
-            {isExporting ? "A Gerar PDF..." : (canDownload ? "Descarregar PDF" : "Desbloquear PDF Premium")}
+            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative z-10 flex items-center gap-4">
+              {isExporting ? <Loader2 className="animate-spin" size={26} /> : (canDownload ? <Download size={26} strokeWidth={2.5} className="group-hover:-translate-y-1 transition-transform duration-300" /> : <Lock size={26} strokeWidth={2.5} className="group-hover:scale-110 transition-transform duration-300" />)}
+              {isExporting ? "A Gerar PDF..." : (canDownload ? "Descarregar PDF" : "Desbloquear Premium")}
+            </div>
           </Button>
 
           <button 
@@ -201,9 +204,9 @@ export const CVDashboard: React.FC = () => {
                 alert("Link copiado para a área de transferência!");
               }
             }}
-            className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 text-blue-600 py-5 rounded-[28px] font-black text-sm hover:bg-blue-600/5 transition-all flex items-center justify-center gap-3 shadow-md"
+            className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800/80 text-blue-600 py-4 sm:py-5 rounded-[28px] font-black text-[13px] hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-3 shadow-[0_8px_16px_-6px_rgba(0,0,0,0.05)] active:scale-[0.98] group"
           >
-            <Share2 size={20} /> Partilhar Perfil
+            <Share2 size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform duration-300" /> Partilhar Perfil
           </button>
         </div>
 
